@@ -737,9 +737,9 @@ const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRJ_M1EaD
 
 // ZAPIER WEBHOOK URLS — replace with your actual Zapier webhook URLs
 const WEBHOOKS = {
-  residential: 'YOUR_ZAPIER_WEBHOOK_RESIDENTIAL',
-  commercial:  'YOUR_ZAPIER_WEBHOOK_COMMERCIAL',
-  other:       'YOUR_ZAPIER_WEBHOOK_OTHER'
+  residential: 'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/',
+  commercial:  'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/',
+  other:       'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/'
 };
 
 // ============================================================
@@ -980,7 +980,7 @@ async function submitForm() {
     const webhookUrl = WEBHOOKS[selectedService];
 
     // Send to Zapier webhook
-    if (webhookUrl && !webhookUrl.startsWith('YOUR_')) {
+    if (webhookUrl && webhookUrl.startsWith('https://')) {
       await fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
