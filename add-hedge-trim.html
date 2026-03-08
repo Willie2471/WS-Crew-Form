@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hedge Trim Request – WS Lawn Care</title>
+  <title>Weed Control Request – WS Lawn Care</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -65,32 +65,34 @@
 </head>
 <body>
 <div class="card">
-  <div class="icon">✂️</div>
+  <div class="icon">🌿</div>
   <h1>Request Received!</h1>
-  <p>Thank you — your hedge & shrub trimming request has been sent to the WS Lawn Care team.</p>
+  <p>Thank you — your weed control request has been sent to the WS Lawn Care team.</p>
   <p>We'll be in touch shortly to schedule and confirm pricing.</p>
   <hr class="divider"/>
-  <p class="redirect-note">Taking you to our Hedge & Shrub Trimming page in a few seconds…</p>
+  <p class="redirect-note">Taking you to our Weed Control page in a few seconds…</p>
   <div class="bar"><div class="bar-fill" id="bar"></div></div>
   <p style="font-size:12px;color:#aaa;">WS Lawn Care Services, LLC &nbsp;|&nbsp; "You Grow It, We Mow It!"</p>
 </div>
 
 <script>
+  // Parse URL params: ?name=John+Smith&address=123+Oak+St&email=john@email.com
   const params = new URLSearchParams(window.location.search);
   const name    = params.get('name')    || 'Unknown Customer';
   const address = params.get('address') || 'Not provided';
   const email   = params.get('email')   || 'Not provided';
-  const service = 'Hedge & Shrub Trimming';
-  const redirectUrl = 'https://www.wslawncareservicesllc.com/addhedgesshrubs';
+  const service = 'Weed Control';
+  const redirectUrl = 'https://www.wslawncareservicesllc.com/weedcontrol';
 
   // Fire alert email via Zapier webhook
-  fetch('https://hooks.zapier.com/hooks/catch/20549459/2upsell1/', {
+  fetch('https://hooks.zapier.com/hooks/catch/20549459/uxt7z1b/', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     mode: 'no-cors',
     body: JSON.stringify({ name, address, email, service })
   });
 
+  // Animate progress bar then redirect
   setTimeout(() => { document.getElementById('bar').style.width = '100%'; }, 100);
   setTimeout(() => { window.location.href = redirectUrl; }, 4500);
 </script>
