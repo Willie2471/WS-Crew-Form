@@ -139,12 +139,15 @@
   document.getElementById('cname').textContent = name;
   document.getElementById('caddr').textContent = address;
 
-  // Send as URLEncoded — no CORS preflight, works from any origin
-  const body = new URLSearchParams({ name, address, email, service });
-  fetch('https://hooks.zapier.com/hooks/catch/20549459/uxt7z1b/', {
-    method: 'POST',
-    body: body
-  }).catch(() => {});
+  // Only fire once per page visit — prevents duplicates
+  if (!sessionStorage.getItem('wc_fired')) {
+    sessionStorage.setItem('wc_fired', 'true');
+    const body = new URLSearchParams({ name, address, email, service });
+    fetch('https://hooks.zapier.com/hooks/catch/20549459/uxt7z1b/', {
+      method: 'POST',
+      body: body
+    }).catch(() => {});
+  }
 
   setTimeout(() => { document.getElementById('bar').style.width = '100%'; }, 100);
   setTimeout(() => { window.location.href = redirectUrl; }, 5500);
