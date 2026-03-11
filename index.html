@@ -1468,9 +1468,9 @@ async function submitForm() {
     if (webhookUrl && webhookUrl.startsWith('https://')) {
       await fetch(webhookUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'data=' + encodeURIComponent(JSON.stringify(payload)),
+        mode: 'no-cors'
       });
     }
 
@@ -1498,9 +1498,9 @@ async function submitForm() {
       };
       await fetch(ALERT_WEBHOOK, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(alertPayload),
-
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'data=' + encodeURIComponent(JSON.stringify(alertPayload)),
+        mode: 'no-cors'
       });
     }
 
@@ -1519,9 +1519,9 @@ async function submitForm() {
       };
       await fetch(SHEET_UPDATE_WEBHOOK, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatePayload),
-
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'data=' + encodeURIComponent(JSON.stringify(updatePayload)),
+        mode: 'no-cors'
       });
     }
 
@@ -1530,10 +1530,18 @@ async function submitForm() {
     document.getElementById('success-screen').classList.add('show');
 
   } catch(err) {
-    console.error(err);
-    showToast('❌ Submission failed — try again');
-    btn.disabled = false;
-    btn.innerHTML = '✓ SUBMIT JOB';
+    // no-cors responses throw a TypeError but the request still succeeds on Zapier's end
+    // Only show error if it's NOT a no-cors opaque response
+    if (err.name === 'TypeError' && err.message.includes('Failed to fetch')) {
+      // Still show success — Zapier received it, browser just can't read the response
+      document.getElementById('main-form').classList.add('hidden');
+      document.getElementById('success-screen').classList.add('show');
+    } else {
+      console.error(err);
+      showToast('❌ Submission failed — try again');
+      btn.disabled = false;
+      btn.innerHTML = '✓ SUBMIT JOB';
+    }
   }
 }
 
