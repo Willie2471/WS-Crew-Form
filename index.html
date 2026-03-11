@@ -1036,8 +1036,7 @@ const WEBHOOKS = {
 // ⚠️  REPLACE THESE with two new Zapier webhooks you create:
 //   ALERT_WEBHOOK  → triggers an email to info@wslawncareservicesllc.com
 //   SHEET_UPDATE_WEBHOOK → writes cut height + grass type back to the Sheet row
-const ALERT_WEBHOOK        = 'https://hooks.zapier.com/hooks/catch/20549459/uxw6ope/
-';
+const ALERT_WEBHOOK        = 'https://hooks.zapier.com/hooks/catch/20549459/uxw6ope/';
 const SHEET_UPDATE_WEBHOOK = 'https://hooks.zapier.com/hooks/catch/20549459/uxwh463/';
 
 // ============================================================
@@ -1471,7 +1470,7 @@ async function submitForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-        mode: 'no-cors'
+
       });
     }
 
@@ -1501,7 +1500,7 @@ async function submitForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(alertPayload),
-        mode: 'no-cors'
+
       });
     }
 
@@ -1522,7 +1521,7 @@ async function submitForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatePayload),
-        mode: 'no-cors'
+
       });
     }
 
@@ -1604,7 +1603,8 @@ try {
   }
 } catch(e) {}
 
-
+// TESTING MODE — delete this line before going live
+document.getElementById('password-gate').style.display = 'none';
 </script>
 </body>
 </html>
