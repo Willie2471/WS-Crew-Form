@@ -18,6 +18,9 @@
     --border: #c2d9c6;
     --white: #ffffff;
     --red: #c0392b;
+    --orange: #e67e22;
+    --orange-pale: #fef5ec;
+    --orange-mid: #f5cba7;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,7 +33,6 @@
     padding-bottom: 60px;
   }
 
-  /* HEADER */
   .header {
     background: var(--green);
     padding: 16px 20px;
@@ -62,18 +64,11 @@
     margin-top: 2px;
   }
 
-  /* MAIN CONTAINER */
   .container { max-width: 640px; margin: 0 auto; padding: 20px 16px; }
 
-  /* STEP INDICATOR */
-  .steps {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 24px;
-  }
+  .steps { display: flex; gap: 6px; margin-bottom: 24px; }
   .step {
-    flex: 1;
-    height: 4px;
+    flex: 1; height: 4px;
     background: var(--green-mid);
     border-radius: 2px;
     transition: background 0.3s;
@@ -81,7 +76,6 @@
   .step.active { background: var(--green); }
   .step.done { background: var(--green-light); }
 
-  /* CARDS */
   .card {
     background: var(--white);
     border-radius: 14px;
@@ -90,6 +84,15 @@
     border: 1.5px solid var(--border);
     box-shadow: 0 2px 8px rgba(30,107,46,0.06);
   }
+
+  /* ALERT CARD — for pet waste / office alerts */
+  .card.alert-card {
+    border-color: var(--orange-mid);
+    background: var(--orange-pale);
+  }
+  .card.alert-card .card-title { color: var(--orange); }
+  .card.alert-card .card-title .num { background: var(--orange); }
+
   .card-title {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 18px;
@@ -112,7 +115,6 @@
     flex-shrink: 0;
   }
 
-  /* FORM ELEMENTS */
   .field { margin-bottom: 14px; }
   .field label {
     display: block;
@@ -179,7 +181,6 @@
   .search-result-item .name { font-weight: 600; font-size: 15px; }
   .search-result-item .addr { font-size: 13px; color: var(--muted); margin-top: 2px; }
 
-  /* CUSTOMER PILL */
   .customer-selected {
     display: none;
     background: var(--green-pale);
@@ -212,7 +213,42 @@
     padding: 0;
   }
 
-  /* SERVICE TYPE SELECTOR */
+  /* CUSTOMER INFO BANNER — shows last height + grass type */
+  .customer-info-banner {
+    display: none;
+    margin-top: 10px;
+    background: #fff;
+    border: 1.5px solid var(--green-mid);
+    border-radius: 10px;
+    padding: 12px 14px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .customer-info-banner.show { display: flex; }
+  .info-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green-pale);
+    border: 1px solid var(--green-mid);
+    border-radius: 8px;
+    padding: 6px 10px;
+  }
+  .info-chip .chip-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+  }
+  .info-chip .chip-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--green);
+  }
+  .info-chip .chip-icon { font-size: 16px; }
+
+  /* SERVICE TYPE */
   .service-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -229,16 +265,8 @@
     background: #f9fcf9;
   }
   .service-btn .sicon { font-size: 28px; display: block; margin-bottom: 6px; }
-  .service-btn .slabel {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--muted);
-    line-height: 1.3;
-  }
-  .service-btn.active {
-    border-color: var(--green);
-    background: var(--green-pale);
-  }
+  .service-btn .slabel { font-size: 12px; font-weight: 600; color: var(--muted); line-height: 1.3; }
+  .service-btn.active { border-color: var(--green); background: var(--green-pale); }
   .service-btn.active .slabel { color: var(--green); }
 
   /* YES/NO RADIO BUTTONS */
@@ -260,6 +288,63 @@
   .yn-btn.yes.active { border-color: var(--green); background: var(--green-pale); color: var(--green); }
   .yn-btn.no.active { border-color: #c0392b; background: #fdf0ee; color: #c0392b; }
   .yn-btn.next.active { border-color: var(--accent); background: #fff8e6; color: #b37800; }
+
+  /* GRASS TYPE GRID */
+  .grass-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+  .grass-btn {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #f9fcf9;
+  }
+  .grass-btn .gicon { font-size: 22px; display: block; margin-bottom: 4px; }
+  .grass-btn .glabel { font-size: 11px; font-weight: 600; color: var(--muted); line-height: 1.3; }
+  .grass-btn.active { border-color: var(--green); background: var(--green-pale); }
+  .grass-btn.active .glabel { color: var(--green); }
+
+  /* PET WARNING TOGGLE */
+  .pet-toggle {
+    display: flex;
+    gap: 10px;
+  }
+  .pet-option {
+    flex: 1;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #f9fcf9;
+  }
+  .pet-option .picon { font-size: 26px; display: block; margin-bottom: 6px; }
+  .pet-option .plabel { font-size: 12px; font-weight: 600; color: var(--muted); line-height: 1.3; }
+  .pet-option.active-clean { border-color: var(--green); background: var(--green-pale); }
+  .pet-option.active-clean .plabel { color: var(--green); }
+  .pet-option.active-warn { border-color: var(--red); background: #fdf0ee; }
+  .pet-option.active-warn .plabel { color: var(--red); }
+
+  /* PET WARNING BADGE */
+  .pet-alert-badge {
+    display: none;
+    background: #fdf0ee;
+    border: 2px solid var(--red);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--red);
+    font-weight: 600;
+    text-align: center;
+  }
+  .pet-alert-badge.show { display: block; }
 
   /* PHOTO UPLOAD */
   .photo-upload-area {
@@ -301,10 +386,7 @@
     overflow: hidden;
     border: 1.5px solid var(--border);
   }
-  .photo-thumb img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-  }
+  .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
   .photo-thumb .remove-photo {
     position: absolute;
     top: 4px; right: 4px;
@@ -319,7 +401,6 @@
     line-height: 1;
   }
 
-  /* SUBMIT BUTTON */
   .submit-btn {
     width: 100%;
     padding: 16px;
@@ -339,7 +420,6 @@
   .submit-btn:active { transform: scale(0.98); }
   .submit-btn:disabled { background: var(--muted); cursor: not-allowed; box-shadow: none; }
 
-  /* SUCCESS SCREEN */
   .success-screen {
     display: none;
     text-align: center;
@@ -375,7 +455,6 @@
     cursor: pointer;
   }
 
-  /* TOAST */
   .toast {
     position: fixed;
     bottom: 24px;
@@ -393,14 +472,7 @@
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
 
-  /* DIVIDER */
-  .divider {
-    height: 1px;
-    background: var(--green-mid);
-    margin: 16px 0;
-  }
-
-  /* SECTION LABEL */
+  .divider { height: 1px; background: var(--green-mid); margin: 16px 0; }
   .section-label {
     font-size: 11px;
     font-weight: 600;
@@ -409,11 +481,8 @@
     color: var(--muted);
     margin-bottom: 10px;
   }
-
-  /* HIDDEN */
   .hidden { display: none !important; }
 
-  /* LOADING SPINNER */
   .spinner {
     display: inline-block;
     width: 18px; height: 18px;
@@ -426,7 +495,6 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* DATE BADGE */
   .date-badge {
     display: inline-block;
     background: var(--green-pale);
@@ -459,10 +527,7 @@
     text-align: center;
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
   }
-  .password-logo {
-    font-size: 48px;
-    margin-bottom: 12px;
-  }
+  .password-logo { font-size: 48px; margin-bottom: 12px; }
   .password-box h2 {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 24px;
@@ -470,11 +535,7 @@
     margin-bottom: 4px;
     letter-spacing: 0.5px;
   }
-  .password-box p {
-    font-size: 13px;
-    color: #5a7060;
-    margin-bottom: 24px;
-  }
+  .password-box p { font-size: 13px; color: #5a7060; margin-bottom: 24px; }
   .password-box input {
     width: 100%;
     padding: 14px 16px;
@@ -517,22 +578,32 @@
     min-height: 18px;
   }
 
+  /* INTERNAL NOTE FIELD */
+  .field textarea.office-note {
+    border-color: var(--orange-mid);
+    background: var(--orange-pale);
+  }
+  .field textarea.office-note:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(230,126,34,0.12);
+    background: #fff;
+  }
 </style>
 </head>
 <body>
+
 <!-- PASSWORD GATE -->
 <div class="password-gate" id="password-gate">
   <div class="password-box">
     <div class="password-logo">🌿</div>
     <h2>WS LAWN CARE</h2>
     <p>Enter your crew access code to continue</p>
-    <input type="password" id="password-input" placeholder="Access code" 
+    <input type="password" id="password-input" placeholder="Access code"
       onkeydown="if(event.key==='Enter') checkPassword()"/>
     <button class="password-submit" onclick="checkPassword()">ENTER</button>
     <div class="password-error" id="password-error"></div>
   </div>
 </div>
-
 
 <div class="header">
   <div class="header-icon">🌿</div>
@@ -544,14 +615,12 @@
 
 <div class="container">
 
-  <!-- STEPS -->
   <div class="steps">
     <div class="step active" id="s1"></div>
     <div class="step" id="s2"></div>
     <div class="step" id="s3"></div>
   </div>
 
-  <!-- MAIN FORM -->
   <div id="main-form">
 
     <div class="date-badge" id="date-badge"></div>
@@ -573,6 +642,38 @@
         <div class="cname" id="sel-name"></div>
         <div class="cdetails" id="sel-details"></div>
         <button class="change-btn" onclick="clearCustomer()">✕ Change customer</button>
+      </div>
+
+      <!-- LAST VISIT INFO BANNER (auto-populated from Sheet) -->
+      <div class="customer-info-banner" id="customer-info-banner">
+        <div class="info-chip" id="chip-height" style="display:none">
+          <span class="chip-icon">✂️</span>
+          <div>
+            <div class="chip-label">Last Cut Height</div>
+            <div class="chip-value" id="chip-height-val">—</div>
+          </div>
+        </div>
+        <div class="info-chip" id="chip-grass" style="display:none">
+          <span class="chip-icon">🌿</span>
+          <div>
+            <div class="chip-label">Grass Type</div>
+            <div class="chip-value" id="chip-grass-val">—</div>
+          </div>
+        </div>
+        <div class="info-chip" id="chip-direction" style="display:none">
+          <span class="chip-icon">🧭</span>
+          <div>
+            <div class="chip-label">Mow Direction</div>
+            <div class="chip-value" id="chip-direction-val">—</div>
+          </div>
+        </div>
+        <div class="info-chip" id="chip-note" style="display:none">
+          <span class="chip-icon">📋</span>
+          <div>
+            <div class="chip-label">Property Note</div>
+            <div class="chip-value" id="chip-note-val" style="font-size:12px;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -599,60 +700,87 @@
     <div class="card" id="details-card">
       <div class="card-title"><div class="num">3</div> Job Details</div>
 
-      <!-- RESIDENTIAL MOWING FIELDS -->
+      <!-- ============ RESIDENTIAL MOWING ============ -->
       <div id="fields-residential" class="hidden">
         <div class="field">
           <label>Cut Height (inches)</label>
           <select id="res-cut-height">
             <option value="">Select height...</option>
-            <option>2.5</option><option>3.0</option><option>3.5</option><option>4.0</option><option>4.5</option>5</option>
+            <option>2.50</option><option>2.75</option><option>3.00</option><option>3.25</option><option>3.50</option><option>3.75</option><option>4.00</option><option>4.25</option><option>4.50</option><option>4.75</option><option>5.00</option>
           </select>
         </div>
+
+        <!-- GRASS TYPE -->
+        <div class="field">
+          <label>Grass Type</label>
+          <div class="grass-grid">
+            <div class="grass-btn" onclick="selectGrass(this,'Bahia','res')">
+              <span class="gicon">🌾</span><span class="glabel">Bahia</span>
+            </div>
+            <div class="grass-btn" onclick="selectGrass(this,'Bermuda','res')">
+              <span class="gicon">☀️</span><span class="glabel">Bermuda</span>
+            </div>
+            <div class="grass-btn" onclick="selectGrass(this,'St. Augustine','res')">
+              <span class="gicon">🌿</span><span class="glabel">St. Augustine</span>
+            </div>
+            <div class="grass-btn" onclick="selectGrass(this,'Zoysia','res')">
+              <span class="gicon">🍃</span><span class="glabel">Zoysia</span>
+            </div>
+            <div class="grass-btn" onclick="selectGrass(this,'Centipede','res')">
+              <span class="gicon">🐛</span><span class="glabel">Centipede</span>
+            </div>
+            <div class="grass-btn" onclick="selectGrass(this,'Unable To Identify','res')">
+              <span class="gicon">❓</span><span class="glabel">Unable To ID</span>
+            </div>
+          </div>
+          <input type="hidden" id="res-grass-type"/>
+        </div>
+
         <div class="divider"></div>
         <div class="section-label">Service Checklist</div>
         <div class="field">
           <label>Applied Weed Control?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'res-weed','✓ Yes')">✓ Yes</div>
-            <div class="yn-btn next" onclick="toggle(this,'res-weed','Next Visit')">Next Visit</div>
-            <div class="yn-btn no" onclick="toggle(this,'res-weed','✗ No')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'res-weed','yes')">✓ Yes</div>
+            <div class="yn-btn next" onclick="toggle(this,'res-weed','next')">Next Visit</div>
+            <div class="yn-btn no" onclick="toggle(this,'res-weed','no')">✗ No</div>
           </div>
           <input type="hidden" id="res-weed"/>
         </div>
         <div class="field">
           <label>Sprayed for Bugs Around Perimeter?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'res-bugs','✓ Yes')">✓ Yes</div>
-            <div class="yn-btn next" onclick="toggle(this,'res-bugs','Next Visit')">Next Visit</div>
-            <div class="yn-btn no" onclick="toggle(this,'res-bugs','✗ No')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'res-bugs','yes')">✓ Yes</div>
+            <div class="yn-btn next" onclick="toggle(this,'res-bugs','next')">Next Visit</div>
+            <div class="yn-btn no" onclick="toggle(this,'res-bugs','no')">✗ No</div>
           </div>
           <input type="hidden" id="res-bugs"/>
         </div>
         <div class="field">
           <label>Trimmed Hedges / Limbs?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'res-hedges','✓ Yes')">✓ Yes</div>
-            <div class="yn-btn next" onclick="toggle(this,'res-hedges','Next Visit')">Next Visit</div>
-            <div class="yn-btn no" onclick="toggle(this,'res-hedges','✗ No')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'res-hedges','yes')">✓ Yes</div>
+            <div class="yn-btn next" onclick="toggle(this,'res-hedges','next')">Next Visit</div>
+            <div class="yn-btn no" onclick="toggle(this,'res-hedges','no')">✗ No</div>
           </div>
           <input type="hidden" id="res-hedges"/>
         </div>
         <div class="field">
           <label>Walked Perimeter for Leaks / Vandalism?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'res-perim','✓ Yes-Nothing Unusual')">✓ Yes — Nothing Unusual</div>
-            <div class="yn-btn no" onclick="toggle(this,'res-perim','⚠ Issue Found')">⚠ Issue Found</div>
+            <div class="yn-btn yes" onclick="toggle(this,'res-perim','yes')">✓ Yes — Nothing Unusual</div>
+            <div class="yn-btn no" onclick="toggle(this,'res-perim','issue')">⚠ Issue Found</div>
           </div>
           <input type="hidden" id="res-perim"/>
         </div>
         <div class="divider"></div>
         <div class="field">
           <label>Overall — Need To Communicate</label>
-          <textarea id="res-notes" placeholder="Any notes for the customer..."></textarea>
+          <textarea id="res-notes" placeholder="Any notes for the office or customer..."></textarea>
         </div>
       </div>
 
-      <!-- COMMERCIAL MOWING FIELDS -->
+      <!-- ============ COMMERCIAL MOWING ============ -->
       <div id="fields-commercial" class="hidden">
         <div class="field">
           <label>Technician Name(s)</label>
@@ -666,66 +794,93 @@
           <label>Cut Height (inches)</label>
           <select id="com-cut-height">
             <option value="">Select height...</option>
-            <option>2.5</option><option>3.0</option><option>3.5</option><option>4.0</option><option>4.5</option>5</option>
+            <option>2.50</option><option>2.75</option><option>3.00</option><option>3.25</option><option>3.50</option><option>3.75</option><option>4.00</option><option>4.25</option><option>4.50</option><option>4.75</option><option>5.00</option>
           </select>
         </div>
+
+        <!-- GRASS TYPE -->
+        <div class="field">
+          <label>Grass Type</label>
+          <div class="grass-grid">
+            <div class="grass-btn" onclick="selectGrass(this,'Bahia','com')">
+              <span class="gicon">🌾</span><span class="glabel">Bahia</span>
+            </div>
+            <div class="grass-btn" onclick="selectGrass(this,'Bermuda','com')">
+              <span class="gicon">☀️</span><span class="glabel">Bermuda</span>
+            </div>
+            <div class="grass-btn" onclick="selectGrass(this,'St. Augustine','com')">
+              <span class="gicon">🌿</span><span class="glabel">St. Augustine</span>
+            </div>
+            <div class="grass-btn" onclick="selectGrass(this,'Zoysia','com')">
+              <span class="gicon">🍃</span><span class="glabel">Zoysia</span>
+            </div>
+            <div class="grass-btn" onclick="selectGrass(this,'Centipede','com')">
+              <span class="gicon">🐛</span><span class="glabel">Centipede</span>
+            </div>
+            <div class="grass-btn" onclick="selectGrass(this,'Unable To Identify','com')">
+              <span class="gicon">❓</span><span class="glabel">Unable To ID</span>
+            </div>
+          </div>
+          <input type="hidden" id="com-grass-type"/>
+        </div>
+
         <div class="divider"></div>
         <div class="section-label">Service Checklist</div>
         <div class="field">
           <label>Blew Parking Lot & Common Areas?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'com-blow','✓ Yes')">✓ Yes</div>
-            <div class="yn-btn no" onclick="toggle(this,'com-blow','✗ No')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'com-blow','yes')">✓ Yes</div>
+            <div class="yn-btn no" onclick="toggle(this,'com-blow','no')">✗ No</div>
           </div>
           <input type="hidden" id="com-blow"/>
         </div>
         <div class="field">
           <label>Applied Weed Control?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'com-weed','✓ Yes')">✓ Yes</div>
-            <div class="yn-btn next" onclick="toggle(this,'com-weed','Next Visit')">Next Visit</div>
-            <div class="yn-btn no" onclick="toggle(this,'com-weed','✗ No')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'com-weed','yes')">✓ Yes</div>
+            <div class="yn-btn next" onclick="toggle(this,'com-weed','next')">Next Visit</div>
+            <div class="yn-btn no" onclick="toggle(this,'com-weed','no')">✗ No</div>
           </div>
           <input type="hidden" id="com-weed"/>
         </div>
         <div class="field">
           <label>Sprayed for Bugs Around Perimeter?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'com-bugs','✓ Yes')">✓ Yes</div>
-            <div class="yn-btn next" onclick="toggle(this,'com-bugs','Next Visit')">Next Visit</div>
-            <div class="yn-btn no" onclick="toggle(this,'com-bugs','✗ No')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'com-bugs','yes')">✓ Yes</div>
+            <div class="yn-btn next" onclick="toggle(this,'com-bugs','next')">Next Visit</div>
+            <div class="yn-btn no" onclick="toggle(this,'com-bugs','no')">✗ No</div>
           </div>
           <input type="hidden" id="com-bugs"/>
         </div>
         <div class="field">
           <label>Trimmed Hedges / Limbs?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'com-hedges','✓ Yes')">✓ Yes</div>
-            <div class="yn-btn next" onclick="toggle(this,'com-hedges','Next Visit')">Next Visit</div>
-            <div class="yn-btn no" onclick="toggle(this,'com-hedges','✗ No')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'com-hedges','yes')">✓ Yes</div>
+            <div class="yn-btn next" onclick="toggle(this,'com-hedges','next')">Next Visit</div>
+            <div class="yn-btn no" onclick="toggle(this,'com-hedges','no')">✗ No</div>
           </div>
           <input type="hidden" id="com-hedges"/>
         </div>
         <div class="field">
           <label>Walked Perimeter for Leaks / Vandalism?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'com-perim','✓ Yes — Nothing Unusual')">✓ Yes — Nothing Unusual</div>
-            <div class="yn-btn no" onclick="toggle(this,'com-perim','⚠ Issue Found')">⚠ Issue Found</div>
+            <div class="yn-btn yes" onclick="toggle(this,'com-perim','yes')">✓ Yes — Nothing Unusual</div>
+            <div class="yn-btn no" onclick="toggle(this,'com-perim','issue')">⚠ Issue Found</div>
           </div>
           <input type="hidden" id="com-perim"/>
         </div>
         <div class="divider"></div>
         <div class="field">
           <label>We Recommend</label>
-          <textarea id="com-recommend" placeholder="Any recommendations..."></textarea>
+          <textarea id="com-recommend" placeholder="Any recommended services for next visit..."></textarea>
         </div>
         <div class="field">
           <label>Overall — Need To Communicate</label>
-          <textarea id="com-notes" placeholder="Any notes for the customer..."></textarea>
+          <textarea id="com-notes" placeholder="Any notes for the office or customer..."></textarea>
         </div>
       </div>
 
-      <!-- ALL OTHER SERVICES FIELDS -->
+      <!-- ============ ALL OTHER SERVICES ============ -->
       <div id="fields-other" class="hidden">
         <div class="field">
           <label>Service Performed</label>
@@ -736,35 +891,35 @@
         <div class="field">
           <label>Applied Weed Control?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'oth-weed','✓ Yes')">✓ Yes</div>
-            <div class="yn-btn next" onclick="toggle(this,'oth-weed','Next Visit')">Next Visit</div>
-            <div class="yn-btn no" onclick="toggle(this,'oth-weed','✗ No')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'oth-weed','yes')">✓ Yes</div>
+            <div class="yn-btn next" onclick="toggle(this,'oth-weed','next')">Next Visit</div>
+            <div class="yn-btn no" onclick="toggle(this,'oth-weed','no')">✗ No</div>
           </div>
           <input type="hidden" id="oth-weed"/>
         </div>
         <div class="field">
           <label>Sprayed for Bugs Around Perimeter?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'oth-bugs','✓ Yes')">✓ Yes</div>
-            <div class="yn-btn next" onclick="toggle(this,'oth-bugs','Next Visit')">Next Visit</div>
-            <div class="yn-btn no" onclick="toggle(this,'oth-bugs','✗ No')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'oth-bugs','yes')">✓ Yes</div>
+            <div class="yn-btn next" onclick="toggle(this,'oth-bugs','next')">Next Visit</div>
+            <div class="yn-btn no" onclick="toggle(this,'oth-bugs','no')">✗ No</div>
           </div>
           <input type="hidden" id="oth-bugs"/>
         </div>
         <div class="field">
           <label>Trimmed Hedges / Limbs?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'oth-hedges','✓ Yes')">✓ Yes</div>
-            <div class="yn-btn next" onclick="toggle(this,'oth-hedges','Next Visit')">Next Visit</div>
-            <div class="yn-btn no" onclick="toggle(this,'oth-hedges','✗ No')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'oth-hedges','yes')">✓ Yes</div>
+            <div class="yn-btn next" onclick="toggle(this,'oth-hedges','next')">Next Visit</div>
+            <div class="yn-btn no" onclick="toggle(this,'oth-hedges','no')">✗ No</div>
           </div>
           <input type="hidden" id="oth-hedges"/>
         </div>
         <div class="field">
           <label>Walked Perimeter for Leaks / Vandalism?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'oth-perim','✓ Yes — Nothing Unusual')">✓ Yes — Nothing Unusual</div>
-            <div class="yn-btn no" onclick="toggle(this,'oth-perim','⚠ Issue Found')">⚠ Issue Found</div>
+            <div class="yn-btn yes" onclick="toggle(this,'oth-perim','yes')">✓ Yes — Nothing Unusual</div>
+            <div class="yn-btn no" onclick="toggle(this,'oth-perim','issue')">⚠ Issue Found</div>
           </div>
           <input type="hidden" id="oth-perim"/>
         </div>
@@ -775,7 +930,7 @@
         </div>
         <div class="field">
           <label>Overall — Need To Communicate</label>
-          <textarea id="oth-notes" placeholder="Any notes for the customer..."></textarea>
+          <textarea id="oth-notes" placeholder="Any notes for the office or customer..."></textarea>
         </div>
       </div>
 
@@ -784,7 +939,54 @@
       </div>
     </div>
 
-    <!-- CARD 4: PHOTOS -->
+    <!-- =====================================================
+         CARD 4: PET WASTE WARNING
+         ===================================================== -->
+    <div class="card alert-card">
+      <div class="card-title">
+        <div class="num" style="background:var(--orange)">🐾</div>
+        Pet Waste on Property?
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">
+        If pet waste is present and caused issues, tap <strong>Send Alert</strong>. A notification email will go to the office immediately.
+      </p>
+      <div class="pet-toggle">
+        <div class="pet-option" id="pet-clear" onclick="setPetStatus('clear')">
+          <span class="picon">✅</span>
+          <span class="plabel">All Clear — No Issue</span>
+        </div>
+        <div class="pet-option" id="pet-warn" onclick="setPetStatus('warn')">
+          <span class="picon">⚠️</span>
+          <span class="plabel">Send Alert to Office</span>
+        </div>
+      </div>
+      <div class="pet-alert-badge" id="pet-alert-badge">
+        🐾 Office will be notified of pet waste issue on submission
+      </div>
+      <input type="hidden" id="pet-status" value=""/>
+    </div>
+
+    <!-- =====================================================
+         CARD 5: INTERNAL OFFICE NOTE
+         ===================================================== -->
+    <div class="card alert-card">
+      <div class="card-title">
+        <div class="num" style="background:var(--orange)">📋</div>
+        Internal Note to Office
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">
+        Property issue, gate code, access note, or anything the office needs to know. <strong>This goes to the office only — not the customer.</strong>
+      </p>
+      <div class="field">
+        <label>Office Note (Optional)</label>
+        <textarea id="office-note" class="office-note" placeholder="e.g. Gate code changed, dog left in yard, irrigation head damaged, customer asked about pricing..." rows="3"></textarea>
+      </div>
+      <p style="font-size:11px;color:var(--muted);font-style:italic;">
+        📧 An alert email will be sent to info@wslawncareservicesllc.com if you fill this in.
+      </p>
+    </div>
+
+    <!-- CARD 6: PHOTOS -->
     <div class="card">
       <div class="card-title"><div class="num">4</div> Job Photos</div>
       <div class="photo-upload-area" id="upload-area">
@@ -820,49 +1022,71 @@
 
 <script>
 // ============================================================
-// CUSTOMER DATA
-// This pulls from your Google Sheet via a published CSV URL.
-// Replace SHEET_CSV_URL with your actual published Google Sheet CSV link.
-// Format: Name, Address, Email, Phone
+// CONFIG
 // ============================================================
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRJ_M1EaDLi89OgyZnDqWJYKYKNEnrzcFpHmsnXeRTF4M35lJ4xUzf69v9kNQANYnsYx-KWS_k__NYi/pub?output=csv';
 
-// ZAPIER WEBHOOK URLS — replace with your actual Zapier webhook URLs
+// Main job completion webhook (existing)
 const WEBHOOKS = {
   residential: 'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/',
   commercial:  'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/',
   other:       'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/'
 };
 
+// ⚠️  REPLACE THESE with two new Zapier webhooks you create:
+//   ALERT_WEBHOOK  → triggers an email to info@wslawncareservicesllc.com
+//   SHEET_UPDATE_WEBHOOK → writes cut height + grass type back to the Sheet row
+const ALERT_WEBHOOK        = 'https://hooks.zapier.com/hooks/catch/20549459/YOUR_ALERT_WEBHOOK/';
+const SHEET_UPDATE_WEBHOOK = 'https://hooks.zapier.com/hooks/catch/20549459/YOUR_SHEET_UPDATE_WEBHOOK/';
+
 // ============================================================
-// DEMO CUSTOMERS (used when no Sheet is connected yet)
+// CUSTOMER DATA — loads from Google Sheet
+// Columns: A=Name, B=Address, C=Email, D=Phone,
+//          E=Mowing Height, F=Mowing Direction, G=Grass Type, H=Internal Client Note
 // ============================================================
 let customers = [
-  { name: 'Bobby Flemings',   address: '123 Oak Street, Titusville FL 32780',   email: 'bobby@email.com',   phone: '321-555-0101' },
-  { name: 'Sandra Martinez',  address: '456 Palm Ave, Titusville FL 32796',      email: 'sandra@email.com',  phone: '321-555-0202' },
-  { name: 'James Thornton',   address: '789 Magnolia Blvd, Cocoa FL 32922',      email: 'james@email.com',   phone: '321-555-0303' },
-  { name: 'Patricia Williams',address: '22 Sunrise Dr, Merritt Island FL 32952', email: 'pat@email.com',     phone: '321-555-0404' },
-  { name: 'David Chen',       address: '88 Bayside Ct, Titusville FL 32780',     email: 'david@email.com',   phone: '321-555-0505' },
-  { name: 'Lisa Johnson',     address: '310 Cypress Ln, Rockledge FL 32955',     email: 'lisa@email.com',    phone: '321-555-0606' },
+  { name: 'Test Willie1', address: '123 somewhere', email: 'willarreola18@gmail.com', phone: '3215936989', mowingHeight: '', mowingDirection: '', grassType: '', internalNote: '' },
+  { name: 'Test Willie2', address: '123 somewhere', email: 'willarreola18@gmail.com', phone: '3215936989', mowingHeight: '', mowingDirection: '', grassType: '', internalNote: '' },
+  { name: 'Test Willie3', address: '123 somewhere', email: 'willarreola18@gmail.com', phone: '3215936989', mowingHeight: '', mowingDirection: '', grassType: '', internalNote: '' },
 ];
 
-// Try to load from Google Sheet
+// Parse CSV — now reads all 8 columns
+function parseCSV(text) {
+  const rows = [];
+  const lines = text.split('\n');
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    // Handle quoted fields
+    const cols = [];
+    let cur = '', inQ = false;
+    for (let c = 0; c < line.length; c++) {
+      if (line[c] === '"') { inQ = !inQ; }
+      else if (line[c] === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+      else { cur += line[c]; }
+    }
+    cols.push(cur.trim());
+    if (cols[0]) rows.push({
+      name:             cols[0] || '',
+      address:          cols[1] || '',
+      email:            cols[2] || '',
+      phone:            cols[3] || '',
+      mowingHeight:     cols[4] || '',
+      mowingDirection:  cols[5] || '',
+      grassType:        cols[6] || '',
+      internalNote:     cols[7] || '',
+    });
+  }
+  return rows;
+}
+
 async function loadCustomers() {
-  if (SHEET_CSV_URL === 'YOUR_GOOGLE_SHEET_CSV_URL_HERE') return;
   try {
     const res = await fetch(SHEET_CSV_URL);
     const text = await res.text();
-    const rows = text.trim().split('\n').slice(1); // skip header
-    customers = rows.map(row => {
-      const cols = row.split(',');
-      return {
-        name:    (cols[0]||'').replace(/"/g,'').trim(),
-        address: (cols[1]||'').replace(/"/g,'').trim(),
-        email:   (cols[2]||'').replace(/"/g,'').trim(),
-        phone:   (cols[3]||'').replace(/"/g,'').trim(),
-      };
-    }).filter(c => c.name);
-  } catch(e) { /* use demo data */ }
+    const parsed = parseCSV(text);
+    if (parsed.length) customers = parsed;
+  } catch(e) { console.warn('Sheet load failed, using demo data'); }
 }
 loadCustomers();
 
@@ -890,7 +1114,7 @@ document.getElementById('customer-search').addEventListener('input', function() 
   if (!matches.length) {
     resultsEl.innerHTML = '<div class="search-result-item"><div class="name" style="color:var(--muted)">No customers found</div></div>';
   } else {
-    resultsEl.innerHTML = matches.map((c,i) =>
+    resultsEl.innerHTML = matches.map(c =>
       `<div class="search-result-item" onclick="selectCustomer(${customers.indexOf(c)})">
         <div class="name">${c.name}</div>
         <div class="addr">${c.address}</div>
@@ -901,9 +1125,8 @@ document.getElementById('customer-search').addEventListener('input', function() 
 });
 
 document.addEventListener('click', function(e) {
-  if (!e.target.closest('.search-wrap')) {
+  if (!e.target.closest('.search-wrap'))
     document.getElementById('search-results').classList.remove('open');
-  }
 });
 
 function selectCustomer(idx) {
@@ -911,12 +1134,74 @@ function selectCustomer(idx) {
   document.getElementById('search-results').classList.remove('open');
   document.getElementById('customer-search').value = '';
   document.getElementById('search-field').classList.add('hidden');
+
   const sel = document.getElementById('customer-selected');
   sel.classList.add('show');
   document.getElementById('sel-name').textContent = selectedCustomer.name;
   document.getElementById('sel-details').innerHTML =
     `📍 ${selectedCustomer.address}<br>✉ ${selectedCustomer.email}<br>📞 ${selectedCustomer.phone}`;
+
+  // Populate the info banner with last-visit data
+  showCustomerInfoBanner(selectedCustomer);
+
+  // Pre-select grass type if already known
+  if (selectedCustomer.grassType) {
+    preSelectGrass(selectedCustomer.grassType);
+  }
+
+  // Pre-set cut height dropdowns if known
+  if (selectedCustomer.mowingHeight) {
+    ['res-cut-height','com-cut-height'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        for (let o of el.options) {
+          if (o.value === selectedCustomer.mowingHeight) { el.value = o.value; break; }
+        }
+      }
+    });
+  }
+
   updateSteps();
+}
+
+function showCustomerInfoBanner(c) {
+  const banner = document.getElementById('customer-info-banner');
+  let anyData = false;
+
+  function showChip(id, valId, val) {
+    const chip = document.getElementById(id);
+    if (val) {
+      document.getElementById(valId).textContent = val;
+      chip.style.display = 'flex';
+      anyData = true;
+    } else {
+      chip.style.display = 'none';
+    }
+  }
+
+  showChip('chip-height',    'chip-height-val',    c.mowingHeight    ? c.mowingHeight + '"' : '');
+  showChip('chip-grass',     'chip-grass-val',     c.grassType);
+  showChip('chip-direction', 'chip-direction-val', c.mowingDirection);
+  showChip('chip-note',      'chip-note-val',      c.internalNote);
+
+  banner.classList.toggle('show', anyData);
+}
+
+function preSelectGrass(grassType) {
+  // Pre-select for all service types
+  ['res','com','oth'].forEach(prefix => {
+    const grid = document.querySelectorAll(`#fields-${prefix === 'res' ? 'residential' : prefix === 'com' ? 'commercial' : 'other'} .grass-btn`);
+    grid.forEach(btn => {
+      if (btn.querySelector('.glabel').textContent === grassType ||
+          (grassType === 'St. Augustine' && btn.querySelector('.glabel').textContent === 'St. Augustine')) {
+        // Don't auto-click, just visually hint — crew should confirm
+        btn.style.opacity = '0.6';
+        btn.title = 'Last recorded: ' + grassType;
+      }
+    });
+    const hidden = document.getElementById(prefix + '-grass-type');
+    if (hidden) hidden.value = grassType;
+  });
 }
 
 function clearCustomer() {
@@ -924,6 +1209,7 @@ function clearCustomer() {
   document.getElementById('search-field').classList.remove('hidden');
   document.getElementById('customer-selected').classList.remove('show');
   document.getElementById('customer-search').value = '';
+  document.getElementById('customer-info-banner').classList.remove('show');
   updateSteps();
 }
 
@@ -943,6 +1229,19 @@ function selectService(type) {
 }
 
 // ============================================================
+// GRASS TYPE SELECTOR
+// ============================================================
+function selectGrass(el, grassName, prefix) {
+  const grid = el.closest('.grass-grid');
+  grid.querySelectorAll('.grass-btn').forEach(b => {
+    b.classList.remove('active');
+    b.style.opacity = '';
+  });
+  el.classList.add('active');
+  document.getElementById(prefix + '-grass-type').value = grassName;
+}
+
+// ============================================================
 // YES/NO TOGGLES
 // ============================================================
 function toggle(el, fieldId, val) {
@@ -953,8 +1252,31 @@ function toggle(el, fieldId, val) {
 }
 
 // ============================================================
+// PET WASTE STATUS
+// ============================================================
+let petStatus = '';
+
+function setPetStatus(status) {
+  petStatus = status;
+  document.getElementById('pet-status').value = status;
+  const clearBtn = document.getElementById('pet-clear');
+  const warnBtn  = document.getElementById('pet-warn');
+  const badge    = document.getElementById('pet-alert-badge');
+
+  clearBtn.classList.remove('active-clean','active-warn');
+  warnBtn.classList.remove('active-clean','active-warn');
+
+  if (status === 'clear') {
+    clearBtn.classList.add('active-clean');
+    badge.classList.remove('show');
+  } else if (status === 'warn') {
+    warnBtn.classList.add('active-warn');
+    badge.classList.add('show');
+  }
+}
+
+// ============================================================
 // PHOTO UPLOAD + COMPRESSION
-// Compresses to max 1200px / JPEG 0.7 quality — keeps payload under 1MB per photo
 // ============================================================
 let photoFiles = [];
 
@@ -979,7 +1301,6 @@ function addPhoto(file) {
   reader.readAsDataURL(file);
 }
 
-// Compress image to max 1200px wide, JPEG quality 0.7, strip base64 prefix
 function compressPhoto(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -997,11 +1318,7 @@ function compressPhoto(file) {
         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
         const fullBase64 = canvas.toDataURL('image/jpeg', 0.7);
         const cleanBase64 = fullBase64.replace(/^data:image\/jpeg;base64,/, '');
-        resolve({
-          name: file.name.replace(/\.[^.]+$/, '') + '.jpg',
-          type: 'image/jpeg',
-          data: cleanBase64
-        });
+        resolve({ name: file.name.replace(/\.[^.]+$/, '') + '.jpg', type: 'image/jpeg', data: cleanBase64 });
       };
       img.onerror = reject;
       img.src = e.target.result;
@@ -1020,17 +1337,28 @@ function removePhoto(idx, el) {
 // STEP INDICATOR
 // ============================================================
 function updateSteps() {
-  const s1 = document.getElementById('s1');
-  const s2 = document.getElementById('s2');
-  const s3 = document.getElementById('s3');
-  s1.className = 'step ' + (selectedCustomer ? 'done' : 'active');
-  s2.className = 'step ' + (!selectedCustomer ? '' : selectedService ? 'done' : 'active');
-  s3.className = 'step ' + (selectedService ? 'active' : '');
+  document.getElementById('s1').className = 'step ' + (selectedCustomer ? 'done' : 'active');
+  document.getElementById('s2').className = 'step ' + (!selectedCustomer ? '' : selectedService ? 'done' : 'active');
+  document.getElementById('s3').className = 'step ' + (selectedService ? 'active' : '');
 }
 
 // ============================================================
 // COLLECT FORM DATA
 // ============================================================
+function getGrassType() {
+  if (!selectedService) return '';
+  const prefix = selectedService === 'residential' ? 'res' : selectedService === 'commercial' ? 'com' : 'oth';
+  const el = document.getElementById(prefix + '-grass-type');
+  return el ? el.value : '';
+}
+
+function getCutHeight() {
+  if (!selectedService) return '';
+  if (selectedService === 'residential') return document.getElementById('res-cut-height').value;
+  if (selectedService === 'commercial')  return document.getElementById('com-cut-height').value;
+  return '';
+}
+
 function collectData() {
   const base = {
     submittedAt:    new Date().toISOString(),
@@ -1040,6 +1368,9 @@ function collectData() {
     customerPhone:  selectedCustomer.phone,
     serviceAddress: selectedCustomer.address,
     serviceType:    selectedService,
+    grassType:      getGrassType(),
+    petStatus:      petStatus,
+    officeNote:     document.getElementById('office-note').value.trim(),
   };
 
   if (selectedService === 'residential') {
@@ -1093,14 +1424,9 @@ async function submitForm() {
   try {
     const data = collectData();
     const validPhotos = photoFiles.filter(Boolean);
-
-    // Compress photos — max 1200px, JPEG 0.7, base64 prefix stripped
     const photoData = await Promise.all(validPhotos.map(f => compressPhoto(f)));
 
-    // Upload each photo via Cloudflare Worker → Apps Script → Google Drive
-    // Worker handles CORS, Apps Script saves to Drive and returns shareable URL
     const CLOUDFLARE_WORKER = 'https://wsphotoupload.will-671.workers.dev/';
-
     const photoUrls = [];
     for (let i = 0; i < photoData.length; i++) {
       const p = photoData[i];
@@ -1115,11 +1441,8 @@ async function submitForm() {
           })
         });
         const json = await res.json();
-        console.log('Photo upload response:', json);
         if (json.url) photoUrls.push(json.url);
-      } catch(e) {
-        console.warn('Photo upload failed:', e);
-      }
+      } catch(e) { console.warn('Photo upload failed:', e); }
     }
 
     btn.innerHTML = '<span class="spinner"></span> Sending completion email...';
@@ -1139,9 +1462,9 @@ async function submitForm() {
           ).join('')
         : '<p style="color:#888;font-size:13px;">No photos submitted for this job.</p>'
     };
-    const webhookUrl = WEBHOOKS[selectedService];
 
-    // Send to Zapier webhook
+    // 1. Send main job completion webhook
+    const webhookUrl = WEBHOOKS[selectedService];
     if (webhookUrl && webhookUrl.startsWith('https://')) {
       await fetch(webhookUrl, {
         method: 'POST',
@@ -1151,11 +1474,63 @@ async function submitForm() {
       });
     }
 
+    // 2. If pet waste warning OR office note → fire alert webhook to office
+    const officeNote = data.officeNote;
+    const hasPetAlert  = petStatus === 'warn';
+    const hasOfficeNote = officeNote && officeNote.length > 0;
+
+    if ((hasPetAlert || hasOfficeNote) && ALERT_WEBHOOK.includes('/YOUR_')) {
+      // Webhook not yet configured — log to console but don't block
+      console.warn('⚠ ALERT_WEBHOOK not configured yet. Set ALERT_WEBHOOK in the script to enable office alerts.');
+    } else if (hasPetAlert || hasOfficeNote) {
+      const alertPayload = {
+        type: 'office_alert',
+        customerName:   data.customerName,
+        serviceAddress: data.serviceAddress,
+        date:           data.date,
+        alertType:      hasPetAlert && hasOfficeNote ? 'Pet Waste + Office Note'
+                      : hasPetAlert ? 'Pet Waste Warning'
+                      : 'Internal Office Note',
+        petAlert:       hasPetAlert ? '⚠️ PET WASTE REPORTED ON PROPERTY' : '',
+        officeNote:     officeNote || '',
+        toEmail:        'info@wslawncareservicesllc.com',
+        subject:        `[WS Lawn Care Alert] ${hasPetAlert ? '🐾 Pet Waste' : ''}${hasPetAlert && hasOfficeNote ? ' + ' : ''}${hasOfficeNote ? '📋 Office Note' : ''} — ${data.customerName}`,
+      };
+      await fetch(ALERT_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(alertPayload),
+        mode: 'no-cors'
+      });
+    }
+
+    // 3. Write updated grass type + cut height back to Sheet
+    const grassType = getGrassType();
+    const cutHeight  = getCutHeight();
+    if ((grassType || cutHeight) && !SHEET_UPDATE_WEBHOOK.includes('/YOUR_')) {
+      const updatePayload = {
+        type:           'sheet_update',
+        customerName:   data.customerName,
+        serviceAddress: data.serviceAddress,
+        email:          data.customerEmail,
+        grassType:      grassType,
+        mowingHeight:   cutHeight,
+        date:           data.date,
+      };
+      await fetch(SHEET_UPDATE_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatePayload),
+        mode: 'no-cors'
+      });
+    }
+
     // Show success
     document.getElementById('main-form').classList.add('hidden');
     document.getElementById('success-screen').classList.add('show');
 
   } catch(err) {
+    console.error(err);
     showToast('❌ Submission failed — try again');
     btn.disabled = false;
     btn.innerHTML = '✓ SUBMIT JOB';
@@ -1167,8 +1542,9 @@ async function submitForm() {
 // ============================================================
 function resetForm() {
   selectedCustomer = null;
-  selectedService = null;
-  photoFiles = [];
+  selectedService  = null;
+  photoFiles       = [];
+  petStatus        = '';
 
   clearCustomer();
   ['residential','commercial','other'].forEach(t => {
@@ -1181,6 +1557,11 @@ function resetForm() {
   document.getElementById('submit-btn').innerHTML = '✓ SUBMIT JOB';
   document.getElementById('success-screen').classList.remove('show');
   document.getElementById('main-form').classList.remove('hidden');
+  document.getElementById('office-note').value = '';
+  document.getElementById('pet-status').value = '';
+  document.getElementById('pet-alert-badge').classList.remove('show');
+  document.getElementById('pet-clear').classList.remove('active-clean','active-warn');
+  document.getElementById('pet-warn').classList.remove('active-clean','active-warn');
   updateSteps();
   window.scrollTo(0,0);
 }
@@ -1199,34 +1580,26 @@ updateSteps();
 
 // ============================================================
 // PASSWORD GATE
-// Change CREW_PASSWORD to whatever code you want crews to use
 // ============================================================
 const CREW_PASSWORD = 'wslawn2026';
 
 function checkPassword() {
   const input = document.getElementById('password-input');
   const error = document.getElementById('password-error');
-  
   if (input.value === CREW_PASSWORD) {
     document.getElementById('password-gate').style.display = 'none';
-    // Save to session so they don't have to re-enter on refresh
     sessionStorage.setItem('ws_auth', 'true');
   } else {
     input.classList.add('error');
     error.textContent = 'Incorrect code — try again';
     input.value = '';
-    setTimeout(() => {
-      input.classList.remove('error');
-      error.textContent = '';
-    }, 2000);
+    setTimeout(() => { input.classList.remove('error'); error.textContent = ''; }, 2000);
   }
 }
 
-// Auto-unlock if already authenticated this session
 if (sessionStorage.getItem('ws_auth') === 'true') {
   document.getElementById('password-gate').style.display = 'none';
 }
-
 </script>
 </body>
 </html>
