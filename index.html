@@ -736,6 +736,32 @@
           <input type="hidden" id="res-grass-type"/>
         </div>
 
+        <!-- MOWING DIRECTION -->
+        <div class="field">
+          <label>Mowing Direction</label>
+          <div class="grass-grid">
+            <div class="grass-btn" onclick="selectDirection(this,'12 to 6','res')">
+              <span class="gicon">🕛</span><span class="glabel">12 to 6</span>
+            </div>
+            <div class="grass-btn" onclick="selectDirection(this,'3 to 9','res')">
+              <span class="gicon">🕒</span><span class="glabel">3 to 9</span>
+            </div>
+            <div class="grass-btn" onclick="selectDirection(this,'2 to 8','res')">
+              <span class="gicon">🕑</span><span class="glabel">2 to 8</span>
+            </div>
+            <div class="grass-btn" onclick="selectDirection(this,'11 to 5','res')">
+              <span class="gicon">🕚</span><span class="glabel">11 to 5</span>
+            </div>
+            <div class="grass-btn" onclick="selectDirection(this,'1 to 7','res')">
+              <span class="gicon">🕐</span><span class="glabel">1 to 7</span>
+            </div>
+            <div class="grass-btn" onclick="selectDirection(this,'Circular','res')">
+              <span class="gicon">🔄</span><span class="glabel">Circular</span>
+            </div>
+          </div>
+          <input type="hidden" id="res-mow-direction"/>
+        </div>
+
         <div class="divider"></div>
         <div class="section-label">Service Checklist</div>
         <div class="field">
@@ -822,6 +848,32 @@
             </div>
           </div>
           <input type="hidden" id="com-grass-type"/>
+        </div>
+
+        <!-- MOWING DIRECTION -->
+        <div class="field">
+          <label>Mowing Direction</label>
+          <div class="grass-grid">
+            <div class="grass-btn" onclick="selectDirection(this,'12 to 6','com')">
+              <span class="gicon">🕛</span><span class="glabel">12 to 6</span>
+            </div>
+            <div class="grass-btn" onclick="selectDirection(this,'3 to 9','com')">
+              <span class="gicon">🕒</span><span class="glabel">3 to 9</span>
+            </div>
+            <div class="grass-btn" onclick="selectDirection(this,'2 to 8','com')">
+              <span class="gicon">🕑</span><span class="glabel">2 to 8</span>
+            </div>
+            <div class="grass-btn" onclick="selectDirection(this,'11 to 5','com')">
+              <span class="gicon">🕚</span><span class="glabel">11 to 5</span>
+            </div>
+            <div class="grass-btn" onclick="selectDirection(this,'1 to 7','com')">
+              <span class="gicon">🕐</span><span class="glabel">1 to 7</span>
+            </div>
+            <div class="grass-btn" onclick="selectDirection(this,'Circular','com')">
+              <span class="gicon">🔄</span><span class="glabel">Circular</span>
+            </div>
+          </div>
+          <input type="hidden" id="com-mow-direction"/>
         </div>
 
         <div class="divider"></div>
@@ -1149,6 +1201,11 @@ function selectCustomer(idx) {
     preSelectGrass(selectedCustomer.grassType);
   }
 
+  // Pre-hint mowing direction if already known
+  if (selectedCustomer.mowingDirection) {
+    preSelectDirection(selectedCustomer.mowingDirection);
+  }
+
   // Pre-set cut height dropdowns if known
   if (selectedCustomer.mowingHeight) {
     ['res-cut-height','com-cut-height'].forEach(id => {
@@ -1188,19 +1245,35 @@ function showCustomerInfoBanner(c) {
 }
 
 function preSelectGrass(grassType) {
-  // Pre-select for all service types
   ['res','com','oth'].forEach(prefix => {
-    const grid = document.querySelectorAll(`#fields-${prefix === 'res' ? 'residential' : prefix === 'com' ? 'commercial' : 'other'} .grass-btn`);
+    const svcId = prefix === 'res' ? 'residential' : prefix === 'com' ? 'commercial' : 'other';
+    const grid = document.querySelectorAll(`#fields-${svcId} .grass-btn`);
     grid.forEach(btn => {
-      if (btn.querySelector('.glabel').textContent === grassType ||
-          (grassType === 'St. Augustine' && btn.querySelector('.glabel').textContent === 'St. Augustine')) {
-        // Don't auto-click, just visually hint — crew should confirm
+      if (btn.querySelector('.glabel') && btn.querySelector('.glabel').textContent === grassType) {
         btn.style.opacity = '0.6';
         btn.title = 'Last recorded: ' + grassType;
       }
     });
     const hidden = document.getElementById(prefix + '-grass-type');
     if (hidden) hidden.value = grassType;
+  });
+}
+
+function preSelectDirection(direction) {
+  ['res','com'].forEach(prefix => {
+    const hidden = document.getElementById(prefix + '-mow-direction');
+    if (hidden) hidden.value = direction;
+    const svcId = prefix === 'res' ? 'residential' : 'commercial';
+    // Find the direction grid — it's the second .grass-grid in the section
+    const grids = document.querySelectorAll(`#fields-${svcId} .grass-grid`);
+    if (grids.length >= 2) {
+      grids[1].querySelectorAll('.grass-btn').forEach(btn => {
+        if (btn.querySelector('.glabel') && btn.querySelector('.glabel').textContent === direction) {
+          btn.style.opacity = '0.6';
+          btn.title = 'Last recorded: ' + direction;
+        }
+      });
+    }
   });
 }
 
@@ -1239,6 +1312,16 @@ function selectGrass(el, grassName, prefix) {
   });
   el.classList.add('active');
   document.getElementById(prefix + '-grass-type').value = grassName;
+}
+
+function selectDirection(el, direction, prefix) {
+  const grid = el.closest('.grass-grid');
+  grid.querySelectorAll('.grass-btn').forEach(b => {
+    b.classList.remove('active');
+    b.style.opacity = '';
+  });
+  el.classList.add('active');
+  document.getElementById(prefix + '-mow-direction').value = direction;
 }
 
 // ============================================================
@@ -1352,6 +1435,13 @@ function getGrassType() {
   return el ? el.value : '';
 }
 
+function getMowingDirection() {
+  if (!selectedService) return '';
+  const prefix = selectedService === 'residential' ? 'res' : selectedService === 'commercial' ? 'com' : 'oth';
+  const el = document.getElementById(prefix + '-mow-direction');
+  return el ? el.value : '';
+}
+
 function getCutHeight() {
   if (!selectedService) return '';
   if (selectedService === 'residential') return document.getElementById('res-cut-height').value;
@@ -1368,8 +1458,9 @@ function collectData() {
     customerPhone:  selectedCustomer.phone,
     serviceAddress: selectedCustomer.address,
     serviceType:    selectedService,
-    grassType:      getGrassType(),
-    petStatus:      petStatus,
+    grassType:        getGrassType(),
+    mowingDirection:  getMowingDirection(),
+    petStatus:        petStatus,
     officeNote:     document.getElementById('office-note').value.trim(),
   };
 
@@ -1502,18 +1593,20 @@ async function submitForm() {
       });
     }
 
-    // 3. Write updated grass type + cut height back to Sheet
-    const grassType = getGrassType();
-    const cutHeight  = getCutHeight();
-    if ((grassType || cutHeight) && !SHEET_UPDATE_WEBHOOK.includes('/YOUR_')) {
+    // 3. Write updated grass type + cut height + direction back to Sheet
+    const grassType      = getGrassType();
+    const cutHeight      = getCutHeight();
+    const mowDirection   = getMowingDirection();
+    if ((grassType || cutHeight || mowDirection) && !SHEET_UPDATE_WEBHOOK.includes('/YOUR_')) {
       const updatePayload = {
-        type:           'sheet_update',
-        customerName:   data.customerName,
-        serviceAddress: data.serviceAddress,
-        email:          data.customerEmail,
-        grassType:      grassType,
-        mowingHeight:   cutHeight,
-        date:           data.date,
+        type:             'sheet_update',
+        customerName:     data.customerName,
+        serviceAddress:   data.serviceAddress,
+        email:            data.customerEmail,
+        grassType:        grassType,
+        mowingHeight:     cutHeight,
+        mowingDirection:  mowDirection,
+        date:             data.date,
       };
       await fetch(SHEET_UPDATE_WEBHOOK, {
         method: 'POST',
