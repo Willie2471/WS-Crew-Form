@@ -1153,10 +1153,8 @@
 // ============================================================
 // CONFIG
 // ============================================================
-const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRJ_M1EaDLi89OgyZnDqWJYKYKNEnrzcFpHmsnXeRTF4M35lJ4xUzf69v9kNQANYnsYx-KWS_k__NYi/pub?gid=0&single=true&output=csv';
-// Second tab (gid=) — publish your Crew tab and paste its CSV URL here
-// To get this URL: File → Share → Publish to web → select "Crew" tab → CSV → copy link
-const CREW_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRJ_M1EaDLi89OgyZnDqWJYKYKNEnrzcFpHmsnXeRTF4M35lJ4xUzf69v9kNQANYnsYx-KWS_k__NYi/pub?gid=102453801&single=true&output=csv';
+// Apps Script Web App — serves both Clients and Tech Names securely
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxuGa7IjVnaZdYrzECByJX3cVyShnNceMfmKOYN36-3iHa0xKKVUdLqcLXlYmn37W_s/exec';
 
 // Main job completion webhook (existing)
 const WEBHOOKS = {
@@ -1182,79 +1180,43 @@ let customers = [
   { name: 'Test Willie3', address: '123 somewhere', email: 'willarreola18@gmail.com', phone: '3215936989', mowingHeight: '', mowingDirection: '', grassType: '', internalNote: '' },
 ];
 
-// Parse CSV — now reads all 8 columns
-function parseCSV(text) {
-  const rows = [];
-  const lines = text.split('\n');
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) continue;
-    // Handle quoted fields
-    const cols = [];
-    let cur = '', inQ = false;
-    for (let c = 0; c < line.length; c++) {
-      if (line[c] === '"') { inQ = !inQ; }
-      else if (line[c] === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
-      else { cur += line[c]; }
-    }
-    cols.push(cur.trim());
-    if (cols[0]) rows.push({
-      name:             cols[0] || '',
-      address:          cols[1] || '',
-      email:            cols[2] || '',
-      phone:            cols[3] || '',
-      mowingHeight:     cols[4] || '',
-      mowingDirection:  cols[5] || '',
-      grassType:        cols[6] || '',
-      internalNote:     cols[7] || '',
-    });
-  }
-  return rows;
-}
-
-async function loadCustomers() {
+// Single loader — fetches both customers and techs from Apps Script
+async function loadSheetData() {
   try {
-    const res = await fetch(SHEET_CSV_URL);
-    const text = await res.text();
-    console.log('RAW CSV:', text.slice(0, 500)); // show first 500 chars
-    const parsed = parseCSV(text);
-    console.log('PARSED CUSTOMERS:', JSON.stringify(parsed, null, 2));
-    if (parsed.length) customers = parsed;
-  } catch(e) { console.warn('Sheet load failed, using demo data'); }
+    const res  = await fetch(APPS_SCRIPT_URL);
+    const data = await res.json();
+
+    // Load customers
+    if (data.customers && data.customers.length) {
+      customers = data.customers;
+      console.log('Customers loaded:', customers.length);
+    }
+
+    // Load techs into the selector
+    if (data.techs && data.techs.length) {
+      renderTechs(data.techs);
+      console.log('Techs loaded:', data.techs.length);
+    }
+  } catch(e) {
+    console.warn('Apps Script load failed:', e);
+    // Fall back to hardcoded demo customers and default techs
+    renderTechs([
+      { name: 'Willie Arreola',  position: 'Crew Lead' },
+      { name: 'William Arreola', position: 'Field Tech' },
+      { name: 'Sandra Arreola',  position: 'Field Tech' },
+    ]);
+  }
 }
-loadCustomers();
+loadSheetData();
 
 // ============================================================
 // CREW / TECH LOADING
 // ============================================================
 let selectedTechs = [];
 
-async function loadTechs() {
+function renderTechs(techs) {
   const container = document.getElementById('tech-select');
   if (!container) return;
-
-  // Fallback crew in case sheet isn't published yet
-  let techs = [
-    { name: 'Willie Arreola',  position: 'Crew Lead' },
-    { name: 'William Arreola', position: 'Field Tech' },
-    { name: 'Sandra Arreola',  position: 'Field Tech' },
-  ];
-
-  try {
-    const res  = await fetch(CREW_CSV_URL);
-    const text = await res.text();
-    const rows = text.trim().split('\n').slice(1); // skip header row
-    const parsed = rows.map(row => {
-      // Simple 2-column parse — Name, Position only
-      const firstComma = row.indexOf(',');
-      const name     = firstComma > -1 ? row.slice(0, firstComma).replace(/"/g,'').trim() : row.replace(/"/g,'').trim();
-      const position = firstComma > -1 ? row.slice(firstComma + 1).replace(/"/g,'').trim() : '';
-      return { name, position };
-    }).filter(t => t.name && t.name.toLowerCase() !== 'tech name' && t.name.toLowerCase() !== 'name');
-    if (parsed.length) techs = parsed;
-  } catch(e) { console.warn('Crew sheet load failed, using fallback names'); }
-
-  // Render buttons
   container.innerHTML = techs.map((t, i) => {
     const initials = t.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
     return `<div class="tech-btn" id="tech-btn-${i}" onclick="toggleTech(${i}, '${t.name}', '${t.position}')">
@@ -1294,7 +1256,6 @@ function toggleTech(idx, name, position) {
   }
 }
 
-loadTechs();
 
 // ============================================================
 // DATE
@@ -1839,7 +1800,7 @@ updateSteps();
 // ============================================================
 // PASSWORD GATE
 // ============================================================
-const CREW_PASSWORD = 'wslawn';
+const CREW_PASSWORD = 'wslawn2026';
 
 function checkPassword() {
   const input = document.getElementById('password-input');
