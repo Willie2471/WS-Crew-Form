@@ -1239,20 +1239,18 @@ async function loadTechs() {
   ];
 
   try {
-    if (!CREW_CSV_URL.includes('YOUR_CREW_TAB_GID')) {
-      const res  = await fetch(CREW_CSV_URL);
-      const text = await res.text();
-      const rows = text.trim().split('\n').slice(1);
-      const parsed = rows.map(row => {
-        const cols = row.split(',');
-        return {
-          name:     (cols[0]||'').replace(/"/g,'').trim(),
-          position: (cols[1]||'').replace(/"/g,'').trim(),
-        };
-      }).filter(t => t.name);
-      if (parsed.length) techs = parsed;
-    }
-  } catch(e) { console.warn('Crew sheet load failed, using fallback'); }
+    const res  = await fetch(CREW_CSV_URL);
+    const text = await res.text();
+    const rows = text.trim().split('\n').slice(1); // skip header row
+    const parsed = rows.map(row => {
+      // Simple 2-column parse — Name, Position only
+      const firstComma = row.indexOf(',');
+      const name     = firstComma > -1 ? row.slice(0, firstComma).replace(/"/g,'').trim() : row.replace(/"/g,'').trim();
+      const position = firstComma > -1 ? row.slice(firstComma + 1).replace(/"/g,'').trim() : '';
+      return { name, position };
+    }).filter(t => t.name && t.name.toLowerCase() !== 'tech name' && t.name.toLowerCase() !== 'name');
+    if (parsed.length) techs = parsed;
+  } catch(e) { console.warn('Crew sheet load failed, using fallback names'); }
 
   // Render buttons
   container.innerHTML = techs.map((t, i) => {
