@@ -1216,7 +1216,9 @@ async function loadCustomers() {
   try {
     const res = await fetch(SHEET_CSV_URL);
     const text = await res.text();
+    console.log('RAW CSV:', text.slice(0, 500)); // show first 500 chars
     const parsed = parseCSV(text);
+    console.log('PARSED CUSTOMERS:', JSON.stringify(parsed, null, 2));
     if (parsed.length) customers = parsed;
   } catch(e) { console.warn('Sheet load failed, using demo data'); }
 }
@@ -1837,7 +1839,7 @@ updateSteps();
 // ============================================================
 // PASSWORD GATE
 // ============================================================
-const CREW_PASSWORD = 'wslawn2026';
+const CREW_PASSWORD = 'wslawn';
 
 function checkPassword() {
   const input = document.getElementById('password-input');
