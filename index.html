@@ -578,6 +578,76 @@
     min-height: 18px;
   }
 
+
+  /* TECH MULTI-SELECT */
+  .tech-select {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 4px 0;
+  }
+  .tech-loading {
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .tech-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 14px;
+    border: 2px solid var(--border);
+    border-radius: 100px;
+    background: #f9fcf9;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .tech-btn .tech-avatar {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--green-mid);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .tech-btn .tech-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .tech-btn .tech-role {
+    font-size: 11px;
+    color: #aaa;
+    margin-left: 2px;
+  }
+  .tech-btn.selected {
+    border-color: var(--green);
+    background: var(--green-pale);
+  }
+  .tech-btn.selected .tech-avatar {
+    background: var(--green);
+    color: #fff;
+  }
+  .tech-btn.selected .tech-name { color: var(--green); }
+  .tech-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .tech-chip {
+    background: var(--green);
+    color: #fff;
+    border-radius: 100px;
+    padding: 4px 10px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
   /* INTERNAL NOTE FIELD */
   .field textarea.office-note {
     border-color: var(--orange-mid);
@@ -810,7 +880,14 @@
       <div id="fields-commercial" class="hidden">
         <div class="field">
           <label>Technician Name(s)</label>
-          <input type="text" id="com-tech" placeholder="e.g. Willie, Marcus"/>
+          <div class="tech-select" id="tech-select">
+            <div class="tech-loading" id="tech-loading">Loading crew...</div>
+          </div>
+          <div class="tech-selected-display" id="tech-selected-display" style="display:none">
+            <span style="font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Selected:</span>
+            <div class="tech-chips" id="tech-chips"></div>
+          </div>
+          <input type="hidden" id="com-tech"/>
         </div>
         <div class="field">
           <label>Service Duration</label>
@@ -1077,6 +1154,9 @@
 // CONFIG
 // ============================================================
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRJ_M1EaDLi89OgyZnDqWJYKYKNEnrzcFpHmsnXeRTF4M35lJ4xUzf69v9kNQANYnsYx-KWS_k__NYi/pub?output=csv';
+// Second tab (gid=) — publish your Crew tab and paste its CSV URL here
+// To get this URL: File → Share → Publish to web → select "Crew" tab → CSV → copy link
+const CREW_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRJ_M1EaDLi89OgyZnDqWJYKYKNEnrzcFpHmsnXeRTF4M35lJ4xUzf69v9kNQANYnsYx-KWS_k__NYi/pub?gid=102453801&single=true&output=csv';
 
 // Main job completion webhook (existing)
 const WEBHOOKS = {
@@ -1141,6 +1221,80 @@ async function loadCustomers() {
   } catch(e) { console.warn('Sheet load failed, using demo data'); }
 }
 loadCustomers();
+
+// ============================================================
+// CREW / TECH LOADING
+// ============================================================
+let selectedTechs = [];
+
+async function loadTechs() {
+  const container = document.getElementById('tech-select');
+  if (!container) return;
+
+  // Fallback crew in case sheet isn't published yet
+  let techs = [
+    { name: 'Willie Arreola',  position: 'Crew Lead' },
+    { name: 'William Arreola', position: 'Field Tech' },
+    { name: 'Sandra Arreola',  position: 'Field Tech' },
+  ];
+
+  try {
+    if (!CREW_CSV_URL.includes('YOUR_CREW_TAB_GID')) {
+      const res  = await fetch(CREW_CSV_URL);
+      const text = await res.text();
+      const rows = text.trim().split('\n').slice(1);
+      const parsed = rows.map(row => {
+        const cols = row.split(',');
+        return {
+          name:     (cols[0]||'').replace(/"/g,'').trim(),
+          position: (cols[1]||'').replace(/"/g,'').trim(),
+        };
+      }).filter(t => t.name);
+      if (parsed.length) techs = parsed;
+    }
+  } catch(e) { console.warn('Crew sheet load failed, using fallback'); }
+
+  // Render buttons
+  container.innerHTML = techs.map((t, i) => {
+    const initials = t.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+    return `<div class="tech-btn" id="tech-btn-${i}" onclick="toggleTech(${i}, '${t.name}', '${t.position}')">
+      <div class="tech-avatar">${initials}</div>
+      <span class="tech-name">${t.name}</span>
+      <span class="tech-role">${t.position}</span>
+    </div>`;
+  }).join('');
+}
+
+function toggleTech(idx, name, position) {
+  const btn = document.getElementById('tech-btn-' + idx);
+  const already = selectedTechs.findIndex(t => t.name === name);
+
+  if (already > -1) {
+    selectedTechs.splice(already, 1);
+    btn.classList.remove('selected');
+  } else {
+    selectedTechs.push({ name, position });
+    btn.classList.add('selected');
+  }
+
+  // Update hidden input and chip display
+  const names = selectedTechs.map(t => t.name).join(', ');
+  document.getElementById('com-tech').value = names;
+
+  const display = document.getElementById('tech-selected-display');
+  const chips   = document.getElementById('tech-chips');
+  if (selectedTechs.length > 0) {
+    display.style.display = 'block';
+    chips.innerHTML = selectedTechs.map(t =>
+      `<div class="tech-chip">✓ ${t.name}</div>`
+    ).join('');
+  } else {
+    display.style.display = 'none';
+    chips.innerHTML = '';
+  }
+}
+
+loadTechs();
 
 // ============================================================
 // DATE
@@ -1660,6 +1814,12 @@ function resetForm() {
   document.getElementById('pet-alert-badge').classList.remove('show');
   document.getElementById('pet-clear').classList.remove('active-clean','active-warn');
   document.getElementById('pet-warn').classList.remove('active-clean','active-warn');
+  // Reset tech selections
+  selectedTechs = [];
+  document.getElementById('com-tech').value = '';
+  document.getElementById('tech-selected-display').style.display = 'none';
+  document.getElementById('tech-chips').innerHTML = '';
+  document.querySelectorAll('.tech-btn').forEach(b => b.classList.remove('selected'));
   updateSteps();
   window.scrollTo(0,0);
 }
