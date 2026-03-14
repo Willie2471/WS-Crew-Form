@@ -273,21 +273,40 @@
   .yn-group { display: flex; gap: 8px; }
   .yn-btn {
     flex: 1;
-    padding: 11px;
+    padding: 11px 6px;
     border: 2px solid var(--border);
     border-radius: 10px;
     text-align: center;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--muted);
     background: #f9fcf9;
     transition: all 0.2s;
     user-select: none;
+    line-height: 1.4;
   }
-  .yn-btn.yes.active { border-color: var(--green); background: var(--green-pale); color: var(--green); }
-  .yn-btn.no.active { border-color: #c0392b; background: #fdf0ee; color: #c0392b; }
-  .yn-btn.next.active { border-color: var(--accent); background: #fff8e6; color: #b37800; }
+  .yn-btn.yes.active {
+    border-color: var(--green);
+    background: var(--green-pale);
+    color: var(--green);
+    box-shadow: 0 2px 8px rgba(30,107,46,0.15);
+    transform: scale(1.03);
+  }
+  .yn-btn.no.active {
+    border-color: #c0392b;
+    background: #fdf0ee;
+    color: #c0392b;
+    box-shadow: 0 2px 8px rgba(192,57,43,0.15);
+    transform: scale(1.03);
+  }
+  .yn-btn.next.active {
+    border-color: var(--accent);
+    background: #fff8e6;
+    color: #b37800;
+    box-shadow: 0 2px 8px rgba(244,161,0,0.15);
+    transform: scale(1.03);
+  }
 
   /* GRASS TYPE GRID */
   .grass-grid {
@@ -837,35 +856,35 @@
         <div class="field">
           <label>Applied Weed Control?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'res-weed','yes')">✓ Yes</div>
-            <div class="yn-btn next" onclick="toggle(this,'res-weed','next')">Next Visit</div>
-            <div class="yn-btn no" onclick="toggle(this,'res-weed','no')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'res-weed','✅ Yes')">✅ Yes</div>
+            <div class="yn-btn next" onclick="toggle(this,'res-weed','🔜 Next Visit')">🔜 Next Visit</div>
+            <div class="yn-btn no" onclick="toggle(this,'res-weed','❌ No')">❌ No</div>
           </div>
           <input type="hidden" id="res-weed"/>
         </div>
         <div class="field">
           <label>Sprayed for Bugs Around Perimeter?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'res-bugs','yes')">✓ Yes</div>
-            <div class="yn-btn next" onclick="toggle(this,'res-bugs','next')">Next Visit</div>
-            <div class="yn-btn no" onclick="toggle(this,'res-bugs','no')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'res-bugs','✅ Yes')">✅ Yes</div>
+            <div class="yn-btn next" onclick="toggle(this,'res-bugs','🔜 Next Visit')">🔜 Next Visit</div>
+            <div class="yn-btn no" onclick="toggle(this,'res-bugs','❌ No')">❌ No</div>
           </div>
           <input type="hidden" id="res-bugs"/>
         </div>
         <div class="field">
           <label>Trimmed Hedges / Limbs?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'res-hedges','yes')">✓ Yes</div>
-            <div class="yn-btn next" onclick="toggle(this,'res-hedges','next')">Next Visit</div>
-            <div class="yn-btn no" onclick="toggle(this,'res-hedges','no')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'res-hedges','✅ Yes')">✅ Yes</div>
+            <div class="yn-btn next" onclick="toggle(this,'res-hedges','🔜 Next Visit')">🔜 Next Visit</div>
+            <div class="yn-btn no" onclick="toggle(this,'res-hedges','❌ No')">❌ No</div>
           </div>
           <input type="hidden" id="res-hedges"/>
         </div>
         <div class="field">
           <label>Walked Perimeter for Leaks / Vandalism?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'res-perim','yes')">✓ Yes — Nothing Unusual</div>
-            <div class="yn-btn no" onclick="toggle(this,'res-perim','issue')">⚠ Issue Found</div>
+            <div class="yn-btn yes" onclick="toggle(this,'res-perim','✅ Yes — Nothing Unusual')">✅ Yes — Nothing Unusual</div>
+            <div class="yn-btn no" onclick="toggle(this,'res-perim','⚠️ Issue Found')">⚠️ Issue Found</div>
           </div>
           <input type="hidden" id="res-perim"/>
         </div>
@@ -958,43 +977,43 @@
         <div class="field">
           <label>Blew Parking Lot & Common Areas?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'com-blow','yes')">✓ Yes</div>
-            <div class="yn-btn no" onclick="toggle(this,'com-blow','no')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'com-blow','✅ Yes')">✅ Yes</div>
+            <div class="yn-btn no" onclick="toggle(this,'com-blow','❌ No')">❌ No</div>
           </div>
           <input type="hidden" id="com-blow"/>
         </div>
         <div class="field">
           <label>Applied Weed Control?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'com-weed','yes')">✓ Yes</div>
-            <div class="yn-btn next" onclick="toggle(this,'com-weed','next')">Next Visit</div>
-            <div class="yn-btn no" onclick="toggle(this,'com-weed','no')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'com-weed','✅ Yes')">✅ Yes</div>
+            <div class="yn-btn next" onclick="toggle(this,'com-weed','🔜 Next Visit')">🔜 Next Visit</div>
+            <div class="yn-btn no" onclick="toggle(this,'com-weed','❌ No')">❌ No</div>
           </div>
           <input type="hidden" id="com-weed"/>
         </div>
         <div class="field">
           <label>Sprayed for Bugs Around Perimeter?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'com-bugs','yes')">✓ Yes</div>
-            <div class="yn-btn next" onclick="toggle(this,'com-bugs','next')">Next Visit</div>
-            <div class="yn-btn no" onclick="toggle(this,'com-bugs','no')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'com-bugs','✅ Yes')">✅ Yes</div>
+            <div class="yn-btn next" onclick="toggle(this,'com-bugs','🔜 Next Visit')">🔜 Next Visit</div>
+            <div class="yn-btn no" onclick="toggle(this,'com-bugs','❌ No')">❌ No</div>
           </div>
           <input type="hidden" id="com-bugs"/>
         </div>
         <div class="field">
           <label>Trimmed Hedges / Limbs?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'com-hedges','yes')">✓ Yes</div>
-            <div class="yn-btn next" onclick="toggle(this,'com-hedges','next')">Next Visit</div>
-            <div class="yn-btn no" onclick="toggle(this,'com-hedges','no')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'com-hedges','✅ Yes')">✅ Yes</div>
+            <div class="yn-btn next" onclick="toggle(this,'com-hedges','🔜 Next Visit')">🔜 Next Visit</div>
+            <div class="yn-btn no" onclick="toggle(this,'com-hedges','❌ No')">❌ No</div>
           </div>
           <input type="hidden" id="com-hedges"/>
         </div>
         <div class="field">
           <label>Walked Perimeter for Leaks / Vandalism?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'com-perim','yes')">✓ Yes — Nothing Unusual</div>
-            <div class="yn-btn no" onclick="toggle(this,'com-perim','issue')">⚠ Issue Found</div>
+            <div class="yn-btn yes" onclick="toggle(this,'com-perim','✅ Yes — Nothing Unusual')">✅ Yes — Nothing Unusual</div>
+            <div class="yn-btn no" onclick="toggle(this,'com-perim','⚠️ Issue Found')">⚠️ Issue Found</div>
           </div>
           <input type="hidden" id="com-perim"/>
         </div>
@@ -1020,35 +1039,35 @@
         <div class="field">
           <label>Applied Weed Control?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'oth-weed','yes')">✓ Yes</div>
-            <div class="yn-btn next" onclick="toggle(this,'oth-weed','next')">Next Visit</div>
-            <div class="yn-btn no" onclick="toggle(this,'oth-weed','no')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'oth-weed','✅ Yes')">✅ Yes</div>
+            <div class="yn-btn next" onclick="toggle(this,'oth-weed','🔜 Next Visit')">🔜 Next Visit</div>
+            <div class="yn-btn no" onclick="toggle(this,'oth-weed','❌ No')">❌ No</div>
           </div>
           <input type="hidden" id="oth-weed"/>
         </div>
         <div class="field">
           <label>Sprayed for Bugs Around Perimeter?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'oth-bugs','yes')">✓ Yes</div>
-            <div class="yn-btn next" onclick="toggle(this,'oth-bugs','next')">Next Visit</div>
-            <div class="yn-btn no" onclick="toggle(this,'oth-bugs','no')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'oth-bugs','✅ Yes')">✅ Yes</div>
+            <div class="yn-btn next" onclick="toggle(this,'oth-bugs','🔜 Next Visit')">🔜 Next Visit</div>
+            <div class="yn-btn no" onclick="toggle(this,'oth-bugs','❌ No')">❌ No</div>
           </div>
           <input type="hidden" id="oth-bugs"/>
         </div>
         <div class="field">
           <label>Trimmed Hedges / Limbs?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'oth-hedges','yes')">✓ Yes</div>
-            <div class="yn-btn next" onclick="toggle(this,'oth-hedges','next')">Next Visit</div>
-            <div class="yn-btn no" onclick="toggle(this,'oth-hedges','no')">✗ No</div>
+            <div class="yn-btn yes" onclick="toggle(this,'oth-hedges','✅ Yes')">✅ Yes</div>
+            <div class="yn-btn next" onclick="toggle(this,'oth-hedges','🔜 Next Visit')">🔜 Next Visit</div>
+            <div class="yn-btn no" onclick="toggle(this,'oth-hedges','❌ No')">❌ No</div>
           </div>
           <input type="hidden" id="oth-hedges"/>
         </div>
         <div class="field">
           <label>Walked Perimeter for Leaks / Vandalism?</label>
           <div class="yn-group">
-            <div class="yn-btn yes" onclick="toggle(this,'oth-perim','yes')">✓ Yes — Nothing Unusual</div>
-            <div class="yn-btn no" onclick="toggle(this,'oth-perim','issue')">⚠ Issue Found</div>
+            <div class="yn-btn yes" onclick="toggle(this,'oth-perim','✅ Yes — Nothing Unusual')">✅ Yes — Nothing Unusual</div>
+            <div class="yn-btn no" onclick="toggle(this,'oth-perim','⚠️ Issue Found')">⚠️ Issue Found</div>
           </div>
           <input type="hidden" id="oth-perim"/>
         </div>
