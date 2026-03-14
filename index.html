@@ -1199,12 +1199,10 @@ let customers = [
   { name: 'Test Willie3', address: '123 somewhere', email: 'willarreola18@gmail.com', phone: '3215936989', mowingHeight: '', mowingDirection: '', grassType: '', internalNote: '' },
 ];
 
-// Single loader — fetches both customers and techs from Apps Script
 async function loadSheetData() {
   try {
-    const res  = await fetch(APPS_SCRIPT_URL);
+    const res  = await fetch(APPS_SCRIPT_URL + '?token=wslawn-data-2026');
     const data = await res.json();
-
     // Load customers
     if (data.customers && data.customers.length) {
       customers = data.customers;
