@@ -4,6 +4,19 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>WS Lawn Care — Job Completion</title>
+<meta name="application-name" content="WS Crew"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="WS Crew"/>
+<meta name="theme-color" content="#1e6b2e"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+<link rel="apple-touch-icon" sizes="152x152" href="icon-152.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"/>
+<link rel="apple-touch-icon" sizes="192x192" href="icon-192.png"/>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png"/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
   :root {
@@ -597,7 +610,6 @@
     min-height: 18px;
   }
 
-
   /* TECH MULTI-SELECT */
   .tech-select {
     display: flex;
@@ -677,6 +689,49 @@
     box-shadow: 0 0 0 3px rgba(230,126,34,0.12);
     background: #fff;
   }
+
+  /* CUSTOMER SEARCH LOADING STATE */
+  .search-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: #f9fcf9;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .search-loading .dot-pulse {
+    display: flex; gap: 4px;
+  }
+  .search-loading .dot-pulse span {
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 1.2s infinite ease-in-out;
+  }
+  .search-loading .dot-pulse span:nth-child(2) { animation-delay: 0.2s; }
+  .search-loading .dot-pulse span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+
+  /* VALIDATION ERROR HIGHLIGHT */
+  .yn-group.invalid .yn-btn {
+    border-color: var(--red) !important;
+    background: #fdf0ee !important;
+  }
+  .field-error {
+    font-size: 12px;
+    color: var(--red);
+    font-weight: 600;
+    margin-top: 5px;
+    display: none;
+  }
+  .field-error.show { display: block; }
 </style>
 </head>
 <body>
@@ -720,7 +775,15 @@
 
       <div class="field" id="search-field">
         <label>Search by name or address</label>
-        <div class="search-wrap">
+        <!-- Loading spinner — shown while Apps Script loads -->
+        <div id="search-loading-state" class="search-loading">
+          <div class="dot-pulse">
+            <span></span><span></span><span></span>
+          </div>
+          Loading customer list...
+        </div>
+        <!-- Search input — hidden until data is ready -->
+        <div class="search-wrap" id="search-wrap" style="display:none">
           <span class="search-icon">🔍</span>
           <input type="text" id="customer-search" placeholder="Type name or address..." autocomplete="off"/>
           <div class="search-results" id="search-results"></div>
@@ -855,7 +918,7 @@
         <div class="section-label">Service Checklist</div>
         <div class="field">
           <label>Applied Weed Control?</label>
-          <div class="yn-group">
+          <div class="yn-group" id="yn-res-weed">
             <div class="yn-btn yes" onclick="toggle(this,'res-weed','✅ Yes')">✅ Yes</div>
             <div class="yn-btn next" onclick="toggle(this,'res-weed','🔜 Next Visit')">🔜 Next Visit</div>
             <div class="yn-btn no" onclick="toggle(this,'res-weed','❌ No')">❌ No</div>
@@ -864,7 +927,7 @@
         </div>
         <div class="field">
           <label>Sprayed for Bugs Around Perimeter?</label>
-          <div class="yn-group">
+          <div class="yn-group" id="yn-res-bugs">
             <div class="yn-btn yes" onclick="toggle(this,'res-bugs','✅ Yes')">✅ Yes</div>
             <div class="yn-btn next" onclick="toggle(this,'res-bugs','🔜 Next Visit')">🔜 Next Visit</div>
             <div class="yn-btn no" onclick="toggle(this,'res-bugs','❌ No')">❌ No</div>
@@ -873,7 +936,7 @@
         </div>
         <div class="field">
           <label>Trimmed Hedges / Limbs?</label>
-          <div class="yn-group">
+          <div class="yn-group" id="yn-res-hedges">
             <div class="yn-btn yes" onclick="toggle(this,'res-hedges','✅ Yes')">✅ Yes</div>
             <div class="yn-btn next" onclick="toggle(this,'res-hedges','🔜 Next Visit')">🔜 Next Visit</div>
             <div class="yn-btn no" onclick="toggle(this,'res-hedges','❌ No')">❌ No</div>
@@ -882,7 +945,7 @@
         </div>
         <div class="field">
           <label>Walked Perimeter for Leaks / Vandalism?</label>
-          <div class="yn-group">
+          <div class="yn-group" id="yn-res-perim">
             <div class="yn-btn yes" onclick="toggle(this,'res-perim','✅ Yes — Nothing Unusual')">✅ Yes — Nothing Unusual</div>
             <div class="yn-btn no" onclick="toggle(this,'res-perim','⚠️ Issue Found')">⚠️ Issue Found</div>
           </div>
@@ -976,7 +1039,7 @@
         <div class="section-label">Service Checklist</div>
         <div class="field">
           <label>Blew Parking Lot & Common Areas?</label>
-          <div class="yn-group">
+          <div class="yn-group" id="yn-com-blow">
             <div class="yn-btn yes" onclick="toggle(this,'com-blow','✅ Yes')">✅ Yes</div>
             <div class="yn-btn no" onclick="toggle(this,'com-blow','❌ No')">❌ No</div>
           </div>
@@ -984,7 +1047,7 @@
         </div>
         <div class="field">
           <label>Applied Weed Control?</label>
-          <div class="yn-group">
+          <div class="yn-group" id="yn-com-weed">
             <div class="yn-btn yes" onclick="toggle(this,'com-weed','✅ Yes')">✅ Yes</div>
             <div class="yn-btn next" onclick="toggle(this,'com-weed','🔜 Next Visit')">🔜 Next Visit</div>
             <div class="yn-btn no" onclick="toggle(this,'com-weed','❌ No')">❌ No</div>
@@ -993,7 +1056,7 @@
         </div>
         <div class="field">
           <label>Sprayed for Bugs Around Perimeter?</label>
-          <div class="yn-group">
+          <div class="yn-group" id="yn-com-bugs">
             <div class="yn-btn yes" onclick="toggle(this,'com-bugs','✅ Yes')">✅ Yes</div>
             <div class="yn-btn next" onclick="toggle(this,'com-bugs','🔜 Next Visit')">🔜 Next Visit</div>
             <div class="yn-btn no" onclick="toggle(this,'com-bugs','❌ No')">❌ No</div>
@@ -1002,7 +1065,7 @@
         </div>
         <div class="field">
           <label>Trimmed Hedges / Limbs?</label>
-          <div class="yn-group">
+          <div class="yn-group" id="yn-com-hedges">
             <div class="yn-btn yes" onclick="toggle(this,'com-hedges','✅ Yes')">✅ Yes</div>
             <div class="yn-btn next" onclick="toggle(this,'com-hedges','🔜 Next Visit')">🔜 Next Visit</div>
             <div class="yn-btn no" onclick="toggle(this,'com-hedges','❌ No')">❌ No</div>
@@ -1011,7 +1074,7 @@
         </div>
         <div class="field">
           <label>Walked Perimeter for Leaks / Vandalism?</label>
-          <div class="yn-group">
+          <div class="yn-group" id="yn-com-perim">
             <div class="yn-btn yes" onclick="toggle(this,'com-perim','✅ Yes — Nothing Unusual')">✅ Yes — Nothing Unusual</div>
             <div class="yn-btn no" onclick="toggle(this,'com-perim','⚠️ Issue Found')">⚠️ Issue Found</div>
           </div>
@@ -1038,7 +1101,7 @@
         <div class="section-label">Service Checklist</div>
         <div class="field">
           <label>Applied Weed Control?</label>
-          <div class="yn-group">
+          <div class="yn-group" id="yn-oth-weed">
             <div class="yn-btn yes" onclick="toggle(this,'oth-weed','✅ Yes')">✅ Yes</div>
             <div class="yn-btn next" onclick="toggle(this,'oth-weed','🔜 Next Visit')">🔜 Next Visit</div>
             <div class="yn-btn no" onclick="toggle(this,'oth-weed','❌ No')">❌ No</div>
@@ -1047,7 +1110,7 @@
         </div>
         <div class="field">
           <label>Sprayed for Bugs Around Perimeter?</label>
-          <div class="yn-group">
+          <div class="yn-group" id="yn-oth-bugs">
             <div class="yn-btn yes" onclick="toggle(this,'oth-bugs','✅ Yes')">✅ Yes</div>
             <div class="yn-btn next" onclick="toggle(this,'oth-bugs','🔜 Next Visit')">🔜 Next Visit</div>
             <div class="yn-btn no" onclick="toggle(this,'oth-bugs','❌ No')">❌ No</div>
@@ -1056,7 +1119,7 @@
         </div>
         <div class="field">
           <label>Trimmed Hedges / Limbs?</label>
-          <div class="yn-group">
+          <div class="yn-group" id="yn-oth-hedges">
             <div class="yn-btn yes" onclick="toggle(this,'oth-hedges','✅ Yes')">✅ Yes</div>
             <div class="yn-btn next" onclick="toggle(this,'oth-hedges','🔜 Next Visit')">🔜 Next Visit</div>
             <div class="yn-btn no" onclick="toggle(this,'oth-hedges','❌ No')">❌ No</div>
@@ -1065,7 +1128,7 @@
         </div>
         <div class="field">
           <label>Walked Perimeter for Leaks / Vandalism?</label>
-          <div class="yn-group">
+          <div class="yn-group" id="yn-oth-perim">
             <div class="yn-btn yes" onclick="toggle(this,'oth-perim','✅ Yes — Nothing Unusual')">✅ Yes — Nothing Unusual</div>
             <div class="yn-btn no" onclick="toggle(this,'oth-perim','⚠️ Issue Found')">⚠️ Issue Found</div>
           </div>
@@ -1172,26 +1235,19 @@
 // ============================================================
 // CONFIG
 // ============================================================
-// Apps Script Web App — serves both Clients and Tech Names securely
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxuGa7IjVnaZdYrzECByJX3cVyShnNceMfmKOYN36-3iHa0xKKVUdLqcLXlYmn37W_s/exec';
 
-// Main job completion webhook (existing)
 const WEBHOOKS = {
   residential: 'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/',
   commercial:  'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/',
   other:       'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/'
 };
 
-// ⚠️  REPLACE THESE with two new Zapier webhooks you create:
-//   ALERT_WEBHOOK  → triggers an email to info@wslawncareservicesllc.com
-//   SHEET_UPDATE_WEBHOOK → writes cut height + grass type back to the Sheet row
 const ALERT_WEBHOOK        = 'https://hooks.zapier.com/hooks/catch/20549459/uxw6ope/';
 const SHEET_UPDATE_WEBHOOK = 'https://hooks.zapier.com/hooks/catch/20549459/uxwh463/';
 
 // ============================================================
-// CUSTOMER DATA — loads from Google Sheet
-// Columns: A=Name, B=Address, C=Email, D=Phone,
-//          E=Mowing Height, F=Mowing Direction, G=Grass Type, H=Internal Client Note
+// CUSTOMER DATA
 // ============================================================
 let customers = [
   { name: 'Test Willie1', address: '123 somewhere', email: 'willarreola18@gmail.com', phone: '3215936989', mowingHeight: '', mowingDirection: '', grassType: '', internalNote: '' },
@@ -1203,25 +1259,23 @@ async function loadSheetData() {
   try {
     const res  = await fetch(APPS_SCRIPT_URL + '?token=wslawn-data-2026');
     const data = await res.json();
-    // Load customers
     if (data.customers && data.customers.length) {
       customers = data.customers;
-      console.log('Customers loaded:', customers.length);
     }
-
-    // Load techs into the selector
     if (data.techs && data.techs.length) {
       renderTechs(data.techs);
-      console.log('Techs loaded:', data.techs.length);
     }
   } catch(e) {
     console.warn('Apps Script load failed:', e);
-    // Fall back to hardcoded demo customers and default techs
     renderTechs([
       { name: 'Willie Arreola',  position: 'Crew Lead' },
       { name: 'William Arreola', position: 'Field Tech' },
       { name: 'Sandra Arreola',  position: 'Field Tech' },
     ]);
+  } finally {
+    // Always reveal search — whether load succeeded or fell back to defaults
+    document.getElementById('search-loading-state').style.display = 'none';
+    document.getElementById('search-wrap').style.display = 'block';
   }
 }
 loadSheetData();
@@ -1256,7 +1310,6 @@ function toggleTech(idx, name, position) {
     btn.classList.add('selected');
   }
 
-  // Update hidden input and chip display
   const names = selectedTechs.map(t => t.name).join(', ');
   document.getElementById('com-tech').value = names;
 
@@ -1272,7 +1325,6 @@ function toggleTech(idx, name, position) {
     chips.innerHTML = '';
   }
 }
-
 
 // ============================================================
 // DATE
@@ -1325,20 +1377,11 @@ function selectCustomer(idx) {
   document.getElementById('sel-details').innerHTML =
     `📍 ${selectedCustomer.address}<br>✉ ${selectedCustomer.email}<br>📞 ${selectedCustomer.phone}`;
 
-  // Populate the info banner with last-visit data
   showCustomerInfoBanner(selectedCustomer);
 
-  // Pre-select grass type if already known
-  if (selectedCustomer.grassType) {
-    preSelectGrass(selectedCustomer.grassType);
-  }
+  if (selectedCustomer.grassType) preSelectGrass(selectedCustomer.grassType);
+  if (selectedCustomer.mowingDirection) preSelectDirection(selectedCustomer.mowingDirection);
 
-  // Pre-hint mowing direction if already known
-  if (selectedCustomer.mowingDirection) {
-    preSelectDirection(selectedCustomer.mowingDirection);
-  }
-
-  // Pre-set cut height dropdowns if known
   if (selectedCustomer.mowingHeight) {
     ['res-cut-height','com-cut-height'].forEach(id => {
       const el = document.getElementById(id);
@@ -1396,7 +1439,6 @@ function preSelectDirection(direction) {
     const hidden = document.getElementById(prefix + '-mow-direction');
     if (hidden) hidden.value = direction;
     const svcId = prefix === 'res' ? 'residential' : 'commercial';
-    // Find the direction grid — it's the second .grass-grid in the section
     const grids = document.querySelectorAll(`#fields-${svcId} .grass-grid`);
     if (grids.length >= 2) {
       grids[1].querySelectorAll('.grass-btn').forEach(btn => {
@@ -1462,6 +1504,7 @@ function selectDirection(el, direction, prefix) {
 function toggle(el, fieldId, val) {
   const group = el.closest('.yn-group');
   group.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('active'));
+  group.classList.remove('invalid'); // Clear validation highlight when answered
   el.classList.add('active');
   document.getElementById(fieldId).value = val;
 }
@@ -1640,6 +1683,40 @@ async function submitForm() {
   if (!selectedCustomer) { showToast('⚠ Please select a customer'); return; }
   if (!selectedService)  { showToast('⚠ Please select a service type'); return; }
 
+  // ── Checklist validation — must be answered every visit ──
+  const p = selectedService === 'residential' ? 'res'
+          : selectedService === 'commercial'  ? 'com' : 'oth';
+
+  const checkFields = [
+    { id: p + '-weed',   ynId: 'yn-' + p + '-weed' },
+    { id: p + '-bugs',   ynId: 'yn-' + p + '-bugs' },
+    { id: p + '-hedges', ynId: 'yn-' + p + '-hedges' },
+    { id: p + '-perim',  ynId: 'yn-' + p + '-perim' },
+  ];
+  if (selectedService === 'commercial') {
+    checkFields.unshift({ id: 'com-blow', ynId: 'yn-com-blow' });
+  }
+
+  let validationFailed = false;
+  checkFields.forEach(f => {
+    const val     = document.getElementById(f.id)?.value;
+    const ynGroup = document.getElementById(f.ynId);
+    if (!val) {
+      validationFailed = true;
+      if (ynGroup) ynGroup.classList.add('invalid');
+    } else {
+      if (ynGroup) ynGroup.classList.remove('invalid');
+    }
+  });
+
+  if (validationFailed) {
+    showToast('⚠ Please answer all checklist items');
+    const firstInvalid = document.querySelector(`#fields-${selectedService} .yn-group.invalid`);
+    if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  // ── End validation ──
+
   const btn = document.getElementById('submit-btn');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Submitting...';
@@ -1686,7 +1763,7 @@ async function submitForm() {
         : '<p style="color:#888;font-size:13px;">No photos submitted for this job.</p>'
     };
 
-    // 1. Send main job completion webhook
+    // 1. Main job completion webhook
     const webhookUrl = WEBHOOKS[selectedService];
     if (webhookUrl && webhookUrl.startsWith('https://')) {
       await fetch(webhookUrl, {
@@ -1696,15 +1773,12 @@ async function submitForm() {
       });
     }
 
-    // 2. If pet waste warning OR office note → fire alert webhook to office
-    const officeNote = data.officeNote;
-    const hasPetAlert  = petStatus === 'warn';
+    // 2. Pet waste / office note alert
+    const officeNote    = data.officeNote;
+    const hasPetAlert   = petStatus === 'warn';
     const hasOfficeNote = officeNote && officeNote.length > 0;
 
-    if ((hasPetAlert || hasOfficeNote) && ALERT_WEBHOOK.includes('/YOUR_')) {
-      // Webhook not yet configured — log to console but don't block
-      console.warn('⚠ ALERT_WEBHOOK not configured yet. Set ALERT_WEBHOOK in the script to enable office alerts.');
-    } else if (hasPetAlert || hasOfficeNote) {
+    if (hasPetAlert || hasOfficeNote) {
       const alertPayload = {
         type: 'office_alert',
         customerName:   data.customerName,
@@ -1725,20 +1799,20 @@ async function submitForm() {
       });
     }
 
-    // 3. Write updated grass type + cut height + direction back to Sheet
-    const grassType      = getGrassType();
-    const cutHeight      = getCutHeight();
-    const mowDirection   = getMowingDirection();
-    if ((grassType || cutHeight || mowDirection) && !SHEET_UPDATE_WEBHOOK.includes('/YOUR_')) {
+    // 3. Sheet update — grass type, cut height, direction
+    const grassType    = getGrassType();
+    const cutHeight    = getCutHeight();
+    const mowDirection = getMowingDirection();
+    if (grassType || cutHeight || mowDirection) {
       const updatePayload = {
-        type:             'sheet_update',
-        customerName:     data.customerName,
-        serviceAddress:   data.serviceAddress,
-        email:            data.customerEmail,
-        grassType:        grassType,
-        mowingHeight:     cutHeight,
-        mowingDirection:  mowDirection,
-        date:             data.date,
+        type:            'sheet_update',
+        customerName:    data.customerName,
+        serviceAddress:  data.serviceAddress,
+        email:           data.customerEmail,
+        grassType:       grassType,
+        mowingHeight:    cutHeight,
+        mowingDirection: mowDirection,
+        date:            data.date,
       };
       await fetch(SHEET_UPDATE_WEBHOOK, {
         method: 'POST',
@@ -1747,15 +1821,11 @@ async function submitForm() {
       });
     }
 
-    // Show success
     document.getElementById('main-form').classList.add('hidden');
     document.getElementById('success-screen').classList.add('show');
 
   } catch(err) {
-    // no-cors responses throw a TypeError but the request still succeeds on Zapier's end
-    // Only show error if it's NOT a no-cors opaque response
     if (err.name === 'TypeError' && err.message.includes('Failed to fetch')) {
-      // Still show success — Zapier received it, browser just can't read the response
       document.getElementById('main-form').classList.add('hidden');
       document.getElementById('success-screen').classList.add('show');
     } else {
@@ -1792,12 +1862,12 @@ function resetForm() {
   document.getElementById('pet-alert-badge').classList.remove('show');
   document.getElementById('pet-clear').classList.remove('active-clean','active-warn');
   document.getElementById('pet-warn').classList.remove('active-clean','active-warn');
-  // Reset tech selections
   selectedTechs = [];
   document.getElementById('com-tech').value = '';
   document.getElementById('tech-selected-display').style.display = 'none';
   document.getElementById('tech-chips').innerHTML = '';
   document.querySelectorAll('.tech-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.yn-group.invalid').forEach(el => el.classList.remove('invalid'));
   updateSteps();
   window.scrollTo(0,0);
 }
@@ -1838,9 +1908,6 @@ try {
     document.getElementById('password-gate').style.display = 'none';
   }
 } catch(e) {}
-
-// TESTING MODE — delete this line before going live
-document.getElementById('password-gate').style.display = 'none';
 </script>
 </body>
 </html>
