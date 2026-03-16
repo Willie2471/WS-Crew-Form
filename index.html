@@ -1382,12 +1382,13 @@ function selectCustomer(idx) {
   if (selectedCustomer.grassType) preSelectGrass(selectedCustomer.grassType);
   if (selectedCustomer.mowingDirection) preSelectDirection(selectedCustomer.mowingDirection);
 
-  if (selectedCustomer.mowingHeight) {
+ if (selectedCustomer.mowingHeight) {
+    const h = parseFloat(selectedCustomer.mowingHeight).toFixed(2);
     ['res-cut-height','com-cut-height'].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
         for (let o of el.options) {
-          if (o.value === selectedCustomer.mowingHeight) { el.value = o.value; break; }
+          if (parseFloat(o.value).toFixed(2) === h) { el.value = o.value; break; }
         }
       }
     });
