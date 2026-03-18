@@ -34,6 +34,9 @@
     --orange: #e67e22;
     --orange-pale: #fef5ec;
     --orange-mid: #f5cba7;
+    --blue: #1565c0;
+    --blue-pale: #e3f2fd;
+    --blue-mid: #90caf9;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -98,13 +101,20 @@
     box-shadow: 0 2px 8px rgba(30,107,46,0.06);
   }
 
-  /* ALERT CARD — for pet waste / office alerts */
   .card.alert-card {
     border-color: var(--orange-mid);
     background: var(--orange-pale);
   }
   .card.alert-card .card-title { color: var(--orange); }
   .card.alert-card .card-title .num { background: var(--orange); }
+
+  /* TIME CARD */
+  .card.time-card {
+    border-color: var(--blue-mid);
+    background: var(--blue-pale);
+  }
+  .card.time-card .card-title { color: var(--blue); }
+  .card.time-card .card-title .num { background: var(--blue); }
 
   .card-title {
     font-family: 'Barlow Condensed', sans-serif;
@@ -157,6 +167,96 @@
     background: #fff;
   }
   .field textarea { min-height: 80px; resize: vertical; }
+
+  /* TIME TRACKER */
+  .time-tracker {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .time-block {
+    border: 2px solid var(--blue-mid);
+    border-radius: 12px;
+    padding: 14px 12px;
+    text-align: center;
+    background: #fff;
+    transition: all 0.2s;
+  }
+  .time-block.recorded {
+    border-color: var(--blue);
+    background: #e3f2fd;
+  }
+  .time-block .tb-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+  .time-block .tb-time {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #1565c0;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    min-height: 34px;
+    line-height: 1;
+  }
+  .time-block .tb-time.empty {
+    font-size: 15px;
+    color: #90caf9;
+    font-weight: 500;
+    font-family: 'Barlow', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+  }
+  .time-tap-btn {
+    width: 100%;
+    padding: 10px 8px;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .time-tap-btn:active { transform: scale(0.97); }
+  .time-tap-btn.recorded {
+    background: #388e3c;
+  }
+  .time-tap-btn:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+  }
+  .time-duration-row {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #fff;
+    border: 2px solid var(--blue);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 4px;
+  }
+  .time-duration-row.show { display: flex; }
+  .time-duration-row .dur-icon { font-size: 20px; }
+  .time-duration-row .dur-label { font-size: 13px; color: var(--blue); font-weight: 600; }
+  .time-duration-row .dur-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    color: #1565c0;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
 
   /* CUSTOMER SEARCH */
   .search-wrap { position: relative; }
@@ -226,7 +326,7 @@
     padding: 0;
   }
 
-  /* CUSTOMER INFO BANNER — shows last height + grass type */
+  /* CUSTOMER INFO BANNER */
   .customer-info-banner {
     display: none;
     margin-top: 10px;
@@ -260,6 +360,14 @@
     color: var(--green);
   }
   .info-chip .chip-icon { font-size: 16px; }
+
+  /* Last visit time chip — blue accent */
+  .info-chip.time-chip {
+    background: var(--blue-pale);
+    border-color: var(--blue-mid);
+  }
+  .info-chip.time-chip .chip-label { color: #1565c0; }
+  .info-chip.time-chip .chip-value { color: #1565c0; }
 
   /* SERVICE TYPE */
   .service-grid {
@@ -341,6 +449,75 @@
   .grass-btn.active { border-color: var(--green); background: var(--green-pale); }
   .grass-btn.active .glabel { color: var(--green); }
 
+  /* TECH MULTI-SELECT — shared across all job types */
+  .tech-select {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 4px 0;
+  }
+  .tech-loading {
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .tech-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 14px;
+    border: 2px solid var(--border);
+    border-radius: 100px;
+    background: #f9fcf9;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .tech-btn .tech-avatar {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--green-mid);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .tech-btn .tech-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .tech-btn .tech-role {
+    font-size: 11px;
+    color: #aaa;
+    margin-left: 2px;
+  }
+  .tech-btn.selected {
+    border-color: var(--green);
+    background: var(--green-pale);
+  }
+  .tech-btn.selected .tech-avatar {
+    background: var(--green);
+    color: #fff;
+  }
+  .tech-btn.selected .tech-name { color: var(--green); }
+  .tech-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .tech-chip {
+    background: var(--green);
+    color: #fff;
+    border-radius: 100px;
+    padding: 4px 10px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
   /* PET WARNING TOGGLE */
   .pet-toggle {
     display: flex;
@@ -363,7 +540,6 @@
   .pet-option.active-warn { border-color: var(--red); background: #fdf0ee; }
   .pet-option.active-warn .plabel { color: var(--red); }
 
-  /* PET WARNING BADGE */
   .pet-alert-badge {
     display: none;
     background: #fdf0ee;
@@ -610,76 +786,6 @@
     min-height: 18px;
   }
 
-  /* TECH MULTI-SELECT */
-  .tech-select {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 4px 0;
-  }
-  .tech-loading {
-    font-size: 13px;
-    color: var(--muted);
-    font-style: italic;
-  }
-  .tech-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 9px 14px;
-    border: 2px solid var(--border);
-    border-radius: 100px;
-    background: #f9fcf9;
-    cursor: pointer;
-    transition: all 0.2s;
-    user-select: none;
-  }
-  .tech-btn .tech-avatar {
-    width: 24px; height: 24px;
-    border-radius: 50%;
-    background: var(--green-mid);
-    color: var(--green);
-    font-size: 11px;
-    font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-  .tech-btn .tech-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--muted);
-    white-space: nowrap;
-  }
-  .tech-btn .tech-role {
-    font-size: 11px;
-    color: #aaa;
-    margin-left: 2px;
-  }
-  .tech-btn.selected {
-    border-color: var(--green);
-    background: var(--green-pale);
-  }
-  .tech-btn.selected .tech-avatar {
-    background: var(--green);
-    color: #fff;
-  }
-  .tech-btn.selected .tech-name { color: var(--green); }
-  .tech-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 6px;
-  }
-  .tech-chip {
-    background: var(--green);
-    color: #fff;
-    border-radius: 100px;
-    padding: 4px 10px;
-    font-size: 13px;
-    font-weight: 600;
-  }
-
-  /* INTERNAL NOTE FIELD */
   .field textarea.office-note {
     border-color: var(--orange-mid);
     background: var(--orange-pale);
@@ -690,7 +796,6 @@
     background: #fff;
   }
 
-  /* CUSTOMER SEARCH LOADING STATE */
   .search-loading {
     display: flex;
     align-items: center;
@@ -703,9 +808,7 @@
     font-size: 14px;
     font-weight: 500;
   }
-  .search-loading .dot-pulse {
-    display: flex; gap: 4px;
-  }
+  .search-loading .dot-pulse { display: flex; gap: 4px; }
   .search-loading .dot-pulse span {
     width: 6px; height: 6px;
     background: var(--green);
@@ -719,7 +822,6 @@
     40% { transform: scale(1); opacity: 1; }
   }
 
-  /* VALIDATION ERROR HIGHLIGHT */
   .yn-group.invalid .yn-btn {
     border-color: var(--red) !important;
     background: #fdf0ee !important;
@@ -732,6 +834,9 @@
     display: none;
   }
   .field-error.show { display: block; }
+
+  /* Tech selector display below buttons */
+  .tech-selected-display { margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -769,20 +874,42 @@
 
     <div class="date-badge" id="date-badge"></div>
 
+    <!-- ============================================================
+         TIME TRACKER CARD
+         ============================================================ -->
+    <div class="card time-card">
+      <div class="card-title"><div class="num" style="background:#1565c0">⏱</div> Job Time</div>
+      <div class="time-tracker">
+        <div class="time-block" id="start-block">
+          <div class="tb-label">🟢 Start Time</div>
+          <div class="tb-time empty" id="start-time-display">Not set</div>
+          <button class="time-tap-btn" id="start-btn" onclick="recordTime('start')">TAP TO START</button>
+        </div>
+        <div class="time-block" id="end-block">
+          <div class="tb-label">🔴 End Time</div>
+          <div class="tb-time empty" id="end-time-display">Not set</div>
+          <button class="time-tap-btn" id="end-btn" onclick="recordTime('end')" disabled>TAP TO END</button>
+        </div>
+      </div>
+      <div class="time-duration-row" id="duration-row">
+        <span class="dur-icon">⏳</span>
+        <span class="dur-label">Time on Job:</span>
+        <span class="dur-value" id="duration-display">—</span>
+      </div>
+    </div>
+
     <!-- CARD 1: CUSTOMER -->
     <div class="card">
       <div class="card-title"><div class="num">1</div> Find Customer</div>
 
       <div class="field" id="search-field">
         <label>Search by name or address</label>
-        <!-- Loading spinner — shown while Apps Script loads -->
         <div id="search-loading-state" class="search-loading">
           <div class="dot-pulse">
             <span></span><span></span><span></span>
           </div>
           Loading customer list...
         </div>
-        <!-- Search input — hidden until data is ready -->
         <div class="search-wrap" id="search-wrap" style="display:none">
           <span class="search-icon">🔍</span>
           <input type="text" id="customer-search" placeholder="Type name or address..." autocomplete="off"/>
@@ -796,7 +923,6 @@
         <button class="change-btn" onclick="clearCustomer()">✕ Change customer</button>
       </div>
 
-      <!-- LAST VISIT INFO BANNER (auto-populated from Sheet) -->
       <div class="customer-info-banner" id="customer-info-banner">
         <div class="info-chip" id="chip-height" style="display:none">
           <span class="chip-icon">✂️</span>
@@ -817,6 +943,13 @@
           <div>
             <div class="chip-label">Last Mow Direction</div>
             <div class="chip-value" id="chip-direction-val">—</div>
+          </div>
+        </div>
+        <div class="info-chip time-chip" id="chip-time" style="display:none">
+          <span class="chip-icon">⏱</span>
+          <div>
+            <div class="chip-label">Last Visit Time</div>
+            <div class="chip-value" id="chip-time-val">—</div>
           </div>
         </div>
         <div class="info-chip" id="chip-note" style="display:none">
@@ -854,6 +987,18 @@
 
       <!-- ============ RESIDENTIAL MOWING ============ -->
       <div id="fields-residential" class="hidden">
+
+        <!-- TECH SELECT — RESIDENTIAL -->
+        <div class="field">
+          <label>Technician Name(s)</label>
+          <div class="tech-select" id="tech-select-res"></div>
+          <div class="tech-selected-display" id="tech-selected-display-res" style="display:none">
+            <span style="font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Selected:</span>
+            <div class="tech-chips" id="tech-chips-res"></div>
+          </div>
+          <input type="hidden" id="res-tech"/>
+        </div>
+
         <div class="field">
           <label>Cut Height (inches)</label>
           <select id="res-cut-height">
@@ -862,54 +1007,28 @@
           </select>
         </div>
 
-        <!-- GRASS TYPE -->
         <div class="field">
           <label>Grass Type</label>
           <div class="grass-grid">
-            <div class="grass-btn" onclick="selectGrass(this,'Bahia','res')">
-              <span class="gicon">🌾</span><span class="glabel">Bahia</span>
-            </div>
-            <div class="grass-btn" onclick="selectGrass(this,'Bermuda','res')">
-              <span class="gicon">☀️</span><span class="glabel">Bermuda</span>
-            </div>
-            <div class="grass-btn" onclick="selectGrass(this,'St. Augustine','res')">
-              <span class="gicon">🌿</span><span class="glabel">St. Augustine</span>
-            </div>
-            <div class="grass-btn" onclick="selectGrass(this,'Zoysia','res')">
-              <span class="gicon">🍃</span><span class="glabel">Zoysia</span>
-            </div>
-            <div class="grass-btn" onclick="selectGrass(this,'Centipede','res')">
-              <span class="gicon">🐛</span><span class="glabel">Centipede</span>
-            </div>
-            <div class="grass-btn" onclick="selectGrass(this,'Unable To Identify','res')">
-              <span class="gicon">❓</span><span class="glabel">Unable To ID</span>
-            </div>
+            <div class="grass-btn" onclick="selectGrass(this,'Bahia','res')"><span class="gicon">🌾</span><span class="glabel">Bahia</span></div>
+            <div class="grass-btn" onclick="selectGrass(this,'Bermuda','res')"><span class="gicon">☀️</span><span class="glabel">Bermuda</span></div>
+            <div class="grass-btn" onclick="selectGrass(this,'St. Augustine','res')"><span class="gicon">🌿</span><span class="glabel">St. Augustine</span></div>
+            <div class="grass-btn" onclick="selectGrass(this,'Zoysia','res')"><span class="gicon">🍃</span><span class="glabel">Zoysia</span></div>
+            <div class="grass-btn" onclick="selectGrass(this,'Centipede','res')"><span class="gicon">🐛</span><span class="glabel">Centipede</span></div>
+            <div class="grass-btn" onclick="selectGrass(this,'Unable To Identify','res')"><span class="gicon">❓</span><span class="glabel">Unable To ID</span></div>
           </div>
           <input type="hidden" id="res-grass-type"/>
         </div>
 
-        <!-- MOWING DIRECTION -->
         <div class="field">
           <label>Mowing Direction</label>
           <div class="grass-grid">
-            <div class="grass-btn" onclick="selectDirection(this,'12 to 6','res')">
-              <span class="gicon">🕛</span><span class="glabel">12 to 6</span>
-            </div>
-            <div class="grass-btn" onclick="selectDirection(this,'3 to 9','res')">
-              <span class="gicon">🕒</span><span class="glabel">3 to 9</span>
-            </div>
-            <div class="grass-btn" onclick="selectDirection(this,'2 to 8','res')">
-              <span class="gicon">🕑</span><span class="glabel">2 to 8</span>
-            </div>
-            <div class="grass-btn" onclick="selectDirection(this,'11 to 5','res')">
-              <span class="gicon">🕚</span><span class="glabel">11 to 5</span>
-            </div>
-            <div class="grass-btn" onclick="selectDirection(this,'1 to 7','res')">
-              <span class="gicon">🕐</span><span class="glabel">1 to 7</span>
-            </div>
-            <div class="grass-btn" onclick="selectDirection(this,'Circular','res')">
-              <span class="gicon">🔄</span><span class="glabel">Circular</span>
-            </div>
+            <div class="grass-btn" onclick="selectDirection(this,'12 to 6','res')"><span class="gicon">🕛</span><span class="glabel">12 to 6</span></div>
+            <div class="grass-btn" onclick="selectDirection(this,'3 to 9','res')"><span class="gicon">🕒</span><span class="glabel">3 to 9</span></div>
+            <div class="grass-btn" onclick="selectDirection(this,'2 to 8','res')"><span class="gicon">🕑</span><span class="glabel">2 to 8</span></div>
+            <div class="grass-btn" onclick="selectDirection(this,'11 to 5','res')"><span class="gicon">🕚</span><span class="glabel">11 to 5</span></div>
+            <div class="grass-btn" onclick="selectDirection(this,'1 to 7','res')"><span class="gicon">🕐</span><span class="glabel">1 to 7</span></div>
+            <div class="grass-btn" onclick="selectDirection(this,'Circular','res')"><span class="gicon">🔄</span><span class="glabel">Circular</span></div>
           </div>
           <input type="hidden" id="res-mow-direction"/>
         </div>
@@ -960,17 +1079,18 @@
 
       <!-- ============ COMMERCIAL MOWING ============ -->
       <div id="fields-commercial" class="hidden">
+
+        <!-- TECH SELECT — COMMERCIAL -->
         <div class="field">
           <label>Technician Name(s)</label>
-          <div class="tech-select" id="tech-select">
-            <div class="tech-loading" id="tech-loading">Loading crew...</div>
-          </div>
-          <div class="tech-selected-display" id="tech-selected-display" style="display:none">
+          <div class="tech-select" id="tech-select-com"></div>
+          <div class="tech-selected-display" id="tech-selected-display-com" style="display:none">
             <span style="font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Selected:</span>
-            <div class="tech-chips" id="tech-chips"></div>
+            <div class="tech-chips" id="tech-chips-com"></div>
           </div>
           <input type="hidden" id="com-tech"/>
         </div>
+
         <div class="field">
           <label>Service Duration</label>
           <input type="text" id="com-duration" placeholder="e.g. 2.5 hrs"/>
@@ -983,54 +1103,28 @@
           </select>
         </div>
 
-        <!-- GRASS TYPE -->
         <div class="field">
           <label>Grass Type</label>
           <div class="grass-grid">
-            <div class="grass-btn" onclick="selectGrass(this,'Bahia','com')">
-              <span class="gicon">🌾</span><span class="glabel">Bahia</span>
-            </div>
-            <div class="grass-btn" onclick="selectGrass(this,'Bermuda','com')">
-              <span class="gicon">☀️</span><span class="glabel">Bermuda</span>
-            </div>
-            <div class="grass-btn" onclick="selectGrass(this,'St. Augustine','com')">
-              <span class="gicon">🌿</span><span class="glabel">St. Augustine</span>
-            </div>
-            <div class="grass-btn" onclick="selectGrass(this,'Zoysia','com')">
-              <span class="gicon">🍃</span><span class="glabel">Zoysia</span>
-            </div>
-            <div class="grass-btn" onclick="selectGrass(this,'Centipede','com')">
-              <span class="gicon">🐛</span><span class="glabel">Centipede</span>
-            </div>
-            <div class="grass-btn" onclick="selectGrass(this,'Unable To Identify','com')">
-              <span class="gicon">❓</span><span class="glabel">Unable To ID</span>
-            </div>
+            <div class="grass-btn" onclick="selectGrass(this,'Bahia','com')"><span class="gicon">🌾</span><span class="glabel">Bahia</span></div>
+            <div class="grass-btn" onclick="selectGrass(this,'Bermuda','com')"><span class="gicon">☀️</span><span class="glabel">Bermuda</span></div>
+            <div class="grass-btn" onclick="selectGrass(this,'St. Augustine','com')"><span class="gicon">🌿</span><span class="glabel">St. Augustine</span></div>
+            <div class="grass-btn" onclick="selectGrass(this,'Zoysia','com')"><span class="gicon">🍃</span><span class="glabel">Zoysia</span></div>
+            <div class="grass-btn" onclick="selectGrass(this,'Centipede','com')"><span class="gicon">🐛</span><span class="glabel">Centipede</span></div>
+            <div class="grass-btn" onclick="selectGrass(this,'Unable To Identify','com')"><span class="gicon">❓</span><span class="glabel">Unable To ID</span></div>
           </div>
           <input type="hidden" id="com-grass-type"/>
         </div>
 
-        <!-- MOWING DIRECTION -->
         <div class="field">
           <label>Mowing Direction</label>
           <div class="grass-grid">
-            <div class="grass-btn" onclick="selectDirection(this,'12 to 6','com')">
-              <span class="gicon">🕛</span><span class="glabel">12 to 6</span>
-            </div>
-            <div class="grass-btn" onclick="selectDirection(this,'3 to 9','com')">
-              <span class="gicon">🕒</span><span class="glabel">3 to 9</span>
-            </div>
-            <div class="grass-btn" onclick="selectDirection(this,'2 to 8','com')">
-              <span class="gicon">🕑</span><span class="glabel">2 to 8</span>
-            </div>
-            <div class="grass-btn" onclick="selectDirection(this,'11 to 5','com')">
-              <span class="gicon">🕚</span><span class="glabel">11 to 5</span>
-            </div>
-            <div class="grass-btn" onclick="selectDirection(this,'1 to 7','com')">
-              <span class="gicon">🕐</span><span class="glabel">1 to 7</span>
-            </div>
-            <div class="grass-btn" onclick="selectDirection(this,'Circular','com')">
-              <span class="gicon">🔄</span><span class="glabel">Circular</span>
-            </div>
+            <div class="grass-btn" onclick="selectDirection(this,'12 to 6','com')"><span class="gicon">🕛</span><span class="glabel">12 to 6</span></div>
+            <div class="grass-btn" onclick="selectDirection(this,'3 to 9','com')"><span class="gicon">🕒</span><span class="glabel">3 to 9</span></div>
+            <div class="grass-btn" onclick="selectDirection(this,'2 to 8','com')"><span class="gicon">🕑</span><span class="glabel">2 to 8</span></div>
+            <div class="grass-btn" onclick="selectDirection(this,'11 to 5','com')"><span class="gicon">🕚</span><span class="glabel">11 to 5</span></div>
+            <div class="grass-btn" onclick="selectDirection(this,'1 to 7','com')"><span class="gicon">🕐</span><span class="glabel">1 to 7</span></div>
+            <div class="grass-btn" onclick="selectDirection(this,'Circular','com')"><span class="gicon">🔄</span><span class="glabel">Circular</span></div>
           </div>
           <input type="hidden" id="com-mow-direction"/>
         </div>
@@ -1038,7 +1132,7 @@
         <div class="divider"></div>
         <div class="section-label">Service Checklist</div>
         <div class="field">
-          <label>Blew Parking Lot & Common Areas?</label>
+          <label>Blew Parking Lot &amp; Common Areas?</label>
           <div class="yn-group" id="yn-com-blow">
             <div class="yn-btn yes" onclick="toggle(this,'com-blow','✅ Yes')">✅ Yes</div>
             <div class="yn-btn no" onclick="toggle(this,'com-blow','❌ No')">❌ No</div>
@@ -1093,6 +1187,18 @@
 
       <!-- ============ ALL OTHER SERVICES ============ -->
       <div id="fields-other" class="hidden">
+
+        <!-- TECH SELECT — OTHER -->
+        <div class="field">
+          <label>Technician Name(s)</label>
+          <div class="tech-select" id="tech-select-oth"></div>
+          <div class="tech-selected-display" id="tech-selected-display-oth" style="display:none">
+            <span style="font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Selected:</span>
+            <div class="tech-chips" id="tech-chips-oth"></div>
+          </div>
+          <input type="hidden" id="oth-tech"/>
+        </div>
+
         <div class="field">
           <label>Service Performed</label>
           <input type="text" id="oth-service" placeholder="e.g. Power Wash, Hedge Trim, Fertilization..."/>
@@ -1150,9 +1256,7 @@
       </div>
     </div>
 
-    <!-- =====================================================
-         CARD 4: PET WASTE WARNING
-         ===================================================== -->
+    <!-- CARD 4: PET WASTE WARNING -->
     <div class="card alert-card">
       <div class="card-title">
         <div class="num" style="background:var(--orange)">🐾</div>
@@ -1177,9 +1281,7 @@
       <input type="hidden" id="pet-status" value=""/>
     </div>
 
-    <!-- =====================================================
-         CARD 5: INTERNAL OFFICE NOTE
-         ===================================================== -->
+    <!-- CARD 5: INTERNAL OFFICE NOTE -->
     <div class="card alert-card">
       <div class="card-title">
         <div class="num" style="background:var(--orange)">📋</div>
@@ -1204,7 +1306,7 @@
         <input type="file" id="photo-input" multiple accept="image/*" capture="environment"/>
         <div class="upload-icon">📷</div>
         <div class="upload-text">Tap to take or upload photos</div>
-        <div class="upload-sub">Before & after — add as many as needed</div>
+        <div class="upload-sub">Before &amp; after — add as many as needed</div>
       </div>
       <div class="photo-previews" id="photo-previews"></div>
     </div>
@@ -1247,12 +1349,68 @@ const ALERT_WEBHOOK        = 'https://hooks.zapier.com/hooks/catch/20549459/uxw6
 const SHEET_UPDATE_WEBHOOK = 'https://hooks.zapier.com/hooks/catch/20549459/uxwh463/';
 
 // ============================================================
+// TIME TRACKING
+// ============================================================
+let startTime = null;
+let endTime   = null;
+
+function recordTime(type) {
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+  const isoStr  = now.toISOString();
+
+  if (type === 'start') {
+    startTime = { display: timeStr, iso: isoStr, ts: now };
+    const display = document.getElementById('start-time-display');
+    display.textContent = timeStr;
+    display.classList.remove('empty');
+    const block = document.getElementById('start-block');
+    block.classList.add('recorded');
+    const btn = document.getElementById('start-btn');
+    btn.textContent = '✓ STARTED';
+    btn.classList.add('recorded');
+    btn.disabled = true;
+    // Enable end button
+    document.getElementById('end-btn').disabled = false;
+    showToast('✅ Start time recorded: ' + timeStr);
+  } else {
+    endTime = { display: timeStr, iso: isoStr, ts: now };
+    const display = document.getElementById('end-time-display');
+    display.textContent = timeStr;
+    display.classList.remove('empty');
+    const block = document.getElementById('end-block');
+    block.classList.add('recorded');
+    const btn = document.getElementById('end-btn');
+    btn.textContent = '✓ ENDED';
+    btn.classList.add('recorded');
+    btn.disabled = true;
+    // Calculate duration
+    if (startTime) {
+      const diffMs  = endTime.ts - startTime.ts;
+      const diffHrs = diffMs / (1000 * 60 * 60);
+      const rounded = Math.round(diffHrs * 100) / 100; // 2 decimal places
+      const row = document.getElementById('duration-row');
+      document.getElementById('duration-display').textContent = rounded + ' hrs';
+      row.classList.add('show');
+      showToast('✅ End time recorded — ' + rounded + ' hrs on job');
+    }
+  }
+}
+
+function getJobDuration() {
+  if (!startTime || !endTime) return '';
+  const diffMs  = endTime.ts - startTime.ts;
+  const diffHrs = diffMs / (1000 * 60 * 60);
+  return (Math.round(diffHrs * 100) / 100).toString();
+}
+
+// ============================================================
 // CUSTOMER DATA
 // ============================================================
 let customers = [
-  { name: 'Test Willie1', address: '123 somewhere', email: 'willarreola18@gmail.com', phone: '3215936989', mowingHeight: '', mowingDirection: '', grassType: '', internalNote: '' },
-  { name: 'Test Willie2', address: '123 somewhere', email: 'willarreola18@gmail.com', phone: '3215936989', mowingHeight: '', mowingDirection: '', grassType: '', internalNote: '' },
-  { name: 'Test Willie3', address: '123 somewhere', email: 'willarreola18@gmail.com', phone: '3215936989', mowingHeight: '', mowingDirection: '', grassType: '', internalNote: '' },
+  { name: 'Test Willie1', address: '123 somewhere', email: 'willarreola18@gmail.com', phone: '3215936989', mowingHeight: '', mowingDirection: '', grassType: '', internalNote: '', lastVisitDuration: '' },
+  { name: 'Test Willie2', address: '123 somewhere', email: 'willarreola18@gmail.com', phone: '3215936989', mowingHeight: '', mowingDirection: '', grassType: '', internalNote: '', lastVisitDuration: '' },
+  { name: 'Test Willie3', address: '123 somewhere', email: 'willarreola18@gmail.com', phone: '3215936989', mowingHeight: '', mowingDirection: '', grassType: '', internalNote: '', lastVisitDuration: '' },
 ];
 
 async function loadSheetData() {
@@ -1273,7 +1431,6 @@ async function loadSheetData() {
       { name: 'Sandra Arreola',  position: 'Field Tech' },
     ]);
   } finally {
-    // Always reveal search — whether load succeeded or fell back to defaults
     document.getElementById('search-loading-state').style.display = 'none';
     document.getElementById('search-wrap').style.display = 'block';
   }
@@ -1281,45 +1438,48 @@ async function loadSheetData() {
 loadSheetData();
 
 // ============================================================
-// CREW / TECH LOADING
+// CREW / TECH LOADING — renders into all 3 job type sections
 // ============================================================
-let selectedTechs = [];
+// Per-section selected tech state
+const techState = { res: [], com: [], oth: [] };
 
 function renderTechs(techs) {
-  const container = document.getElementById('tech-select');
-  if (!container) return;
-  container.innerHTML = techs.map((t, i) => {
-    const initials = t.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
-    return `<div class="tech-btn" id="tech-btn-${i}" onclick="toggleTech(${i}, '${t.name}', '${t.position}')">
-      <div class="tech-avatar">${initials}</div>
-      <span class="tech-name">${t.name}</span>
-      <span class="tech-role">${t.position}</span>
-    </div>`;
-  }).join('');
+  ['res','com','oth'].forEach(prefix => {
+    const container = document.getElementById('tech-select-' + prefix);
+    if (!container) return;
+    container.innerHTML = techs.map((t, i) => {
+      const initials = t.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+      return `<div class="tech-btn" id="tech-btn-${prefix}-${i}" onclick="toggleTech('${prefix}',${i},'${t.name}','${t.position}')">
+        <div class="tech-avatar">${initials}</div>
+        <span class="tech-name">${t.name}</span>
+        <span class="tech-role">${t.position}</span>
+      </div>`;
+    }).join('');
+  });
 }
 
-function toggleTech(idx, name, position) {
-  const btn = document.getElementById('tech-btn-' + idx);
-  const already = selectedTechs.findIndex(t => t.name === name);
+function toggleTech(prefix, idx, name, position) {
+  const btn    = document.getElementById('tech-btn-' + prefix + '-' + idx);
+  const arr    = techState[prefix];
+  const already = arr.findIndex(t => t.name === name);
 
   if (already > -1) {
-    selectedTechs.splice(already, 1);
+    arr.splice(already, 1);
     btn.classList.remove('selected');
   } else {
-    selectedTechs.push({ name, position });
+    arr.push({ name, position });
     btn.classList.add('selected');
   }
 
-  const names = selectedTechs.map(t => t.name).join(', ');
-  document.getElementById('com-tech').value = names;
+  const names  = arr.map(t => t.name).join(', ');
+  const hiddenId = prefix === 'res' ? 'res-tech' : prefix === 'com' ? 'com-tech' : 'oth-tech';
+  document.getElementById(hiddenId).value = names;
 
-  const display = document.getElementById('tech-selected-display');
-  const chips   = document.getElementById('tech-chips');
-  if (selectedTechs.length > 0) {
+  const display = document.getElementById('tech-selected-display-' + prefix);
+  const chips   = document.getElementById('tech-chips-' + prefix);
+  if (arr.length > 0) {
     display.style.display = 'block';
-    chips.innerHTML = selectedTechs.map(t =>
-      `<div class="tech-chip">✓ ${t.name}</div>`
-    ).join('');
+    chips.innerHTML = arr.map(t => `<div class="tech-chip">✓ ${t.name}</div>`).join('');
   } else {
     display.style.display = 'none';
     chips.innerHTML = '';
@@ -1382,7 +1542,7 @@ function selectCustomer(idx) {
   if (selectedCustomer.grassType) preSelectGrass(selectedCustomer.grassType);
   if (selectedCustomer.mowingDirection) preSelectDirection(selectedCustomer.mowingDirection);
 
- if (selectedCustomer.mowingHeight) {
+  if (selectedCustomer.mowingHeight) {
     const h = parseFloat(selectedCustomer.mowingHeight).toFixed(2);
     ['res-cut-height','com-cut-height'].forEach(id => {
       const el = document.getElementById(id);
@@ -1416,6 +1576,9 @@ function showCustomerInfoBanner(c) {
   showChip('chip-grass',     'chip-grass-val',     c.grassType);
   showChip('chip-direction', 'chip-direction-val', c.mowingDirection);
   showChip('chip-note',      'chip-note-val',      c.internalNote);
+  // Last visit duration — from sheet column I (index 8)
+  const lastDur = c.lastVisitDuration || '';
+  showChip('chip-time', 'chip-time-val', lastDur ? lastDur + ' hrs' : '');
 
   banner.classList.toggle('show', anyData);
 }
@@ -1505,7 +1668,7 @@ function selectDirection(el, direction, prefix) {
 function toggle(el, fieldId, val) {
   const group = el.closest('.yn-group');
   group.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('active'));
-  group.classList.remove('invalid'); // Clear validation highlight when answered
+  group.classList.remove('invalid');
   el.classList.add('active');
   document.getElementById(fieldId).value = val;
 }
@@ -1521,10 +1684,8 @@ function setPetStatus(status) {
   const clearBtn = document.getElementById('pet-clear');
   const warnBtn  = document.getElementById('pet-warn');
   const badge    = document.getElementById('pet-alert-badge');
-
   clearBtn.classList.remove('active-clean','active-warn');
   warnBtn.classList.remove('active-clean','active-warn');
-
   if (status === 'clear') {
     clearBtn.classList.add('active-clean');
     badge.classList.remove('show');
@@ -1625,6 +1786,12 @@ function getCutHeight() {
   return '';
 }
 
+function getTechNames() {
+  if (!selectedService) return '';
+  const prefix = selectedService === 'residential' ? 'res' : selectedService === 'commercial' ? 'com' : 'oth';
+  return document.getElementById(prefix + '-tech').value;
+}
+
 function collectData() {
   const base = {
     submittedAt:    new Date().toISOString(),
@@ -1636,8 +1803,12 @@ function collectData() {
     serviceType:    selectedService,
     grassType:        getGrassType(),
     mowingDirection:  getMowingDirection(),
+    techNames:        getTechNames(),
     petStatus:        petStatus,
-    officeNote:     document.getElementById('office-note').value.trim(),
+    officeNote:       document.getElementById('office-note').value.trim(),
+    startTime:        startTime ? startTime.display : '',
+    endTime:          endTime   ? endTime.display   : '',
+    jobDuration:      getJobDuration(),
   };
 
   if (selectedService === 'residential') {
@@ -1652,7 +1823,6 @@ function collectData() {
   }
   if (selectedService === 'commercial') {
     return { ...base,
-      techNames:   document.getElementById('com-tech').value,
       duration:    document.getElementById('com-duration').value,
       cutHeight:   document.getElementById('com-cut-height').value,
       blowLot:     document.getElementById('com-blow').value,
@@ -1684,7 +1854,6 @@ async function submitForm() {
   if (!selectedCustomer) { showToast('⚠ Please select a customer'); return; }
   if (!selectedService)  { showToast('⚠ Please select a service type'); return; }
 
-  // ── Checklist validation — must be answered every visit ──
   const p = selectedService === 'residential' ? 'res'
           : selectedService === 'commercial'  ? 'com' : 'oth';
 
@@ -1716,7 +1885,6 @@ async function submitForm() {
     if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
-  // ── End validation ──
 
   const btn = document.getElementById('submit-btn');
   btn.disabled = true;
@@ -1730,14 +1898,14 @@ async function submitForm() {
     const CLOUDFLARE_WORKER = 'https://wsphotoupload.will-671.workers.dev/';
     const photoUrls = [];
     for (let i = 0; i < photoData.length; i++) {
-      const p = photoData[i];
+      const ph = photoData[i];
       btn.innerHTML = `<span class="spinner"></span> Uploading photo ${i+1} of ${photoData.length}...`;
       try {
         const res = await fetch(CLOUDFLARE_WORKER, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            photo: p.data,
+            photo: ph.data,
             filename: `${data.customerName} - ${data.date} - ${i+1}.jpg`
           })
         });
@@ -1800,20 +1968,26 @@ async function submitForm() {
       });
     }
 
-    // 3. Sheet update — grass type, cut height, direction
+    // 3. Sheet update — grass type, cut height, direction, job duration, tech names
     const grassType    = getGrassType();
     const cutHeight    = getCutHeight();
     const mowDirection = getMowingDirection();
-    if (grassType || cutHeight || mowDirection) {
+    const jobDuration  = getJobDuration();
+    const techNames    = getTechNames();
+    if (grassType || cutHeight || mowDirection || jobDuration || techNames) {
       const updatePayload = {
-        type:            'sheet_update',
-        customerName:    data.customerName,
-        serviceAddress:  data.serviceAddress,
-        email:           data.customerEmail,
-        grassType:       grassType,
-        mowingHeight:    cutHeight,
-        mowingDirection: mowDirection,
-        date:            data.date,
+        type:             'sheet_update',
+        customerName:     data.customerName,
+        serviceAddress:   data.serviceAddress,
+        email:            data.customerEmail,
+        grassType:        grassType,
+        mowingHeight:     cutHeight,
+        mowingDirection:  mowDirection,
+        lastVisitDuration: jobDuration,
+        lastVisitTechs:   techNames,
+        startTime:        startTime ? startTime.display : '',
+        endTime:          endTime   ? endTime.display   : '',
+        date:             data.date,
       };
       await fetch(SHEET_UPDATE_WEBHOOK, {
         method: 'POST',
@@ -1846,6 +2020,8 @@ function resetForm() {
   selectedService  = null;
   photoFiles       = [];
   petStatus        = '';
+  startTime        = null;
+  endTime          = null;
 
   clearCustomer();
   ['residential','commercial','other'].forEach(t => {
@@ -1863,11 +2039,38 @@ function resetForm() {
   document.getElementById('pet-alert-badge').classList.remove('show');
   document.getElementById('pet-clear').classList.remove('active-clean','active-warn');
   document.getElementById('pet-warn').classList.remove('active-clean','active-warn');
-  selectedTechs = [];
-  document.getElementById('com-tech').value = '';
-  document.getElementById('tech-selected-display').style.display = 'none';
-  document.getElementById('tech-chips').innerHTML = '';
-  document.querySelectorAll('.tech-btn').forEach(b => b.classList.remove('selected'));
+
+  // Reset techs
+  Object.keys(techState).forEach(prefix => { techState[prefix] = []; });
+  ['res','com','oth'].forEach(prefix => {
+    const hid = prefix === 'res' ? 'res-tech' : prefix === 'com' ? 'com-tech' : 'oth-tech';
+    document.getElementById(hid).value = '';
+    const disp = document.getElementById('tech-selected-display-' + prefix);
+    if (disp) disp.style.display = 'none';
+    const chips = document.getElementById('tech-chips-' + prefix);
+    if (chips) chips.innerHTML = '';
+    document.querySelectorAll(`#tech-select-${prefix} .tech-btn`).forEach(b => b.classList.remove('selected'));
+  });
+
+  // Reset time tracker
+  const startDisplay = document.getElementById('start-time-display');
+  startDisplay.textContent = 'Not set';
+  startDisplay.classList.add('empty');
+  const endDisplay = document.getElementById('end-time-display');
+  endDisplay.textContent = 'Not set';
+  endDisplay.classList.add('empty');
+  document.getElementById('start-block').classList.remove('recorded');
+  document.getElementById('end-block').classList.remove('recorded');
+  const startBtn = document.getElementById('start-btn');
+  startBtn.textContent = 'TAP TO START';
+  startBtn.classList.remove('recorded');
+  startBtn.disabled = false;
+  const endBtn = document.getElementById('end-btn');
+  endBtn.textContent = 'TAP TO END';
+  endBtn.classList.remove('recorded');
+  endBtn.disabled = true;
+  document.getElementById('duration-row').classList.remove('show');
+
   document.querySelectorAll('.yn-group.invalid').forEach(el => el.classList.remove('invalid'));
   updateSteps();
   window.scrollTo(0,0);
