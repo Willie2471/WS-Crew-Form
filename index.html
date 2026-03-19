@@ -1203,7 +1203,7 @@ html, body {
     <div class="tab-panel active" id="tab-home">
       <div class="day-hero">
         <div class="day-hero-date" id="home-date"></div>
-        <div class="day-hero-greeting">Good morning,<br><span id="home-name">—</span> 👋</div>
+        <div class="day-hero-greeting" id="home-greeting">Good morning,<br><span id="home-name">—</span> 👋</div>
       </div>
 
       <!-- Clock in/out -->
@@ -1612,6 +1612,10 @@ async function init() {
     if (data.board?.length) {
       appState.boardPosts = data.board;
     }
+    // Today's dispatch from sheet "Dispatch" tab — auto-populated by Apps Script trigger
+    if (data.dispatch?.length) {
+      appState.dispatchJobs = data.dispatch;
+    }
   } catch(e) {
     console.warn('Sheet load failed, using defaults');
     const defaults = [
@@ -1636,6 +1640,26 @@ async function init() {
   } catch(e) {}
 }
 init();
+
+// Auto-loads dispatch from sheet on login if not already populated
+// Called from showApp() — silent, no toast on success
+async function autoLoadDispatch() {
+  try {
+    const res  = await fetch(APPS_SCRIPT_URL + '?token=wslawn-data-2026');
+    const data = await res.json();
+    if (data.dispatch?.length) {
+      appState.dispatchJobs = data.dispatch;
+      renderDispatch();
+      updateDispatchStrip();
+      updateFormShortcuts();
+      // Update badge
+      updateDispatchBadge();
+      showToast('📋 ' + data.dispatch.length + ' jobs loaded for today');
+    }
+  } catch(e) {
+    // Silent fail — crew can still use manual paste
+  }
+}
 
 function populateLoginDropdown(crew) {
   const sel = document.getElementById('login-name-select');
@@ -1690,15 +1714,31 @@ function pinSubmit() {
 function showApp() {
   document.getElementById('screen-login').classList.remove('active');
   document.getElementById('screen-app').classList.add('active');
-  const u = appState.currentUser;
+  const u   = appState.currentUser;
+  const now = new Date();
+  const hr  = now.getHours();
+
+  // Time-aware greeting
+  const greetWord = hr >= 4 && hr < 12 ? 'Good morning'
+                  : hr >= 12 && hr < 17 ? 'Good afternoon'
+                  : hr >= 17 && hr < 21 ? 'Good evening'
+                  : 'Working late';
+  const greetEmoji = hr >= 4 && hr < 12 ? '👋'
+                   : hr >= 12 && hr < 17 ? '☀️'
+                   : hr >= 17 && hr < 21 ? '🌅'
+                   : '🌙';
+
   document.getElementById('tb-name').textContent = u.name.split(' ')[0];
   document.getElementById('tb-role').textContent = u.position;
-  document.getElementById('home-name').textContent = u.name.split(' ')[0];
-  document.getElementById('home-date').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
-  document.getElementById('dispatch-date-badge').textContent = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  document.getElementById('home-name').textContent = u.name.split(' ')[0] + ' ' + greetEmoji;
+  document.getElementById('home-greeting').innerHTML = greetWord + ',<br><span id="home-name-inner" style="color:var(--g400)">' + u.name.split(' ')[0] + ' ' + greetEmoji + '</span>';
+  document.getElementById('home-date').textContent = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  document.getElementById('dispatch-date-badge').textContent = now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
   renderBoard();
   updateClockUI();
   startLiveClock();
+  // Auto-load today's dispatch from sheet if not already loaded
+  if (!appState.dispatchJobs.length) autoLoadDispatch();
 }
 
 function doLogout() {
