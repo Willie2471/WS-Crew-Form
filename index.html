@@ -1959,7 +1959,7 @@ async function submitForm() {
         petAlert:       hasPetAlert ? '⚠️ PET WASTE REPORTED ON PROPERTY' : '',
         officeNote:     officeNote || '',
         toEmail:        'info@wslawncareservicesllc.com',
-        subject:        `[WS Lawn Care Alert] ${hasPetAlert ? '🐾 Pet Waste' : ''}${hasPetAlert && hasOfficeNote ? ' + ' : ''}${hasOfficeNote ? '📋 Office Note' : ''} — ${data.customerName}`,
+        subject:        `[WS Lawn Care Alert] ${hasPetAlert ? 'Pet Waste' : ''}${hasPetAlert && hasOfficeNote ? ' + ' : ''}${hasOfficeNote ? 'Office Note' : ''} — ${data.customerName}`,
       };
       await fetch(ALERT_WEBHOOK, {
         method: 'POST',
