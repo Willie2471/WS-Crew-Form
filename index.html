@@ -1560,7 +1560,7 @@ const APPS_SCRIPT_URL    = 'https://script.google.com/macros/s/AKfycbxuGa7IjVnaZ
 const WEBHOOK_JOB        = 'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/';
 const WEBHOOK_ALERT      = 'https://hooks.zapier.com/hooks/catch/20549459/uxw6ope/';
 const WEBHOOK_SHEET      = 'https://hooks.zapier.com/hooks/catch/20549459/uxwh463/';
-const WEBHOOK_CLOCKIN    = 'https://hooks.zapier.com/hooks/catch/20549459/uxwh463/'; // reuse or set new
+const WEBHOOK_CLOCKIN    = 'https://hooks.zapier.com/hooks/catch/20549459/uxwh463/';
 const CLOUDFLARE_WORKER  = 'https://wsphotoupload.will-671.workers.dev/';
 
 // ══════════════════════════════════════
@@ -1596,20 +1596,21 @@ let fState = {
 // INIT — load sheet data
 // ══════════════════════════════════════
 async function init() {
-  // Demo board posts
-  appState.boardPosts = [
-    { tag: 'general', text: 'Great work this week team! Remember to log all job times.', time: 'Today 8:00 AM' },
-    { tag: 'info',    text: 'Reminder: double-check gate codes before each visit. If changed, update in office note.', time: 'Yesterday 5:00 PM' },
-  ];
+  // Board posts load from sheet (Board tab) — start empty until loaded
+  appState.boardPosts = [];
 
   try {
     const res  = await fetch(APPS_SCRIPT_URL + '?token=wslawn-data-2026');
     const data = await res.json();
     if (data.customers?.length) appState.customers = data.customers;
     if (data.techs?.length) {
-      appState.crew = data.techs; // pins come from sheet col C
+      appState.crew = data.techs;
       populateLoginDropdown(data.techs);
       renderFormTechs(data.techs);
+    }
+    // Board posts from sheet "Board" tab
+    if (data.board?.length) {
+      appState.boardPosts = data.board;
     }
   } catch(e) {
     console.warn('Sheet load failed, using defaults');
@@ -1733,16 +1734,22 @@ function toggleClockInOut() {
 }
 
 async function sendClockWebhook(type) {
+  const now = new Date();
   const payload = new URLSearchParams({
-    type: 'clock_event',
-    eventType: type,
-    techName: appState.currentUser.name,
-    position: appState.currentUser.position,
-    timestamp: new Date().toISOString(),
-    date: new Date().toLocaleDateString('en-US'),
-    time: fmtTime(new Date()),
+    type:       'clock_event',
+    eventType:  type,                                   // "Clock In" or "Clock Out"
+    techName:   appState.currentUser.name,
+    position:   appState.currentUser.position,
+    timestamp:  now.toISOString(),
+    date:       now.toLocaleDateString('en-US'),
+    time:       fmtTime(now),
+    // duration only on clock-out
+    hoursWorked: (type === 'Clock Out' && appState.clockInTime)
+      ? ((now - appState.clockInTime) / 3600000).toFixed(2)
+      : '',
   });
   try {
+    // Sends to the Sheet Update Zap
     await fetch(WEBHOOK_SHEET, { method:'POST', body: payload, mode:'no-cors' });
   } catch(e) {}
 }
@@ -1796,56 +1803,69 @@ function closeDispatchModal() {
 
 function parseAndLoadDispatch() {
   const raw = document.getElementById('dispatch-paste-area').value.trim();
-  if (!raw) { showToast('⚠ Nothing to parse'); return; }
+  if (!raw) { showToast('⚠ Nothing to paste'); return; }
 
   const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-  const jobs = [];
+  const jobs  = [];
 
   for (const line of lines) {
-    // Skip header lines
-    if (/job date|client name|appointment|job status|job type|service|source/i.test(line)) continue;
-    if (/^\$/.test(line) && line.split(/\s+/).length <= 2) continue; // total row
+    // Skip header row and total row
+    if (/job\s*date|client\s*name|appointment|job\s*status|job\s*type/i.test(line)) continue;
+    if (/^\$[\d,]+(\.\d{2})?$/.test(line.trim())) continue; // total-only row
 
-    // Split on 2+ spaces or tabs to get columns
-    const cols = line.split(/\t|\s{2,}/).map(c => c.trim()).filter(c => c);
-    if (cols.length < 3) continue;
+    // Split on tabs first (most copy-pastes from HTML tables use tabs)
+    // Fall back to 2+ spaces
+    let cols = line.includes('\t')
+      ? line.split('\t').map(c => c.trim())
+      : line.split(/\s{2,}/).map(c => c.trim());
+    cols = cols.filter(c => c.length > 0);
 
-    // Try to extract date (MM/DD/YY format)
-    const dateMatch = cols[0]?.match(/\d{1,2}\/\d{1,2}\/\d{2,4}/);
-    const jobDate = dateMatch ? cols[0] : '';
+    if (cols.length < 4) continue;
 
-    // Build job from columns based on position
-    // Col: 0=date, 1=client, 2=start_time, 3=end_time, 4=amount, 5=status, 6=job_type, 7=service, 8=source
-    let idx = dateMatch ? 0 : -1;
-    const client   = cols[idx+1] || cols[0] || '';
-    const startT   = cols[idx+2] || '';
-    const endT     = cols[idx+3] || '';
-    const amount   = cols[idx+4] || '';
-    const status   = cols[idx+5] || 'Dispatched';
-    const jobType  = cols[idx+6] || '';
-    const service  = cols[idx+7] || cols[idx+6] || '';
-    const source   = cols[idx+8] || '';
+    // Exact column order from dispatch report:
+    // 0=Job Date, 1=Client Name, 2=Appt Start Time, 3=Appt End Time,
+    // 4=Job Amount, 5=Job Status, 6=Job Type, 7=Service, 8=Source
+    // Date column may be missing if it was merged/blank for repeated dates
+    let offset = 0;
+    if (/^\d{1,2}\/\d{1,2}\/\d{2,4}$/.test(cols[0])) {
+      offset = 0;  // date present
+    } else if (/^\d{1,2}:\d{2}|^(0?[1-9]|1[0-2]):[0-5]\d\s?(AM|PM)/i.test(cols[1])) {
+      offset = -1; // no date column, client is col 0
+    }
 
-    // Only add if we got a client name that looks real
+    const jobDate  = offset === 0 ? cols[0] : new Date().toLocaleDateString('en-US');
+    const client   = cols[offset + 1] || '';
+    const startT   = cols[offset + 2] || '';
+    const endT     = cols[offset + 3] || '';
+    // cols[offset+4] = Job Amount — captured internally but NOT shown in UI
+    const jobAmt   = cols[offset + 4] || '';
+    const status   = cols[offset + 5] || 'Dispatched';
+    const jobType  = cols[offset + 6] || '';
+    const service  = cols[offset + 7] || cols[offset + 6] || '';
+    const source   = cols[offset + 8] || '';
+
+    // Reject non-data rows
     if (!client || client.length < 2) continue;
     if (/^\$/.test(client)) continue;
+    if (/^job\s/i.test(client)) continue;
 
     jobs.push({
-      date: jobDate || new Date().toLocaleDateString('en-US'),
-      client: client.replace(/,\s*/g, ', '),
+      date:      jobDate,
+      client:    client.replace(/,\s*/g, ', '),
       startTime: normalizeTime(startT),
       endTime:   normalizeTime(endT),
-      amount,
+      // amount stored but hidden from card display per request
+      amount:    jobAmt,
       status,
       jobType,
       service,
       source,
-      jobStatus: 'dispatched', // app-level status
+      jobStatus: 'dispatched',
     });
   }
 
   if (!jobs.length) {
-    showToast('⚠ No jobs found — check format');
+    showToast('⚠ No jobs found — check paste format');
     return;
   }
 
@@ -1854,7 +1874,7 @@ function parseAndLoadDispatch() {
   document.getElementById('dispatch-paste-area').value = '';
   renderDispatch();
   updateDispatchStrip();
-  showToast('✅ ' + jobs.length + ' jobs loaded');
+  showToast('✅ ' + jobs.length + ' job' + (jobs.length > 1 ? 's' : '') + ' loaded');
 }
 
 function normalizeTime(t) {
@@ -1897,7 +1917,7 @@ function renderDispatch() {
               <div class="job-service">${job.service || job.jobType}</div>
               <div class="job-time-row">🕐 <span>${job.startTime}</span> – <span>${job.endTime}</span></div>
             </div>
-            <div class="job-amount-badge">${job.amount}</div>
+            ${job.jobType ? `<div class="job-amount-badge" style="font-size:12px;padding:4px 8px">${job.jobType}</div>` : ''}
           </div>
           <div class="job-status-bar">
             <span class="job-status-pill ${statusClass}">${statusLabel}</span>
