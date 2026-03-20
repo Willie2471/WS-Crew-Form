@@ -1450,7 +1450,7 @@ html, body {
               style="border-color:#f5cba7;background:#fef5ec;"></textarea>
           </div>
           <p style="font-size:11px;color:var(--muted);font-style:italic">
-            📧 Alert email sent to info@wslawncareservicesllc.com if filled in.
+            📧 Alert email sent to <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dcb5b2bab39cabafb0bdabb2bfbdaeb9afb9aeaab5bfb9afb0b0bff2bfb3b1">[email&#160;protected]</a> if filled in.
           </p>
         </div>
 
@@ -1569,7 +1569,7 @@ html, body {
 
 <div class="toast" id="toast"></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ══════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════
@@ -2179,9 +2179,11 @@ document.addEventListener('click', e => {
 
 function fSelectService(type) {
   fState.service = type;
-  ['res','com','oth'].forEach(t => {
-    document.getElementById('f-svc-'+t).classList.toggle('active', t===type);
-    document.getElementById('f-fields-'+t).classList.toggle('hidden', t!==type);
+  const typeMap = { residential:'res', commercial:'com', other:'oth' };
+  ['residential','commercial','other'].forEach(t => {
+    const p = typeMap[t];
+    document.getElementById('f-svc-'+p).classList.toggle('active', t===type);
+    document.getElementById('f-fields-'+p).classList.toggle('hidden', t!==type);
   });
   document.getElementById('f-fields-all').classList.remove('hidden');
   document.getElementById('f-checklist').classList.remove('hidden');
@@ -2359,22 +2361,21 @@ async function fSubmit() {
 
     await fetch(WEBHOOK_JOB, { method:'POST', body: new URLSearchParams(payload), mode:'no-cors' });
 
-    if (fState.pet==='warn' || payload.notes) {
-      const officeNote = document.getElementById('f-office-note').value.trim();
-      const hasPet     = fState.pet === 'warn';
-      const hasNote    = officeNote.length > 0;
-      if (hasPet || hasNote || payload.notes) {
-        await fetch(WEBHOOK_ALERT, { method:'POST', body: new URLSearchParams({
-          type:           'office_alert',
-          customerName:   c.name,
-          serviceAddress: c.address,
-          date,
-          petAlert:   hasPet  ? '⚠️ PET WASTE REPORTED ON PROPERTY' : '',
-          officeNote: hasNote ? officeNote : (payload.notes || ''),
-          toEmail:    'info@wslawncareservicesllc.com',
-          subject:    '[WS Lawn Care Alert] ' + (hasPet ? '🐾 Pet Waste' : '') + (hasPet && hasNote ? ' + ' : '') + (hasNote ? '📋 Office Note' : '') + ' — ' + c.name,
-        }), mode:'no-cors' });
-      }
+    // Fire alert webhook for pet warning OR office note (check independently)
+    const officeNote = document.getElementById('f-office-note').value.trim();
+    const hasPet     = fState.pet === 'warn';
+    const hasNote    = officeNote.length > 0;
+    if (hasPet || hasNote) {
+      await fetch(WEBHOOK_ALERT, { method:'POST', body: new URLSearchParams({
+        type:           'office_alert',
+        customerName:   c.name,
+        serviceAddress: c.address,
+        date,
+        petAlert:   hasPet  ? '⚠️ PET WASTE REPORTED ON PROPERTY' : '',
+        officeNote: officeNote,
+        toEmail:    'info@wslawncareservicesllc.com',
+        subject:    '[WS Lawn Care Alert] ' + (hasPet ? '🐾 Pet Waste' : '') + (hasPet && hasNote ? ' + ' : '') + (hasNote ? '📋 Office Note' : '') + ' — ' + c.name,
+      }), mode:'no-cors' });
     }
 
     await fetch(WEBHOOK_SHEET, { method:'POST', body: new URLSearchParams({
@@ -2547,12 +2548,4 @@ function fmtTime(d) {
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-// close modals on overlay tap
-document.querySelectorAll('.modal-overlay').forEach(o => {
-  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
-});
-</script>
-</body>
-</html>
+  setTimeout(() => t.cla
