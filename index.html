@@ -1437,6 +1437,23 @@ html, body {
           <input type="hidden" id="f-pet"/>
         </div>
 
+        <!-- Internal Office Note -->
+        <div class="alert-card-wrap">
+          <div class="card-title" style="color:var(--acc);margin-bottom:8px"><span style="font-size:20px">📋</span> Internal Note to Office</div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:12px">
+            Gate code, property issue, access note — anything the office needs to know.
+            <strong style="color:var(--text)">Not sent to the customer.</strong>
+          </p>
+          <div class="field">
+            <label>Office Note (Optional)</label>
+            <textarea id="f-office-note" rows="3" placeholder="e.g. Gate code changed, dog left in yard, irrigation head damaged, customer asked about pricing..."
+              style="border-color:#f5cba7;background:#fef5ec;"></textarea>
+          </div>
+          <p style="font-size:11px;color:var(--muted);font-style:italic">
+            📧 Alert email sent to info@wslawncareservicesllc.com if filled in.
+          </p>
+        </div>
+
         <!-- Photos -->
         <div class="card">
           <div class="card-title"><div class="ctnum">4</div> Job Photos</div>
@@ -1878,7 +1895,6 @@ function parseAndLoadDispatch() {
     const startT   = cols[offset + 2] || '';
     const endT     = cols[offset + 3] || '';
     // cols[offset+4] = Job Amount — captured internally but NOT shown in UI
-    const jobAmt   = cols[offset + 4] || '';
     const status   = cols[offset + 5] || 'Dispatched';
     const jobType  = cols[offset + 6] || '';
     const service  = cols[offset + 7] || cols[offset + 6] || '';
@@ -1894,8 +1910,6 @@ function parseAndLoadDispatch() {
       client:    client.replace(/,\s*/g, ', '),
       startTime: normalizeTime(startT),
       endTime:   normalizeTime(endT),
-      // amount stored but hidden from card display per request
-      amount:    jobAmt,
       status,
       jobType,
       service,
@@ -2018,7 +2032,6 @@ function openJobDetail(idx) {
       <div class="job-detail-row"><span class="jdr-label">Date</span><span class="jdr-val">${job.date}</span></div>
       <div class="job-detail-row"><span class="jdr-label">Start Time</span><span class="jdr-val">${job.startTime}</span></div>
       <div class="job-detail-row"><span class="jdr-label">End Time</span><span class="jdr-val">${job.endTime}</span></div>
-      <div class="job-detail-row"><span class="jdr-label">Amount</span><span class="jdr-val">${job.amount}</span></div>
       <div class="job-detail-row"><span class="jdr-label">Job Type</span><span class="jdr-val">${job.jobType}</span></div>
       <div class="job-detail-row"><span class="jdr-label">Source</span><span class="jdr-val">${job.source || '—'}</span></div>
       <div class="job-detail-row"><span class="jdr-label">Status</span><span class="jdr-val">${job.status}</span></div>
@@ -2347,11 +2360,21 @@ async function fSubmit() {
     await fetch(WEBHOOK_JOB, { method:'POST', body: new URLSearchParams(payload), mode:'no-cors' });
 
     if (fState.pet==='warn' || payload.notes) {
-      await fetch(WEBHOOK_ALERT, { method:'POST', body: new URLSearchParams({
-        type:'office_alert', customerName: c.name, serviceAddress: c.address, date,
-        petAlert: fState.pet==='warn' ? '⚠️ PET WASTE REPORTED' : '',
-        officeNote: payload.notes, toEmail:'info@wslawncareservicesllc.com',
-      }), mode:'no-cors' });
+      const officeNote = document.getElementById('f-office-note').value.trim();
+      const hasPet     = fState.pet === 'warn';
+      const hasNote    = officeNote.length > 0;
+      if (hasPet || hasNote || payload.notes) {
+        await fetch(WEBHOOK_ALERT, { method:'POST', body: new URLSearchParams({
+          type:           'office_alert',
+          customerName:   c.name,
+          serviceAddress: c.address,
+          date,
+          petAlert:   hasPet  ? '⚠️ PET WASTE REPORTED ON PROPERTY' : '',
+          officeNote: hasNote ? officeNote : (payload.notes || ''),
+          toEmail:    'info@wslawncareservicesllc.com',
+          subject:    '[WS Lawn Care Alert] ' + (hasPet ? '🐾 Pet Waste' : '') + (hasPet && hasNote ? ' + ' : '') + (hasNote ? '📋 Office Note' : '') + ' — ' + c.name,
+        }), mode:'no-cors' });
+      }
     }
 
     await fetch(WEBHOOK_SHEET, { method:'POST', body: new URLSearchParams({
@@ -2397,6 +2420,7 @@ function fReset() {
   document.getElementById('f-no-svc-msg').classList.remove('hidden');
   document.getElementById('f-photo-previews').innerHTML = '';
   document.getElementById('f-notes').value = '';
+  document.getElementById('f-office-note').value = '';
   document.querySelectorAll('.yn-btn.active').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.yn-group.invalid').forEach(b => b.classList.remove('invalid'));
   document.getElementById('f-pet-clear').classList.remove('active-clean');
