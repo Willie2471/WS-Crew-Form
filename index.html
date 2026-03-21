@@ -650,7 +650,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
             <label>Office Note (Optional)</label>
             <textarea id="f-onote" rows="3" placeholder="e.g. Gate code changed, dog left in yard, irrigation head damaged…"></textarea>
           </div>
-          <p style="font-size:11px;color:var(--muted);font-style:italic">📧 Alert sent to info@wslawncareservicesllc.com if filled in.</p>
+          <p style="font-size:11px;color:var(--muted);font-style:italic">📧 Alert sent to <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e58c8b838aa592968984928b86849780968097938c868096898986cb868a88">[email&#160;protected]</a> if filled in.</p>
         </div>
 
         <!-- Photos -->
@@ -721,7 +721,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 
 <div class="toast" id="toast"></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ════════════════════════════════════════════════════════════════
 // CONFIG  — all webhook URLs and IDs in one place
 // ════════════════════════════════════════════════════════════════
@@ -972,7 +972,7 @@ function parseDispatch() {
       }
     }
     const stm=(line+' '+dataLine).match(stRe), tym=(line+' '+dataLine).match(tyRe);
-    add({date,client:cl,startTime:st,endTime:et,status:stm?stm[1]:'Dispatched',jobType:tym?tym[1]:'',service:svc,jobStatus:'dispatched'});
+    add({date,client:cl,startTime:st,endTime:et,status:stm?stm[1]:'Dispatched',jobType:tym?tym[1]:'',service:svc,budgetedHours:'',jobStatus:'dispatched'});
     i++;
   }
 
@@ -1003,6 +1003,7 @@ function renderDispatch() {
             ${j.service?`<div class="jc-svc">${j.service}</div>`:''}
             <div class="jc-time">🕐 <span>${j.startTime}</span>${j.endTime?` – <span>${j.endTime}</span>`:''}
             </div>
+            ${j.budgetedHours?`<div class="jc-time" style="margin-top:3px">⏳ Budget: <span>${j.budgetedHours} hrs</span></div>`:''}
           </div>
           ${j.jobType?`<div class="jc-type">${j.jobType}</div>`:''}
         </div>
@@ -1033,7 +1034,8 @@ function openDetail(i) {
     <div class="detail-row"><span class="dr-lbl">Start Time</span><span class="dr-val">${j.startTime||'—'}</span></div>
     <div class="detail-row"><span class="dr-lbl">End Time</span><span class="dr-val">${j.endTime||'—'}</span></div>
     <div class="detail-row"><span class="dr-lbl">Job Type</span><span class="dr-val">${j.jobType||'—'}</span></div>
-    <div class="detail-row"><span class="dr-lbl">Status</span><span class="dr-val">${j.status||'—'}</span></div>`;
+    <div class="detail-row"><span class="dr-lbl">Status</span><span class="dr-val">${j.status||'—'}</span></div>
+    ${j.budgetedHours?`<div class="detail-row"><span class="dr-lbl">Budget Hours</span><span class="dr-val" style="color:var(--blue);font-weight:700">${j.budgetedHours} hrs</span></div>`:''}`;
   const btn=document.getElementById('detail-start-btn');
   btn.disabled=j.jobStatus==='complete'; btn.textContent=j.jobStatus==='complete'?'✓ Completed':'Start This Job →';
   document.getElementById('detail-modal').classList.add('open');
@@ -1103,6 +1105,10 @@ function showCustBanner(){
   if(c.grassType)    chips+=`<div class="chip"><div><div class="chip-lbl">Grass</div><div class="chip-val">${c.grassType}</div></div></div>`;
   if(c.mowingDirection) chips+=`<div class="chip"><div><div class="chip-lbl">Direction</div><div class="chip-val">${c.mowingDirection}</div></div></div>`;
   if(c.lastVisitDuration) chips+=`<div class="chip blue"><div><div class="chip-lbl">Last Visit</div><div class="chip-val">${c.lastVisitDuration} hrs</div></div></div>`;
+  // Show budgeted hours from dispatch job if available
+  if(S.selJobIdx!==null && S.jobs[S.selJobIdx]?.budgetedHours) {
+    chips+=`<div class="chip blue"><div><div class="chip-lbl">⏳ Budget</div><div class="chip-val">${S.jobs[S.selJobIdx].budgetedHours} hrs</div></div></div>`;
+  }
   document.getElementById('f-chips').innerHTML=chips;
 }
 function clearCust(){
@@ -1306,8 +1312,4 @@ function goTab(tab){
 function fmt(d){return d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
-document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
-async function zap(url,data){try{await fetch(url,{method:'POST',body:new URLSearchParams(data),mode:'no-cors'});}catch(e){}}
-</script>
-</body>
-</html>
+document.querySelectorAll('.overlay').
