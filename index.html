@@ -81,6 +81,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .content{flex:1;overflow-y:auto;padding:16px 14px 100px;max-width:680px;width:100%;margin:0 auto}
 .tab{display:none}.tab.active{display:block}
 
+/* ── BOTTOM NAV (3 tabs now — Board removed) ─────────────────── */
 .bnav{position:fixed;bottom:0;left:0;right:0;background:var(--g9);border-top:1px solid rgba(255,255,255,.08);
   display:flex;padding:8px 0 env(safe-area-inset-bottom,8px);z-index:100}
 .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;cursor:pointer;position:relative}
@@ -108,6 +109,28 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
   background:#f9fcf9;outline:none;transition:border-color .2s;-webkit-appearance:none}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--g7);background:#fff}
 .field textarea{min-height:80px;resize:vertical}
+
+/* ── FORM LOCKED STATE ───────────────────────────────────────────── */
+.form-lock-banner{
+  background:linear-gradient(135deg,#fff8e1,#fff3cd);
+  border:2px solid var(--acc);border-radius:12px;
+  padding:18px 16px;margin-bottom:16px;text-align:center;
+}
+.form-lock-banner .flb-icon{font-size:36px;margin-bottom:8px}
+.form-lock-banner .flb-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:#7a5000;margin-bottom:4px}
+.form-lock-banner .flb-sub{font-size:13px;color:#996600;line-height:1.5}
+.form-section-lock{
+  position:relative;pointer-events:none;opacity:.45;user-select:none;
+}
+.form-section-lock::after{
+  content:'';position:absolute;inset:0;z-index:10;border-radius:var(--card-r);
+  background:rgba(255,255,255,.01);cursor:not-allowed;
+}
+
+/* sub button locked */
+.sub-btn:disabled.end-required{
+  background:#cc7a00!important;cursor:not-allowed;
+}
 
 /* yn buttons */
 .yn{display:flex;gap:8px}
@@ -259,6 +282,10 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
   font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;cursor:pointer;
   display:flex;align-items:center;gap:6px;margin-bottom:12px;transition:all .2s}
 .load-btn:active{background:var(--g6);transform:scale(.97)}
+.route-banner{background:var(--blue2);border:1.5px solid var(--blue3);border-radius:10px;
+  padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.rb-text{font-size:13px;color:var(--blue);font-weight:600}
+.rb-badge{background:var(--blue);color:#fff;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;font-family:'Barlow Condensed',sans-serif}
 .tg-hdr{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--muted);
   text-transform:uppercase;letter-spacing:1px;padding:8px 4px 6px;display:flex;align-items:center;gap:8px}
 .tg-hdr::after{content:'';flex:1;height:1px;background:var(--border)}
@@ -271,6 +298,10 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .jc-svc{font-size:13px;font-weight:600;color:var(--g7);margin-bottom:4px}
 .jc-time{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
 .jc-time span{font-weight:600}
+.jc-addr{font-size:12px;margin-top:5px}
+.jc-addr a{color:var(--blue);font-weight:600;text-decoration:none;display:flex;align-items:center;gap:4px}
+.jc-addr a:hover{text-decoration:underline}
+.jc-contact{font-size:12px;color:var(--muted);margin-top:3px}
 .jc-type{background:var(--g1);border:1px solid var(--g2);border-radius:8px;padding:4px 10px;
   font-size:11px;font-weight:700;color:var(--g7);white-space:nowrap;flex-shrink:0}
 .jc-bar{border-top:1px solid var(--g1);padding:8px 14px;display:flex;align-items:center;justify-content:space-between}
@@ -284,17 +315,11 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .jc-act.complete{background:var(--g4);color:var(--g9)}
 .jc-act.done{background:transparent;color:var(--muted);cursor:default;font-size:12px}
 
-/* ── BOARD TAB ───────────────────────────────────────────────────── */
-.board-post{background:#fff;border-radius:12px;border-left:4px solid var(--g7);padding:14px 16px;margin-bottom:10px}
-.board-post.urgent{border-left-color:var(--red)}
-.board-post.info{border-left-color:var(--blue)}
-.bp-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
-  padding:2px 8px;border-radius:4px;margin-bottom:6px;display:inline-block}
-.bp-tag.general{background:var(--g1);color:var(--g7)}
-.bp-tag.urgent{background:var(--red2);color:var(--red)}
-.bp-tag.info{background:var(--blue2);color:var(--blue)}
-.bp-body{font-size:15px;color:var(--text);line-height:1.6;margin-bottom:6px}
-.bp-time{font-size:11px;color:var(--muted)}
+/* stop number badge */
+.stop-num{width:26px;height:26px;background:var(--g7);color:#fff;border-radius:50%;
+  font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.stop-num.done-num{background:var(--g2);color:var(--g7)}
 
 /* ── MODALS ──────────────────────────────────────────────────────── */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:flex-end;justify-content:center}
@@ -317,6 +342,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .detail-row:last-child{border-bottom:none}
 .dr-lbl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);min-width:100px;flex-shrink:0}
 .dr-val{font-size:14px;color:var(--text);font-weight:500}
+.dr-val a{color:var(--blue);font-weight:600;text-decoration:none}
 
 /* ── SPINNER / TOAST ─────────────────────────────────────────────── */
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.35);
@@ -340,11 +366,11 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
   <div class="name-wrap">
     <label for="name-sel">Select Your Name</label>
     <select id="name-sel">
-        <option value="">— Select your name —</option>
-        <option value="0">Willie Arreola</option>
-        <option value="1">William Arreola</option>
-        <option value="2">Sandra Arreola</option>
-      </select>
+      <option value="">— Select your name —</option>
+      <option value="0">Willie Arreola</option>
+      <option value="1">William Arreola</option>
+      <option value="2">Sandra Arreola</option>
+    </select>
   </div>
   <div class="pin-lbl">Enter Your PIN</div>
   <div class="pin-dots">
@@ -407,6 +433,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
         <div><div class="disp-title">Daily Dispatch</div><div class="disp-date" id="d-date"></div></div>
       </div>
       <button class="load-btn" onclick="openPasteModal()">📥 Load / Refresh Jobs</button>
+      <div id="route-info" class="hidden"></div>
       <div id="dispatch-list"><div class="empty-state">📋<br><br>No jobs loaded yet.<br>Tap "Load / Refresh Jobs" to paste the report.</div></div>
     </div>
 
@@ -414,7 +441,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
     <div class="tab" id="tab-form">
       <div id="form-body">
 
-        <!-- Job time -->
+        <!-- ── JOB TIME — always on top, always interactive ── -->
         <div class="card">
           <div class="card-title"><div class="ctn" style="background:var(--blue)">⏱</div> Job Time</div>
           <div class="time-row">
@@ -435,245 +462,266 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
           </div>
         </div>
 
-        <!-- Customer -->
-        <div class="card">
-          <div class="card-title"><div class="ctn">1</div> Customer</div>
-          <div id="f-srch-wrap">
-            <div class="field">
-              <label>Search by name or address</label>
-              <div class="srch-wrap">
-                <span class="srch-icon">🔍</span>
-                <input type="text" id="f-srch" placeholder="Type to search…" autocomplete="off"/>
-                <div class="srch-results" id="f-results"></div>
+        <!-- ── LOCK BANNER — shown until job is started ── -->
+        <div class="form-lock-banner" id="form-lock-banner">
+          <div class="flb-icon">⏱</div>
+          <div class="flb-title">Start the Job First</div>
+          <div class="flb-sub">Tap <strong>TAP TO START</strong> above to unlock the job form and begin tracking time.</div>
+        </div>
+
+        <!-- ── ALL FIELDS BELOW — locked until start tapped ── -->
+        <div id="form-fields-wrap">
+
+          <!-- Customer -->
+          <div class="card">
+            <div class="card-title"><div class="ctn">1</div> Customer</div>
+            <div id="f-srch-wrap">
+              <div class="field">
+                <label>Search by name or address</label>
+                <div class="srch-wrap">
+                  <span class="srch-icon">🔍</span>
+                  <input type="text" id="f-srch" placeholder="Type to search…" autocomplete="off"/>
+                  <div class="srch-results" id="f-results"></div>
+                </div>
               </div>
             </div>
-          </div>
-          <div id="f-csel" class="hidden">
-            <div class="csel-banner">
-              <div class="csel-name" id="f-cname"></div>
-              <div class="csel-det" id="f-cdet"></div>
-              <button class="csel-chg" onclick="clearCust()">✕ Change customer</button>
+            <div id="f-csel" class="hidden">
+              <div class="csel-banner">
+                <div class="csel-name" id="f-cname"></div>
+                <div class="csel-det" id="f-cdet"></div>
+                <button class="csel-chg" onclick="clearCust()">✕ Change customer</button>
+              </div>
+              <div class="info-chips" id="f-chips"></div>
             </div>
-            <div class="info-chips" id="f-chips"></div>
-          </div>
-        </div>
-
-        <!-- Crew -->
-        <div class="card">
-          <div class="card-title"><div class="ctn">2</div> Crew on Job</div>
-          <div class="tech-wrap" id="tech-wrap"></div>
-          <input type="hidden" id="f-techs"/>
-        </div>
-
-        <!-- Service type -->
-        <div class="card">
-          <div class="card-title"><div class="ctn">3</div> Service Type</div>
-          <div class="svc-grid">
-            <div class="svc-btn" id="svc-res" onclick="selSvc('residential')"><span class="si">🏠</span><span class="sl">Residential Mowing</span></div>
-            <div class="svc-btn" id="svc-com" onclick="selSvc('commercial')"><span class="si">🏢</span><span class="sl">Commercial Mowing</span></div>
-            <div class="svc-btn" id="svc-oth" onclick="selSvc('other')"><span class="si">🔧</span><span class="sl">All Other Services</span></div>
-          </div>
-        </div>
-
-        <!-- Job details -->
-        <div class="card">
-          <div class="card-title"><div class="ctn">4</div> Job Details</div>
-          <div id="svc-none" style="color:var(--muted);font-size:13px;text-align:center;padding:16px 0">← Select a service type above</div>
-
-          <!-- RESIDENTIAL -->
-          <div id="f-res" class="hidden">
-            <div class="field"><label>Cut Height (inches)</label>
-              <select id="r-height"><option value="">Select…</option>
-                <option>2.50</option><option>2.75</option><option>3.00</option><option>3.25</option><option>3.50</option>
-                <option>3.75</option><option>4.00</option><option>4.25</option><option>4.50</option><option>4.75</option><option>5.00</option>
-              </select>
-            </div>
-            <div class="field"><label>Grass Type</label>
-              <div class="gg">
-                <div class="gb" onclick="selGrass(this,'Bahia')"><span class="gi">🌾</span><span class="gl">Bahia</span></div>
-                <div class="gb" onclick="selGrass(this,'Bermuda')"><span class="gi">☀️</span><span class="gl">Bermuda</span></div>
-                <div class="gb" onclick="selGrass(this,'St. Augustine')"><span class="gi">🌿</span><span class="gl">St. Augustine</span></div>
-                <div class="gb" onclick="selGrass(this,'Zoysia')"><span class="gi">🍃</span><span class="gl">Zoysia</span></div>
-                <div class="gb" onclick="selGrass(this,'Centipede')"><span class="gi">🐛</span><span class="gl">Centipede</span></div>
-                <div class="gb" onclick="selGrass(this,'Unknown')"><span class="gi">❓</span><span class="gl">Unable To ID</span></div>
-              </div><input type="hidden" id="r-grass"/>
-            </div>
-            <div class="field"><label>Mowing Direction</label>
-              <div class="gg">
-                <div class="gb" onclick="selDir(this,'12 to 6')"><span class="gi">🕛</span><span class="gl">12 to 6</span></div>
-                <div class="gb" onclick="selDir(this,'3 to 9')"><span class="gi">🕒</span><span class="gl">3 to 9</span></div>
-                <div class="gb" onclick="selDir(this,'2 to 8')"><span class="gi">🕑</span><span class="gl">2 to 8</span></div>
-                <div class="gb" onclick="selDir(this,'11 to 5')"><span class="gi">🕚</span><span class="gl">11 to 5</span></div>
-                <div class="gb" onclick="selDir(this,'1 to 7')"><span class="gi">🕐</span><span class="gl">1 to 7</span></div>
-                <div class="gb" onclick="selDir(this,'Circular')"><span class="gi">🔄</span><span class="gl">Circular</span></div>
-              </div><input type="hidden" id="r-dir"/>
-            </div>
-            <div class="divider"></div>
-            <div class="sec-lbl">Service Checklist</div>
-            <div class="field"><label>Applied Weed Control?</label>
-              <div class="yn" id="yn-r-weed">
-                <div class="yn-btn y" onclick="yntog(this,'r-weed','✅ Yes')">✅ Yes</div>
-                <div class="yn-btn nx" onclick="yntog(this,'r-weed','🔜 Next Visit')">🔜 Next Visit</div>
-                <div class="yn-btn n" onclick="yntog(this,'r-weed','❌ No')">❌ No</div>
-              </div><input type="hidden" id="r-weed"/>
-            </div>
-            <div class="field"><label>Sprayed for Bugs?</label>
-              <div class="yn" id="yn-r-bugs">
-                <div class="yn-btn y" onclick="yntog(this,'r-bugs','✅ Yes')">✅ Yes</div>
-                <div class="yn-btn nx" onclick="yntog(this,'r-bugs','🔜 Next Visit')">🔜 Next Visit</div>
-                <div class="yn-btn n" onclick="yntog(this,'r-bugs','❌ No')">❌ No</div>
-              </div><input type="hidden" id="r-bugs"/>
-            </div>
-            <div class="field"><label>Trimmed Hedges / Limbs?</label>
-              <div class="yn" id="yn-r-hedges">
-                <div class="yn-btn y" onclick="yntog(this,'r-hedges','✅ Yes')">✅ Yes</div>
-                <div class="yn-btn nx" onclick="yntog(this,'r-hedges','🔜 Next Visit')">🔜 Next Visit</div>
-                <div class="yn-btn n" onclick="yntog(this,'r-hedges','❌ No')">❌ No</div>
-              </div><input type="hidden" id="r-hedges"/>
-            </div>
-            <div class="field"><label>Walked Perimeter?</label>
-              <div class="yn" id="yn-r-perim">
-                <div class="yn-btn y" onclick="yntog(this,'r-perim','✅ Clear')">✅ Clear</div>
-                <div class="yn-btn n" onclick="yntog(this,'r-perim','⚠️ Issue Found')">⚠️ Issue</div>
-              </div><input type="hidden" id="r-perim"/>
-            </div>
-            <div class="divider"></div>
-            <div class="field"><label>Notes / Recommend</label><textarea id="r-notes" placeholder="Notes for office or customer…"></textarea></div>
           </div>
 
-          <!-- COMMERCIAL -->
-          <div id="f-com" class="hidden">
-            <div class="field"><label>Service Duration</label><input type="text" id="c-dur" placeholder="e.g. 2.5 hrs"/></div>
-            <div class="field"><label>Cut Height (inches)</label>
-              <select id="c-height"><option value="">Select…</option>
-                <option>2.50</option><option>2.75</option><option>3.00</option><option>3.25</option><option>3.50</option>
-                <option>3.75</option><option>4.00</option><option>4.25</option><option>4.50</option><option>4.75</option><option>5.00</option>
-              </select>
-            </div>
-            <div class="field"><label>Grass Type</label>
-              <div class="gg">
-                <div class="gb" onclick="selGrassCom(this,'Bahia')"><span class="gi">🌾</span><span class="gl">Bahia</span></div>
-                <div class="gb" onclick="selGrassCom(this,'Bermuda')"><span class="gi">☀️</span><span class="gl">Bermuda</span></div>
-                <div class="gb" onclick="selGrassCom(this,'St. Augustine')"><span class="gi">🌿</span><span class="gl">St. Augustine</span></div>
-                <div class="gb" onclick="selGrassCom(this,'Zoysia')"><span class="gi">🍃</span><span class="gl">Zoysia</span></div>
-                <div class="gb" onclick="selGrassCom(this,'Centipede')"><span class="gi">🐛</span><span class="gl">Centipede</span></div>
-                <div class="gb" onclick="selGrassCom(this,'Unknown')"><span class="gi">❓</span><span class="gl">Unable To ID</span></div>
-              </div><input type="hidden" id="c-grass"/>
-            </div>
-            <div class="divider"></div>
-            <div class="sec-lbl">Service Checklist</div>
-            <div class="field"><label>Blew Parking Lot &amp; Common Areas?</label>
-              <div class="yn" id="yn-c-blow">
-                <div class="yn-btn y" onclick="yntog(this,'c-blow','✅ Yes')">✅ Yes</div>
-                <div class="yn-btn n" onclick="yntog(this,'c-blow','❌ No')">❌ No</div>
-              </div><input type="hidden" id="c-blow"/>
-            </div>
-            <div class="field"><label>Applied Weed Control?</label>
-              <div class="yn" id="yn-c-weed">
-                <div class="yn-btn y" onclick="yntog(this,'c-weed','✅ Yes')">✅ Yes</div>
-                <div class="yn-btn nx" onclick="yntog(this,'c-weed','🔜 Next Visit')">🔜 Next Visit</div>
-                <div class="yn-btn n" onclick="yntog(this,'c-weed','❌ No')">❌ No</div>
-              </div><input type="hidden" id="c-weed"/>
-            </div>
-            <div class="field"><label>Sprayed for Bugs?</label>
-              <div class="yn" id="yn-c-bugs">
-                <div class="yn-btn y" onclick="yntog(this,'c-bugs','✅ Yes')">✅ Yes</div>
-                <div class="yn-btn nx" onclick="yntog(this,'c-bugs','🔜 Next Visit')">🔜 Next Visit</div>
-                <div class="yn-btn n" onclick="yntog(this,'c-bugs','❌ No')">❌ No</div>
-              </div><input type="hidden" id="c-bugs"/>
-            </div>
-            <div class="field"><label>Trimmed Hedges / Limbs?</label>
-              <div class="yn" id="yn-c-hedges">
-                <div class="yn-btn y" onclick="yntog(this,'c-hedges','✅ Yes')">✅ Yes</div>
-                <div class="yn-btn nx" onclick="yntog(this,'c-hedges','🔜 Next Visit')">🔜 Next Visit</div>
-                <div class="yn-btn n" onclick="yntog(this,'c-hedges','❌ No')">❌ No</div>
-              </div><input type="hidden" id="c-hedges"/>
-            </div>
-            <div class="field"><label>Walked Perimeter?</label>
-              <div class="yn" id="yn-c-perim">
-                <div class="yn-btn y" onclick="yntog(this,'c-perim','✅ Clear')">✅ Clear</div>
-                <div class="yn-btn n" onclick="yntog(this,'c-perim','⚠️ Issue Found')">⚠️ Issue</div>
-              </div><input type="hidden" id="c-perim"/>
-            </div>
-            <div class="divider"></div>
-            <div class="field"><label>We Recommend</label><textarea id="c-rec" placeholder="Recommended services for next visit…"></textarea></div>
-            <div class="field"><label>Notes / Communicate</label><textarea id="c-notes" placeholder="Notes for office or customer…"></textarea></div>
+          <!-- Crew -->
+          <div class="card">
+            <div class="card-title"><div class="ctn">2</div> Crew on Job</div>
+            <div class="tech-wrap" id="tech-wrap"></div>
+            <input type="hidden" id="f-techs"/>
           </div>
 
-          <!-- OTHER -->
-          <div id="f-oth" class="hidden">
-            <div class="field"><label>Service Performed</label><input type="text" id="o-svc" placeholder="e.g. Hedge Trim, Power Wash…"/></div>
-            <div class="divider"></div>
-            <div class="sec-lbl">Service Checklist</div>
-            <div class="field"><label>Applied Weed Control?</label>
-              <div class="yn" id="yn-o-weed">
-                <div class="yn-btn y" onclick="yntog(this,'o-weed','✅ Yes')">✅ Yes</div>
-                <div class="yn-btn nx" onclick="yntog(this,'o-weed','🔜 Next Visit')">🔜 Next Visit</div>
-                <div class="yn-btn n" onclick="yntog(this,'o-weed','❌ No')">❌ No</div>
-              </div><input type="hidden" id="o-weed"/>
+          <!-- Service type -->
+          <div class="card">
+            <div class="card-title"><div class="ctn">3</div> Service Type</div>
+            <div class="svc-grid">
+              <div class="svc-btn" id="svc-res" onclick="selSvc('residential')"><span class="si">🏠</span><span class="sl">Residential Mowing</span></div>
+              <div class="svc-btn" id="svc-com" onclick="selSvc('commercial')"><span class="si">🏢</span><span class="sl">Commercial Mowing</span></div>
+              <div class="svc-btn" id="svc-oth" onclick="selSvc('other')"><span class="si">🔧</span><span class="sl">All Other Services</span></div>
             </div>
-            <div class="field"><label>Sprayed for Bugs?</label>
-              <div class="yn" id="yn-o-bugs">
-                <div class="yn-btn y" onclick="yntog(this,'o-bugs','✅ Yes')">✅ Yes</div>
-                <div class="yn-btn nx" onclick="yntog(this,'o-bugs','🔜 Next Visit')">🔜 Next Visit</div>
-                <div class="yn-btn n" onclick="yntog(this,'o-bugs','❌ No')">❌ No</div>
-              </div><input type="hidden" id="o-bugs"/>
+          </div>
+
+          <!-- Job details -->
+          <div class="card">
+            <div class="card-title"><div class="ctn">4</div> Job Details</div>
+            <div id="svc-none" style="color:var(--muted);font-size:13px;text-align:center;padding:16px 0">← Select a service type above</div>
+
+            <!-- RESIDENTIAL -->
+            <div id="f-res" class="hidden">
+              <div class="field"><label>Cut Height (inches)</label>
+                <select id="r-height"><option value="">Select…</option>
+                  <option>2.50</option><option>2.75</option><option>3.00</option><option>3.25</option><option>3.50</option>
+                  <option>3.75</option><option>4.00</option><option>4.25</option><option>4.50</option><option>4.75</option><option>5.00</option>
+                </select>
+              </div>
+              <div class="field"><label>Grass Type</label>
+                <div class="gg">
+                  <div class="gb" onclick="selGrass(this,'Bahia')"><span class="gi">🌾</span><span class="gl">Bahia</span></div>
+                  <div class="gb" onclick="selGrass(this,'Bermuda')"><span class="gi">☀️</span><span class="gl">Bermuda</span></div>
+                  <div class="gb" onclick="selGrass(this,'St. Augustine')"><span class="gi">🌿</span><span class="gl">St. Augustine</span></div>
+                  <div class="gb" onclick="selGrass(this,'Zoysia')"><span class="gi">🍃</span><span class="gl">Zoysia</span></div>
+                  <div class="gb" onclick="selGrass(this,'Centipede')"><span class="gi">🐛</span><span class="gl">Centipede</span></div>
+                  <div class="gb" onclick="selGrass(this,'Unknown')"><span class="gi">❓</span><span class="gl">Unable To ID</span></div>
+                </div><input type="hidden" id="r-grass"/>
+              </div>
+              <div class="field"><label>Mowing Direction</label>
+                <div class="gg">
+                  <div class="gb" onclick="selDir(this,'12 to 6')"><span class="gi">🕛</span><span class="gl">12 to 6</span></div>
+                  <div class="gb" onclick="selDir(this,'3 to 9')"><span class="gi">🕒</span><span class="gl">3 to 9</span></div>
+                  <div class="gb" onclick="selDir(this,'2 to 8')"><span class="gi">🕑</span><span class="gl">2 to 8</span></div>
+                  <div class="gb" onclick="selDir(this,'11 to 5')"><span class="gi">🕚</span><span class="gl">11 to 5</span></div>
+                  <div class="gb" onclick="selDir(this,'1 to 7')"><span class="gi">🕐</span><span class="gl">1 to 7</span></div>
+                  <div class="gb" onclick="selDir(this,'Circular')"><span class="gi">🔄</span><span class="gl">Circular</span></div>
+                </div><input type="hidden" id="r-dir"/>
+              </div>
+              <div class="divider"></div>
+              <div class="sec-lbl">Service Checklist</div>
+              <div class="field"><label>Applied Weed Control?</label>
+                <div class="yn" id="yn-r-weed">
+                  <div class="yn-btn y" onclick="yntog(this,'r-weed','✅ Yes')">✅ Yes</div>
+                  <div class="yn-btn nx" onclick="yntog(this,'r-weed','🔜 Next Visit')">🔜 Next Visit</div>
+                  <div class="yn-btn n" onclick="yntog(this,'r-weed','❌ No')">❌ No</div>
+                </div><input type="hidden" id="r-weed"/>
+              </div>
+              <div class="field"><label>Sprayed for Bugs?</label>
+                <div class="yn" id="yn-r-bugs">
+                  <div class="yn-btn y" onclick="yntog(this,'r-bugs','✅ Yes')">✅ Yes</div>
+                  <div class="yn-btn nx" onclick="yntog(this,'r-bugs','🔜 Next Visit')">🔜 Next Visit</div>
+                  <div class="yn-btn n" onclick="yntog(this,'r-bugs','❌ No')">❌ No</div>
+                </div><input type="hidden" id="r-bugs"/>
+              </div>
+              <div class="field"><label>Trimmed Hedges / Limbs?</label>
+                <div class="yn" id="yn-r-hedges">
+                  <div class="yn-btn y" onclick="yntog(this,'r-hedges','✅ Yes')">✅ Yes</div>
+                  <div class="yn-btn nx" onclick="yntog(this,'r-hedges','🔜 Next Visit')">🔜 Next Visit</div>
+                  <div class="yn-btn n" onclick="yntog(this,'r-hedges','❌ No')">❌ No</div>
+                </div><input type="hidden" id="r-hedges"/>
+              </div>
+              <div class="field"><label>Walked Perimeter?</label>
+                <div class="yn" id="yn-r-perim">
+                  <div class="yn-btn y" onclick="yntog(this,'r-perim','✅ Clear')">✅ Clear</div>
+                  <div class="yn-btn n" onclick="yntog(this,'r-perim','⚠️ Issue Found')">⚠️ Issue</div>
+                </div><input type="hidden" id="r-perim"/>
+              </div>
+              <div class="divider"></div>
+              <div class="field"><label>Notes / Recommend</label><textarea id="r-notes" placeholder="Notes for office or customer…"></textarea></div>
             </div>
-            <div class="field"><label>Trimmed Hedges / Limbs?</label>
-              <div class="yn" id="yn-o-hedges">
-                <div class="yn-btn y" onclick="yntog(this,'o-hedges','✅ Yes')">✅ Yes</div>
-                <div class="yn-btn nx" onclick="yntog(this,'o-hedges','🔜 Next Visit')">🔜 Next Visit</div>
-                <div class="yn-btn n" onclick="yntog(this,'o-hedges','❌ No')">❌ No</div>
-              </div><input type="hidden" id="o-hedges"/>
+
+            <!-- COMMERCIAL -->
+            <div id="f-com" class="hidden">
+              <div class="field"><label>Service Duration</label><input type="text" id="c-dur" placeholder="e.g. 2.5 hrs"/></div>
+              <div class="field"><label>Cut Height (inches)</label>
+                <select id="c-height"><option value="">Select…</option>
+                  <option>2.50</option><option>2.75</option><option>3.00</option><option>3.25</option><option>3.50</option>
+                  <option>3.75</option><option>4.00</option><option>4.25</option><option>4.50</option><option>4.75</option><option>5.00</option>
+                </select>
+              </div>
+              <div class="field"><label>Grass Type</label>
+                <div class="gg">
+                  <div class="gb" onclick="selGrassCom(this,'Bahia')"><span class="gi">🌾</span><span class="gl">Bahia</span></div>
+                  <div class="gb" onclick="selGrassCom(this,'Bermuda')"><span class="gi">☀️</span><span class="gl">Bermuda</span></div>
+                  <div class="gb" onclick="selGrassCom(this,'St. Augustine')"><span class="gi">🌿</span><span class="gl">St. Augustine</span></div>
+                  <div class="gb" onclick="selGrassCom(this,'Zoysia')"><span class="gi">🍃</span><span class="gl">Zoysia</span></div>
+                  <div class="gb" onclick="selGrassCom(this,'Centipede')"><span class="gi">🐛</span><span class="gl">Centipede</span></div>
+                  <div class="gb" onclick="selGrassCom(this,'Unknown')"><span class="gi">❓</span><span class="gl">Unable To ID</span></div>
+                </div><input type="hidden" id="c-grass"/>
+              </div>
+              <div class="divider"></div>
+              <div class="sec-lbl">Service Checklist</div>
+              <div class="field"><label>Blew Parking Lot &amp; Common Areas?</label>
+                <div class="yn" id="yn-c-blow">
+                  <div class="yn-btn y" onclick="yntog(this,'c-blow','✅ Yes')">✅ Yes</div>
+                  <div class="yn-btn n" onclick="yntog(this,'c-blow','❌ No')">❌ No</div>
+                </div><input type="hidden" id="c-blow"/>
+              </div>
+              <div class="field"><label>Applied Weed Control?</label>
+                <div class="yn" id="yn-c-weed">
+                  <div class="yn-btn y" onclick="yntog(this,'c-weed','✅ Yes')">✅ Yes</div>
+                  <div class="yn-btn nx" onclick="yntog(this,'c-weed','🔜 Next Visit')">🔜 Next Visit</div>
+                  <div class="yn-btn n" onclick="yntog(this,'c-weed','❌ No')">❌ No</div>
+                </div><input type="hidden" id="c-weed"/>
+              </div>
+              <div class="field"><label>Sprayed for Bugs?</label>
+                <div class="yn" id="yn-c-bugs">
+                  <div class="yn-btn y" onclick="yntog(this,'c-bugs','✅ Yes')">✅ Yes</div>
+                  <div class="yn-btn nx" onclick="yntog(this,'c-bugs','🔜 Next Visit')">🔜 Next Visit</div>
+                  <div class="yn-btn n" onclick="yntog(this,'c-bugs','❌ No')">❌ No</div>
+                </div><input type="hidden" id="c-bugs"/>
+              </div>
+              <div class="field"><label>Trimmed Hedges / Limbs?</label>
+                <div class="yn" id="yn-c-hedges">
+                  <div class="yn-btn y" onclick="yntog(this,'c-hedges','✅ Yes')">✅ Yes</div>
+                  <div class="yn-btn nx" onclick="yntog(this,'c-hedges','🔜 Next Visit')">🔜 Next Visit</div>
+                  <div class="yn-btn n" onclick="yntog(this,'c-hedges','❌ No')">❌ No</div>
+                </div><input type="hidden" id="c-hedges"/>
+              </div>
+              <div class="field"><label>Walked Perimeter?</label>
+                <div class="yn" id="yn-c-perim">
+                  <div class="yn-btn y" onclick="yntog(this,'c-perim','✅ Clear')">✅ Clear</div>
+                  <div class="yn-btn n" onclick="yntog(this,'c-perim','⚠️ Issue Found')">⚠️ Issue</div>
+                </div><input type="hidden" id="c-perim"/>
+              </div>
+              <div class="divider"></div>
+              <div class="field"><label>We Recommend</label><textarea id="c-rec" placeholder="Recommended services for next visit…"></textarea></div>
+              <div class="field"><label>Notes / Communicate</label><textarea id="c-notes" placeholder="Notes for office or customer…"></textarea></div>
             </div>
-            <div class="field"><label>Walked Perimeter?</label>
-              <div class="yn" id="yn-o-perim">
-                <div class="yn-btn y" onclick="yntog(this,'o-perim','✅ Clear')">✅ Clear</div>
-                <div class="yn-btn n" onclick="yntog(this,'o-perim','⚠️ Issue Found')">⚠️ Issue</div>
-              </div><input type="hidden" id="o-perim"/>
+
+            <!-- OTHER -->
+            <div id="f-oth" class="hidden">
+              <div class="field"><label>Service Performed</label><input type="text" id="o-svc" placeholder="e.g. Hedge Trim, Power Wash…"/></div>
+              <div class="divider"></div>
+              <div class="sec-lbl">Service Checklist</div>
+              <div class="field"><label>Applied Weed Control?</label>
+                <div class="yn" id="yn-o-weed">
+                  <div class="yn-btn y" onclick="yntog(this,'o-weed','✅ Yes')">✅ Yes</div>
+                  <div class="yn-btn nx" onclick="yntog(this,'o-weed','🔜 Next Visit')">🔜 Next Visit</div>
+                  <div class="yn-btn n" onclick="yntog(this,'o-weed','❌ No')">❌ No</div>
+                </div><input type="hidden" id="o-weed"/>
+              </div>
+              <div class="field"><label>Sprayed for Bugs?</label>
+                <div class="yn" id="yn-o-bugs">
+                  <div class="yn-btn y" onclick="yntog(this,'o-bugs','✅ Yes')">✅ Yes</div>
+                  <div class="yn-btn nx" onclick="yntog(this,'o-bugs','🔜 Next Visit')">🔜 Next Visit</div>
+                  <div class="yn-btn n" onclick="yntog(this,'o-bugs','❌ No')">❌ No</div>
+                </div><input type="hidden" id="o-bugs"/>
+              </div>
+              <div class="field"><label>Trimmed Hedges / Limbs?</label>
+                <div class="yn" id="yn-o-hedges">
+                  <div class="yn-btn y" onclick="yntog(this,'o-hedges','✅ Yes')">✅ Yes</div>
+                  <div class="yn-btn nx" onclick="yntog(this,'o-hedges','🔜 Next Visit')">🔜 Next Visit</div>
+                  <div class="yn-btn n" onclick="yntog(this,'o-hedges','❌ No')">❌ No</div>
+                </div><input type="hidden" id="o-hedges"/>
+              </div>
+              <div class="field"><label>Walked Perimeter?</label>
+                <div class="yn" id="yn-o-perim">
+                  <div class="yn-btn y" onclick="yntog(this,'o-perim','✅ Clear')">✅ Clear</div>
+                  <div class="yn-btn n" onclick="yntog(this,'o-perim','⚠️ Issue Found')">⚠️ Issue</div>
+                </div><input type="hidden" id="o-perim"/>
+              </div>
+              <div class="divider"></div>
+              <div class="field"><label>Notes / Recommend</label><textarea id="o-notes" placeholder="Notes for office or customer…"></textarea></div>
             </div>
-            <div class="divider"></div>
-            <div class="field"><label>Notes / Recommend</label><textarea id="o-notes" placeholder="Notes for office or customer…"></textarea></div>
           </div>
-        </div>
 
-        <!-- Pet Waste -->
-        <div class="alert-card">
-          <div class="card-title"><span style="font-size:20px">🐾</span> Pet Waste on Property?</div>
-          <p style="font-size:13px;color:var(--muted);margin-bottom:12px">If pet waste caused issues tap <strong>Alert Office</strong>.</p>
-          <div class="pet-toggle">
-            <div class="pet-opt" id="pet-clr" onclick="setPet('clear')"><span class="poi">✅</span><span class="pol">All Clear</span></div>
-            <div class="pet-opt" id="pet-wrn" onclick="setPet('warn')"><span class="poi">⚠️</span><span class="pol">Alert Office</span></div>
+          <!-- Pet Waste -->
+          <div class="alert-card">
+            <div class="card-title"><span style="font-size:20px">🐾</span> Pet Waste on Property?</div>
+            <p style="font-size:13px;color:var(--muted);margin-bottom:12px">If pet waste caused issues tap <strong>Alert Office</strong>.</p>
+            <div class="pet-toggle">
+              <div class="pet-opt" id="pet-clr" onclick="setPet('clear')"><span class="poi">✅</span><span class="pol">All Clear</span></div>
+              <div class="pet-opt" id="pet-wrn" onclick="setPet('warn')"><span class="poi">⚠️</span><span class="pol">Alert Office</span></div>
+            </div>
+            <input type="hidden" id="f-pet"/>
           </div>
-          <input type="hidden" id="f-pet"/>
-        </div>
 
-        <!-- Office Note -->
-        <div class="alert-card">
-          <div class="card-title"><span style="font-size:20px">📋</span> Internal Note to Office</div>
-          <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Gate code, property issue, anything the office needs. <strong>Not sent to customer.</strong></p>
-          <div class="field">
-            <label>Office Note (Optional)</label>
-            <textarea id="f-onote" rows="3" placeholder="e.g. Gate code changed, dog left in yard, irrigation head damaged…"></textarea>
+          <!-- Office Note -->
+          <div class="alert-card">
+            <div class="card-title"><span style="font-size:20px">📋</span> Internal Note to Office</div>
+            <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Gate code, property issue, anything the office needs. <strong>Not sent to customer.</strong></p>
+            <div class="field">
+              <label>Office Note (Optional)</label>
+              <textarea id="f-onote" rows="3" placeholder="e.g. Gate code changed, dog left in yard, irrigation head damaged…"></textarea>
+            </div>
+            <p style="font-size:11px;color:var(--muted);font-style:italic">📧 Alert sent to info@wslawncareservicesllc.com if filled in.</p>
           </div>
-          <p style="font-size:11px;color:var(--muted);font-style:italic">📧 Alert sent to <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="92fbfcf4fdd2e5e1fef3e5fcf1f3e0f7e1f7e0e4fbf1f7e1fefef1bcf1fdff">[email&#160;protected]</a> if filled in.</p>
-        </div>
 
-        <!-- Photos -->
-        <div class="card">
-          <div class="card-title"><div class="ctn">5</div> Job Photos</div>
-          <div class="photo-area">
-            <input type="file" id="f-photos" multiple accept="image/*" capture="environment"/>
-            <div style="font-size:30px;margin-bottom:6px">📷</div>
-            <div style="font-size:14px;font-weight:600;color:var(--g7)">Tap to add photos</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:3px">Before &amp; after</div>
+          <!-- Photos -->
+          <div class="card">
+            <div class="card-title"><div class="ctn">5</div> Job Photos</div>
+            <div class="photo-area">
+              <input type="file" id="f-photos" multiple accept="image/*" capture="environment"/>
+              <div style="font-size:30px;margin-bottom:6px">📷</div>
+              <div style="font-size:14px;font-weight:600;color:var(--g7)">Tap to add photos</div>
+              <div style="font-size:12px;color:var(--muted);margin-top:3px">Before &amp; after</div>
+            </div>
+            <div class="photo-grid" id="photo-grid"></div>
           </div>
-          <div class="photo-grid" id="photo-grid"></div>
-        </div>
 
-        <button class="sub-btn" id="sub-btn" onclick="submitJob()">✓ SUBMIT JOB</button>
-        <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:8px;padding-bottom:20px">Sends completion email to customer automatically.</p>
-      </div>
+          <!-- Submit — locked until job ended -->
+          <div id="submit-wrap">
+            <div id="end-required-banner" class="hidden"
+              style="background:#fff8e1;border:2px solid var(--acc);border-radius:12px;padding:14px 16px;margin-bottom:12px;text-align:center;">
+              <div style="font-size:24px;margin-bottom:6px">🔴</div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:#7a5000;margin-bottom:4px">End the Job First</div>
+              <div style="font-size:13px;color:#996600">Tap <strong>TAP TO END</strong> in the Job Time section above before submitting.</div>
+            </div>
+            <button class="sub-btn" id="sub-btn" onclick="submitJob()">✓ SUBMIT JOB</button>
+            <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:8px;padding-bottom:20px">Sends completion email to customer automatically.</p>
+          </div>
+
+        </div><!-- /form-fields-wrap -->
+      </div><!-- /form-body -->
 
       <div class="success" id="form-success">
         <div class="si">✅</div>
@@ -683,19 +731,13 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
       </div>
     </div>
 
-    <!-- BOARD -->
-    <div class="tab" id="tab-board">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--g9);margin-bottom:14px">📌 Office Board</div>
-      <div id="board-list"><div class="empty-state">No messages yet.</div></div>
-    </div>
-
   </div><!-- /content -->
 
+  <!-- 3-tab nav — Board removed -->
   <div class="bnav">
     <div class="ni active" id="ni-home" onclick="goTab('home')"><span class="ni-icon">🏠</span><span class="ni-lbl">Home</span></div>
     <div class="ni" id="ni-dispatch" onclick="goTab('dispatch')"><span class="ni-icon">📋</span><span class="ni-lbl">Dispatch</span><span class="ni-dot"></span></div>
     <div class="ni" id="ni-form" onclick="goTab('form')"><span class="ni-icon">✅</span><span class="ni-lbl">Job Form</span></div>
-    <div class="ni" id="ni-board" onclick="goTab('board')"><span class="ni-icon">📌</span><span class="ni-lbl">Board</span></div>
   </div>
 </div>
 
@@ -727,7 +769,6 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 
 <div class="toast" id="toast"></div>
 
-
 <script>
 // ════════════════════════════════════════════════════════════════
 // CONFIG
@@ -754,12 +795,11 @@ const S = {
 };
 
 const FALLBACK_CREW = [
-  {name:'Willie Arreola',  position:'Crew Lead',   pin:'1111'},
-  {name:'William Arreola', position:'Field Tech',  pin:'2222'},
-  {name:'Sandra Arreola',  position:'Field Tech',  pin:'3333'},
+  {name:'Willie Arreola',  position:'Crew Lead',  pin:'1111'},
+  {name:'William Arreola', position:'Field Tech', pin:'2222'},
+  {name:'Sandra Arreola',  position:'Field Tech', pin:'3333'},
 ];
 
-// Render fallback immediately — login never blocked
 S.crew = FALLBACK_CREW;
 renderCrewLater();
 
@@ -769,10 +809,10 @@ async function init() {
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const d = await res.json();
     if (d.error) throw new Error(d.error);
-    if (d.techs && d.techs.length)     { S.crew = d.techs; renderCrew(d.techs); }
+    if (d.techs     && d.techs.length)     { S.crew = d.techs;     renderCrew(d.techs); }
     if (d.customers && d.customers.length) S.customers = d.customers;
-    if (d.board && d.board.length)         S.board     = d.board;
-    if (d.dispatch && d.dispatch.length)   S.jobs      = d.dispatch;
+    if (d.board     && d.board.length)     S.board     = d.board;
+    if (d.dispatch  && d.dispatch.length)  S.jobs      = d.dispatch;
   } catch(e) {
     console.warn('Sheet load failed:', e.message);
     renderCrew(FALLBACK_CREW);
@@ -789,7 +829,6 @@ async function init() {
 }
 
 function renderCrewLater() {
-  // Defer until DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => { renderCrew(FALLBACK_CREW); init(); });
   } else {
@@ -816,12 +855,8 @@ function renderCrew(crew) {
 // PIN LOGIN
 // ════════════════════════════════════════════════════════════════
 let pin = '';
-function pinKey(k) {
-  if (pin.length >= 4) return;
-  pin += k; updDots();
-  if (pin.length === 4) setTimeout(pinSubmit, 80);
-}
-function pinDel() { pin = pin.slice(0,-1); updDots(); }
+function pinKey(k) { if (pin.length >= 4) return; pin += k; updDots(); if (pin.length === 4) setTimeout(pinSubmit, 80); }
+function pinDel()  { pin = pin.slice(0,-1); updDots(); }
 function updDots() {
   for (let i=0;i<4;i++) {
     const d = document.getElementById('d'+i);
@@ -857,14 +892,15 @@ function showApp() {
   const u = S.user, now = new Date(), h = now.getHours();
   const greet = h<12?'Good morning':h<17?'Good afternoon':h<21?'Good evening':'Working late';
   const emoji = h<12?'👋':h<17?'☀️':h<21?'🌅':'🌙';
-  document.getElementById('tb-name').textContent = u.name.split(' ')[0];
-  document.getElementById('tb-role').textContent = u.position;
+  document.getElementById('tb-name').textContent  = u.name.split(' ')[0];
+  document.getElementById('tb-role').textContent  = u.position;
   document.querySelector('.hero-greet').innerHTML = `${greet},<br><span style="color:var(--g4)">${u.name.split(' ')[0]} ${emoji}</span>`;
-  document.getElementById('h-date').textContent = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
-  document.getElementById('d-date').textContent = now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  document.getElementById('h-date').textContent   = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  document.getElementById('d-date').textContent   = now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
   renderBoard(); updateClockUI(); updateStrip();
   if (S.jobs.length) renderDispatch();
   startDurTimer();
+  updateFormLock(); // set initial lock state
 }
 
 function doLogout() {
@@ -902,18 +938,14 @@ async function sendClockEvent(type) {
     techName:S.user.name, position:S.user.position,
     date:now.toLocaleDateString('en-US'), time:fmt(now), hoursWorked:hrs,
   };
-  // POST to Apps Script for Payroll tab
-  try {
-    await fetch(CFG.appsScript, { method:'POST', body:new URLSearchParams(payload), mode:'no-cors' });
-  } catch(e) { console.warn('Clock POST failed:', e.message); }
-  // Also fire Zapier
+  try { await fetch(CFG.appsScript, {method:'POST', body:new URLSearchParams(payload), mode:'no-cors'}); } catch(e){}
   await zap(CFG.whSheet, payload);
 }
 
 function updateClockUI() {
-  const btn = document.getElementById('clock-btn');
+  const btn   = document.getElementById('clock-btn');
   const badge = document.getElementById('ci-badge');
-  const inEl = document.getElementById('s-in');
+  const inEl  = document.getElementById('s-in');
   const outEl = document.getElementById('s-out');
   if (S.clocked) {
     btn.className='clock-btn stop'; btn.innerHTML='<span>🔴 END YOUR DAY</span>';
@@ -935,7 +967,41 @@ function startDurTimer() {
 }
 
 // ════════════════════════════════════════════════════════════════
-// DISPATCH
+// FORM LOCK / UNLOCK LOGIC  (#1 — start required, end required)
+// ════════════════════════════════════════════════════════════════
+function updateFormLock() {
+  const started = !!S.jStart;
+  const ended   = !!S.jEnd;
+  const banner  = document.getElementById('form-lock-banner');
+  const wrap    = document.getElementById('form-fields-wrap');
+  const subBtn  = document.getElementById('sub-btn');
+  const endBanner = document.getElementById('end-required-banner');
+
+  if (!started) {
+    // Not started — show lock banner, dim fields
+    banner.classList.remove('hidden');
+    wrap.classList.add('form-section-lock');
+    subBtn.disabled = true;
+    endBanner.classList.add('hidden');
+  } else {
+    // Started — unlock fields
+    banner.classList.add('hidden');
+    wrap.classList.remove('form-section-lock');
+
+    if (!ended) {
+      // Started but not ended — disable submit, show end-required banner
+      subBtn.disabled = true;
+      endBanner.classList.remove('hidden');
+    } else {
+      // Both start and end set — fully unlocked
+      subBtn.disabled = false;
+      endBanner.classList.add('hidden');
+    }
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// DISPATCH — parse & render
 // ════════════════════════════════════════════════════════════════
 function openPasteModal() { document.getElementById('paste-modal').classList.add('open'); }
 
@@ -944,10 +1010,11 @@ function parseDispatch() {
   if (!raw) { toast('⚠ Nothing to paste'); return; }
   const lines = raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
   const jobs=[], seen=new Set();
-  const mRe=/\$[\d,]+\.\d{2}/,stRe=/\b(Dispatched|Completed|Scheduled|Cancelled)\b/i;
-  const tyRe=/\b(Custom\s+Recurring|One\s+Time|Recurring|Custom)\b/i;
-  const svRe=/(Ground\s+Cover\s+Maintenance|Commercial\s+Grounds\s+Maintenance|General\s+Clean\s+Up|Bi-Weekly\s+Mowing|Weekly\s+Mowing|Mowing\s+Service|Mulch\s+Installation|Shrub\s+Trimming|Hedge\s+Trim|Power\s+Wash|Fertiliz\w*|Aerat\w*|Sod\s+Install\w*)/i;
-  const skip=/^(Daily\s+Dispatch|Job\s+Date|Client\s+Name|Appointment\s+Start|Appointment\s+End|Job\s+Amount|Job\s+Status|Job\s+Type|^Service$|^Source$|^Amount$)/i;
+  const mRe  = /\$[\d,]+\.\d{2}/;
+  const stRe = /\b(Dispatched|Completed|Scheduled|Cancelled)\b/i;
+  const tyRe = /\b(Custom\s+Recurring|One\s+Time|Recurring|Custom)\b/i;
+  const svRe = /(Ground\s+Cover\s+Maintenance|Commercial\s+Grounds\s+Maintenance|General\s+Clean\s+Up|Bi-Weekly\s+Mowing|Weekly\s+Mowing|Mowing\s+Service|Mulch\s+Installation|Shrub\s+Trimming|Hedge\s+Trim|Power\s+Wash|Fertiliz\w*|Aerat\w*|Sod\s+Install\w*)/i;
+  const skip = /^(Daily\s+Dispatch|Job\s+Date|Client\s+Name|Appointment\s+Start|Appointment\s+End|Job\s+Amount|Job\s+Status|Job\s+Type|^Service$|^Source$|^Amount$)/i;
   function times(s){const a=[];let m;const p=/(1[0-2]|0?[1-9]):[0-5]\d\s?[AP]M/gi;while((m=p.exec(s))!==null)a.push(m[0].replace(/\s/,' ').toUpperCase());return a;}
   function strip(s){return s.replace(/(1[0-2]|0?[1-9]):[0-5]\d\s?[AP]M/gi,'').replace(mRe,'').replace(stRe,'').replace(tyRe,'').replace(svRe,'').replace(/\d{1,2}\/\d{1,2}\/\d{2,4}/g,'').replace(/\s{2,}/g,' ').replace(/^\s+|\s+$/g,'').trim();}
   function nextDate(p){for(let k=p+1;k<lines.length;k++)if(/^\d{1,2}\/\d{1,2}\/\d{2,4}/.test(lines[k]))return k;return lines.length;}
@@ -982,59 +1049,152 @@ function parseDispatch() {
     const sd=(line+' '+dataLine).match(svRe);if(sd)svc=sd[1];
     if(!svc){const we=nextDate(dataIdx);for(let w=dataIdx+1;w<we;w++){const wl=lines[w];if(skip.test(wl))continue;if(times(wl).length||mRe.test(wl))break;const sm=wl.match(svRe);if(sm){svc=sm[1];i=w;break;}}}
     const stm=(line+' '+dataLine).match(stRe),tym=(line+' '+dataLine).match(tyRe);
-    add({date,client:cl,startTime:st,endTime:et,status:stm?stm[1]:'Dispatched',jobType:tym?tym[1]:'',service:svc,budgetedHours:'',jobStatus:'dispatched'});
+    add({date,client:cl,startTime:st,endTime:et,
+      status:stm?stm[1]:'Dispatched',jobType:tym?tym[1]:'',service:svc,
+      budgetedHours:'',jobStatus:'dispatched',
+      // customer fields — will be enriched from customers list
+      address:'',email:'',phone:''
+    });
     i++;
   }
   if(!jobs.length){toast('⚠ No jobs found');return;}
-  S.jobs=jobs; closeModal('paste-modal');
+
+  // Enrich with customer data
+  jobs.forEach(j => {
+    const match = S.customers.find(c =>
+      c.name.toLowerCase().includes(j.client.toLowerCase().split(',')[0].trim().toLowerCase()) ||
+      j.client.toLowerCase().includes(c.name.toLowerCase().split(' ')[0].toLowerCase())
+    );
+    if (match) {
+      j.address = match.address || '';
+      j.email   = match.email   || '';
+      j.phone   = match.phone   || '';
+    }
+  });
+
+  // Sort by scheduled start time for route efficiency (#4)
+  sortJobsByTime(jobs);
+
+  S.jobs = jobs;
+  closeModal('paste-modal');
   document.getElementById('paste-area').value='';
   renderDispatch(); updateStrip();
-  toast('✅ '+jobs.length+' job'+(jobs.length>1?'s':'')+' loaded');
+  toast('✅ ' + jobs.length + ' job' + (jobs.length>1?'s':'') + ' loaded');
 }
 
-function renderDispatch() {
-  const el=document.getElementById('dispatch-list');
-  if(!S.jobs.length){el.innerHTML='<div class="empty-state">📋<br><br>No jobs loaded.</div>';updateBadge();return;}
-  const groups={};
-  S.jobs.forEach((j,i)=>{const k=j.startTime||'Unscheduled';if(!groups[k])groups[k]=[];groups[k].push({j,i});});
-  let html='';
-  for(const[t,items] of Object.entries(groups)){
-    html+=`<div class="tg-hdr">${t}</div>`;
-    for(const{j,i} of items){
-      const sc=j.jobStatus==='complete'?'sp-done':j.jobStatus==='in-progress'?'sp-prog':'sp-disp';
-      const sl=j.jobStatus==='complete'?'Complete':j.jobStatus==='in-progress'?'In Progress':'Dispatched';
-      const ac=j.jobStatus==='complete'?'done':j.jobStatus==='in-progress'?'complete':'begin';
-      const al=j.jobStatus==='complete'?'✓ Done':j.jobStatus==='in-progress'?'Complete →':'Start →';
-      html+=`<div class="job-card${j.jobStatus==='complete'?' done':''}" onclick="openDetail(${i})">
-        <div class="jc-top">
-          <div class="jc-left">
-            <div class="jc-client">${j.client}</div>
-            ${j.service?`<div class="jc-svc">${j.service}</div>`:''}
-            <div class="jc-time">🕐 <span>${j.startTime||'—'}</span>${j.endTime?` – <span>${j.endTime}</span>`:''}</div>
-            ${j.budgetedHours?`<div class="jc-time" style="margin-top:3px;color:var(--blue);font-weight:600">⏳ Budget: <span>${j.budgetedHours} hrs</span></div>`:''}
-          </div>
-          ${j.jobType?`<div class="jc-type">${j.jobType}</div>`:''}
-        </div>
-        <div class="jc-bar">
-          <span class="status-pill ${sc}">${sl}</span>
-          <button class="jc-act ${ac}" onclick="event.stopPropagation();quickAct(${i})">${al}</button>
-        </div>
-      </div>`;
-    }
+// ── Sort jobs by scheduled start time ────────────────────────────
+function sortJobsByTime(jobs) {
+  function toMins(t) {
+    if (!t) return 9999;
+    const m = t.match(/(\d+):(\d+)\s?(AM|PM)/i);
+    if (!m) return 9999;
+    let h = parseInt(m[1]), mn = parseInt(m[2]);
+    if (m[3].toUpperCase()==='PM' && h!==12) h+=12;
+    if (m[3].toUpperCase()==='AM' && h===12) h=0;
+    return h*60+mn;
   }
-  el.innerHTML=html; updateBadge();
+  jobs.sort((a,b) => toMins(a.startTime) - toMins(b.startTime));
 }
 
-function quickAct(i){
-  const j=S.jobs[i];
-  if(j.jobStatus==='complete')return;
-  if(j.jobStatus==='dispatched'){S.jobs[i].jobStatus='in-progress';prefillFromJob(i);goTab('form');}
-  else{S.jobs[i].jobStatus='complete';}
-  renderDispatch();updateStrip();
+// ── Build Google Maps link ────────────────────────────────────────
+function mapsLink(address) {
+  if (!address) return null;
+  return 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(address);
 }
 
-function openDetail(i){
-  S.selJobIdx=i;const j=S.jobs[i];
+// ── Render dispatch list with stop numbers, addresses, route sort ─
+function renderDispatch() {
+  const el = document.getElementById('dispatch-list');
+  if (!S.jobs.length) {
+    el.innerHTML='<div class="empty-state">📋<br><br>No jobs loaded.</div>';
+    updateBadge(); renderRouteInfo(); return;
+  }
+
+  let html = '', stopNum = 0;
+  S.jobs.forEach((j,i) => {
+    const isDone = j.jobStatus === 'complete';
+    const isActive = j.jobStatus === 'in-progress';
+    if (!isDone) stopNum++;
+    const displayStop = isDone ? '✓' : stopNum;
+    const sc = isDone?'sp-done':isActive?'sp-prog':'sp-disp';
+    const sl = isDone?'Complete':isActive?'In Progress':'Dispatched';
+    const ac = isDone?'done':isActive?'complete':'begin';
+    const al = isDone?'✓ Done':isActive?'Complete →':'Start →';
+
+    const mapUrl = mapsLink(j.address);
+    const addrHtml = j.address
+      ? `<div class="jc-addr"><a href="${mapUrl}" target="_blank">📍 ${j.address} <span style="font-size:10px">↗</span></a></div>`
+      : '';
+    const phoneHtml = j.phone
+      ? `<div class="jc-contact">📞 <a href="tel:${j.phone}" style="color:var(--muted);text-decoration:none">${j.phone}</a></div>`
+      : '';
+
+    html += `<div class="job-card${isDone?' done':''}" onclick="openDetail(${i})">
+      <div class="jc-top">
+        <div class="stop-num${isDone?' done-num':''}">${displayStop}</div>
+        <div class="jc-left" style="margin-left:10px">
+          <div class="jc-client">${j.client}</div>
+          ${j.service?`<div class="jc-svc">${j.service}</div>`:''}
+          <div class="jc-time">🕐 <span>${j.startTime||'—'}</span>${j.endTime?` – <span>${j.endTime}</span>`:''}</div>
+          ${j.budgetedHours?`<div class="jc-time" style="margin-top:3px;color:var(--blue);font-weight:600">⏳ Budget: <span>${j.budgetedHours} hrs</span></div>`:''}
+          ${addrHtml}
+          ${phoneHtml}
+        </div>
+        ${j.jobType?`<div class="jc-type">${j.jobType}</div>`:''}
+      </div>
+      <div class="jc-bar">
+        <span class="status-pill ${sc}">${sl}</span>
+        <button class="jc-act ${ac}" onclick="event.stopPropagation();quickAct(${i})">${al}</button>
+      </div>
+    </div>`;
+  });
+
+  el.innerHTML = html;
+  renderRouteInfo();
+  updateBadge();
+}
+
+function renderRouteInfo() {
+  const el = document.getElementById('route-info');
+  const total = S.jobs.length;
+  if (!total) { el.classList.add('hidden'); return; }
+  const remaining = S.jobs.filter(j=>j.jobStatus!=='complete').length;
+  el.classList.remove('hidden');
+  el.innerHTML = `<div class="route-banner">
+    <span style="font-size:18px">🗺️</span>
+    <span class="rb-text">Route sorted by scheduled time</span>
+    <span class="rb-badge">${remaining} stop${remaining!==1?'s':''} left</span>
+  </div>`;
+}
+
+function quickAct(i) {
+  const j = S.jobs[i];
+  if (j.jobStatus==='complete') return;
+  if (j.jobStatus==='dispatched') {
+    S.jobs[i].jobStatus='in-progress';
+    prefillFromJob(i);
+    goTab('form');
+  } else {
+    // Mark complete (#2)
+    S.jobs[i].jobStatus='complete';
+  }
+  renderDispatch(); updateStrip();
+}
+
+function openDetail(i) {
+  S.selJobIdx = i;
+  const j = S.jobs[i];
+  const mapUrl = mapsLink(j.address);
+  const addrRow = j.address
+    ? `<div class="detail-row"><span class="dr-lbl">Address</span><span class="dr-val"><a href="${mapUrl}" target="_blank">📍 ${j.address} ↗</a></span></div>`
+    : '';
+  const emailRow = j.email
+    ? `<div class="detail-row"><span class="dr-lbl">Email</span><span class="dr-val">${j.email}</span></div>`
+    : '';
+  const phoneRow = j.phone
+    ? `<div class="detail-row"><span class="dr-lbl">Phone</span><span class="dr-val"><a href="tel:${j.phone}" style="color:var(--blue)">${j.phone}</a></span></div>`
+    : '';
+
   document.getElementById('detail-content').innerHTML=`
     <div class="sheet-title">${j.client}</div>
     <div class="sheet-sub" style="margin-bottom:12px">${j.service||j.jobType||''}</div>
@@ -1043,191 +1203,307 @@ function openDetail(i){
     <div class="detail-row"><span class="dr-lbl">End Time</span><span class="dr-val">${j.endTime||'—'}</span></div>
     <div class="detail-row"><span class="dr-lbl">Job Type</span><span class="dr-val">${j.jobType||'—'}</span></div>
     <div class="detail-row"><span class="dr-lbl">Status</span><span class="dr-val">${j.status||'—'}</span></div>
-    ${j.budgetedHours?`<div class="detail-row"><span class="dr-lbl">Budget Hours</span><span class="dr-val" style="color:var(--blue);font-weight:700">${j.budgetedHours} hrs</span></div>`:''}`;
-  const btn=document.getElementById('detail-start-btn');
-  btn.disabled=j.jobStatus==='complete';
-  btn.textContent=j.jobStatus==='complete'?'✓ Completed':'Start This Job →';
+    ${j.budgetedHours?`<div class="detail-row"><span class="dr-lbl">Budget Hrs</span><span class="dr-val" style="color:var(--blue);font-weight:700">${j.budgetedHours} hrs</span></div>`:''}
+    ${addrRow}${emailRow}${phoneRow}`;
+
+  const btn = document.getElementById('detail-start-btn');
+  btn.disabled = j.jobStatus==='complete';
+  btn.textContent = j.jobStatus==='complete'?'✓ Completed':'Start This Job →';
   document.getElementById('detail-modal').classList.add('open');
 }
-function startJobFromDetail(){closeModal('detail-modal');if(S.selJobIdx!==null)prefillFromJob(S.selJobIdx);goTab('form');}
 
-function prefillFromJob(i){
-  const j=S.jobs[i];S.selJobIdx=i;
-  S.jobs[i].jobStatus='in-progress';
-  const match=S.customers.find(c=>c.name.toLowerCase().includes(j.client.toLowerCase().split(',')[0].trim().toLowerCase()));
-  if(match)selCust(S.customers.indexOf(match));
-  else{S.cust={name:j.client,address:'',email:'',phone:'',mowingHeight:'',grassType:'',mowingDirection:'',internalNote:'',lastVisitDuration:''};showCustBanner();}
-  const sl=(j.service||'').toLowerCase();
-  if(sl.includes('commercial')||sl.includes('ground'))selSvc('commercial');
-  else if(sl.includes('mow')||sl.includes('bi-weekly')||sl.includes('weekly'))selSvc('residential');
-  renderDispatch();updateStrip();
+function startJobFromDetail() {
+  closeModal('detail-modal');
+  if (S.selJobIdx !== null) prefillFromJob(S.selJobIdx);
+  goTab('form');
 }
 
-function updateStrip(){
-  const t=S.jobs.length,d=S.jobs.filter(j=>j.jobStatus==='complete').length;
-  document.getElementById('strip-cnt').textContent=t||'—';
-  document.getElementById('strip-sub').textContent=t?`${d} done · ${t-d} remaining`:'Tap to view dispatch';
+function prefillFromJob(i) {
+  const j = S.jobs[i]; S.selJobIdx = i;
+  S.jobs[i].jobStatus = 'in-progress';
+  const match = S.customers.find(c =>
+    c.name.toLowerCase().includes(j.client.toLowerCase().split(',')[0].trim().toLowerCase())
+  );
+  if (match) selCust(S.customers.indexOf(match));
+  else {
+    S.cust = {name:j.client,address:j.address||'',email:j.email||'',phone:j.phone||'',
+      mowingHeight:'',grassType:'',mowingDirection:'',internalNote:'',lastVisitDuration:''};
+    showCustBanner();
+  }
+  const sl = (j.service||'').toLowerCase();
+  if      (sl.includes('commercial')||sl.includes('ground')) selSvc('commercial');
+  else if (sl.includes('mow')||sl.includes('bi-weekly')||sl.includes('weekly')) selSvc('residential');
+  renderDispatch(); updateStrip();
 }
-function updateBadge(){
-  const r=S.jobs.filter(j=>j.jobStatus!=='complete').length;
-  document.getElementById('ni-dispatch').classList.toggle('has-dot',r>0);
+
+function updateStrip() {
+  const t = S.jobs.length, d = S.jobs.filter(j=>j.jobStatus==='complete').length;
+  document.getElementById('strip-cnt').textContent = t||'—';
+  document.getElementById('strip-sub').textContent = t ? `${d} done · ${t-d} remaining` : 'Tap to view dispatch';
+}
+function updateBadge() {
+  const r = S.jobs.filter(j=>j.jobStatus!=='complete').length;
+  document.getElementById('ni-dispatch').classList.toggle('has-dot', r>0);
 }
 
 // ════════════════════════════════════════════════════════════════
 // JOB FORM
 // ════════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('f-srch').addEventListener('input',function(){
-    const q=this.value.toLowerCase().trim(),res=document.getElementById('f-results');
-    if(q.length<2){res.classList.remove('open');return;}
-    const m=S.customers.filter(c=>c.name.toLowerCase().includes(q)||c.address.toLowerCase().includes(q)).slice(0,8);
-    res.innerHTML=m.length?m.map(c=>`<div class="sri" onclick="selCust(${S.customers.indexOf(c)})"><div class="sri-name">${c.name}</div><div class="sri-addr">${c.address}</div></div>`).join(''):'<div class="sri"><div class="sri-name" style="color:var(--muted)">No customers found</div></div>';
+  document.getElementById('f-srch').addEventListener('input', function() {
+    const q=this.value.toLowerCase().trim(), res=document.getElementById('f-results');
+    if (q.length<2) { res.classList.remove('open'); return; }
+    const m = S.customers.filter(c=>c.name.toLowerCase().includes(q)||c.address.toLowerCase().includes(q)).slice(0,8);
+    res.innerHTML = m.length
+      ? m.map(c=>`<div class="sri" onclick="selCust(${S.customers.indexOf(c)})"><div class="sri-name">${c.name}</div><div class="sri-addr">${c.address}</div></div>`).join('')
+      : '<div class="sri"><div class="sri-name" style="color:var(--muted)">No customers found</div></div>';
     res.classList.add('open');
   });
-  document.getElementById('f-photos').addEventListener('change',function(){
-    Array.from(this.files).forEach(addPhoto);this.value='';
+  document.getElementById('f-photos').addEventListener('change', function() {
+    Array.from(this.files).forEach(addPhoto); this.value='';
   });
 });
-document.addEventListener('click',e=>{if(!e.target.closest('.srch-wrap'))document.getElementById('f-results').classList.remove('open');});
+document.addEventListener('click', e => {
+  if (!e.target.closest('.srch-wrap')) document.getElementById('f-results').classList.remove('open');
+});
 
-function selCust(i){
-  const c=S.customers[i];S.cust=c;
+function selCust(i) {
+  const c = S.customers[i]; S.cust = c;
   document.getElementById('f-results').classList.remove('open');
-  document.getElementById('f-srch').value='';
+  document.getElementById('f-srch').value = '';
   showCustBanner();
-  if(c.mowingHeight){const h=parseFloat(c.mowingHeight).toFixed(2);['r-height','c-height'].forEach(id=>{const el=document.getElementById(id);if(el)for(let o of el.options)if(parseFloat(o.value||0).toFixed(2)===h){el.value=o.value;break;}});}
-  if(c.grassType){['r-grass','c-grass'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=c.grassType;});document.querySelectorAll('#f-res .gb,#f-com .gb').forEach(b=>{if(b.querySelector('.gl')?.textContent===c.grassType)b.style.opacity='.6';});}
-  if(c.mowingDirection){const el=document.getElementById('r-dir');if(el)el.value=c.mowingDirection;}
+  if (c.mowingHeight) {
+    const h = parseFloat(c.mowingHeight).toFixed(2);
+    ['r-height','c-height'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) for(let o of el.options) if(parseFloat(o.value||0).toFixed(2)===h){el.value=o.value;break;}
+    });
+  }
+  if (c.grassType) {
+    ['r-grass','c-grass'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=c.grassType;});
+  }
+  if (c.mowingDirection) { const el=document.getElementById('r-dir');if(el)el.value=c.mowingDirection; }
 }
 
-function showCustBanner(){
-  const c=S.cust;
+function showCustBanner() {
+  const c = S.cust;
   document.getElementById('f-srch-wrap').classList.add('hidden');
   document.getElementById('f-csel').classList.remove('hidden');
-  document.getElementById('f-cname').textContent=c.name;
-  document.getElementById('f-cdet').innerHTML=(c.address?`📍 ${c.address}<br>`:'')+( c.email?`✉ ${c.email}<br>`:'')+( c.phone?`📞 ${c.phone}`:'');
-  let chips='';
-  if(c.mowingHeight) chips+=`<div class="chip"><div><div class="chip-lbl">Last Height</div><div class="chip-val">${c.mowingHeight}"</div></div></div>`;
-  if(c.grassType)    chips+=`<div class="chip"><div><div class="chip-lbl">Grass</div><div class="chip-val">${c.grassType}</div></div></div>`;
-  if(c.mowingDirection) chips+=`<div class="chip"><div><div class="chip-lbl">Direction</div><div class="chip-val">${c.mowingDirection}</div></div></div>`;
-  if(c.lastVisitDuration) chips+=`<div class="chip blue"><div><div class="chip-lbl">Last Visit</div><div class="chip-val">${c.lastVisitDuration} hrs</div></div></div>`;
-  if(S.selJobIdx!==null&&S.jobs[S.selJobIdx]&&S.jobs[S.selJobIdx].budgetedHours)
+  document.getElementById('f-cname').textContent = c.name;
+  const mapUrl = mapsLink(c.address);
+  document.getElementById('f-cdet').innerHTML =
+    (c.address ? `<a href="${mapUrl}" target="_blank" style="color:var(--blue);font-weight:600;text-decoration:none">📍 ${c.address} ↗</a><br>` : '') +
+    (c.email   ? `✉ ${c.email}<br>` : '') +
+    (c.phone   ? `📞 ${c.phone}` : '');
+  let chips = '';
+  if (c.mowingHeight)    chips+=`<div class="chip"><div><div class="chip-lbl">Last Height</div><div class="chip-val">${c.mowingHeight}"</div></div></div>`;
+  if (c.grassType)       chips+=`<div class="chip"><div><div class="chip-lbl">Grass</div><div class="chip-val">${c.grassType}</div></div></div>`;
+  if (c.mowingDirection) chips+=`<div class="chip"><div><div class="chip-lbl">Direction</div><div class="chip-val">${c.mowingDirection}</div></div></div>`;
+  if (c.lastVisitDuration) chips+=`<div class="chip blue"><div><div class="chip-lbl">Last Visit</div><div class="chip-val">${c.lastVisitDuration} hrs</div></div></div>`;
+  if (S.selJobIdx!==null && S.jobs[S.selJobIdx] && S.jobs[S.selJobIdx].budgetedHours)
     chips+=`<div class="chip blue"><div><div class="chip-lbl">⏳ Budget</div><div class="chip-val">${S.jobs[S.selJobIdx].budgetedHours} hrs</div></div></div>`;
-  document.getElementById('f-chips').innerHTML=chips;
-}
-function clearCust(){
-  S.cust=null;
-  document.getElementById('f-srch-wrap').classList.remove('hidden');
-  document.getElementById('f-csel').classList.add('hidden');
-  document.getElementById('f-srch').value='';
-  document.getElementById('f-chips').innerHTML='';
+  document.getElementById('f-chips').innerHTML = chips;
 }
 
-function selSvc(type){
-  S.svc=type;
-  const map={residential:'res',commercial:'com',other:'oth'};
-  Object.entries(map).forEach(([t,p])=>{
-    document.getElementById('svc-'+p).classList.toggle('on',t===type);
-    document.getElementById('f-'+p).classList.toggle('hidden',t!==type);
+function clearCust() {
+  S.cust = null;
+  document.getElementById('f-srch-wrap').classList.remove('hidden');
+  document.getElementById('f-csel').classList.add('hidden');
+  document.getElementById('f-srch').value = '';
+  document.getElementById('f-chips').innerHTML = '';
+}
+
+function selSvc(type) {
+  S.svc = type;
+  const map = {residential:'res',commercial:'com',other:'oth'};
+  Object.entries(map).forEach(([t,p]) => {
+    document.getElementById('svc-'+p).classList.toggle('on', t===type);
+    document.getElementById('f-'+p).classList.toggle('hidden', t!==type);
   });
   document.getElementById('svc-none').classList.add('hidden');
 }
 
-function selGrass(el,v){el.closest('.gg').querySelectorAll('.gb').forEach(b=>{b.classList.remove('on');b.style.opacity='';});el.classList.add('on');document.getElementById('r-grass').value=v;}
-function selGrassCom(el,v){el.closest('.gg').querySelectorAll('.gb').forEach(b=>{b.classList.remove('on');b.style.opacity='';});el.classList.add('on');document.getElementById('c-grass').value=v;}
-function selDir(el,v){el.closest('.gg').querySelectorAll('.gb').forEach(b=>b.classList.remove('on'));el.classList.add('on');document.getElementById('r-dir').value=v;}
-function yntog(el,id,val){el.closest('.yn').querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('on'));el.closest('.yn').classList.remove('invalid');el.classList.add('on');document.getElementById(id).value=val;}
-function setPet(v){S.pet=v;document.getElementById('f-pet').value=v;document.getElementById('pet-clr').className='pet-opt'+(v==='clear'?' clear':'');document.getElementById('pet-wrn').className='pet-opt'+(v==='warn'?' warn':'');}
-function togTech(i,name){const btn=document.getElementById('tp-'+i);const ai=S.selectedTechs.indexOf(name);if(ai>-1){S.selectedTechs.splice(ai,1);btn.classList.remove('on');}else{S.selectedTechs.push(name);btn.classList.add('on');}document.getElementById('f-techs').value=S.selectedTechs.join(', ');}
+function selGrass(el,v)    { el.closest('.gg').querySelectorAll('.gb').forEach(b=>{b.classList.remove('on');b.style.opacity='';});el.classList.add('on');document.getElementById('r-grass').value=v; }
+function selGrassCom(el,v) { el.closest('.gg').querySelectorAll('.gb').forEach(b=>{b.classList.remove('on');b.style.opacity='';});el.classList.add('on');document.getElementById('c-grass').value=v; }
+function selDir(el,v)      { el.closest('.gg').querySelectorAll('.gb').forEach(b=>b.classList.remove('on'));el.classList.add('on');document.getElementById('r-dir').value=v; }
+function yntog(el,id,val)  { el.closest('.yn').querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('on'));el.closest('.yn').classList.remove('invalid');el.classList.add('on');document.getElementById(id).value=val; }
+function setPet(v)         { S.pet=v;document.getElementById('f-pet').value=v;document.getElementById('pet-clr').className='pet-opt'+(v==='clear'?' clear':'');document.getElementById('pet-wrn').className='pet-opt'+(v==='warn'?' warn':''); }
+function togTech(i,name)   { const btn=document.getElementById('tp-'+i);const ai=S.selectedTechs.indexOf(name);if(ai>-1){S.selectedTechs.splice(ai,1);btn.classList.remove('on');}else{S.selectedTechs.push(name);btn.classList.add('on');}document.getElementById('f-techs').value=S.selectedTechs.join(', '); }
 
-function jobTime(type){
-  const now=new Date(),ts=fmt(now);
-  if(type==='start'){
-    S.jStart={d:ts,t:now};
-    document.getElementById('ts-disp').textContent=ts;document.getElementById('ts-disp').classList.remove('empty');
+// ── Job Time — drives form lock state ────────────────────────────
+function jobTime(type) {
+  const now=new Date(), ts=fmt(now);
+  if (type==='start') {
+    S.jStart = {d:ts, t:now};
+    document.getElementById('ts-disp').textContent = ts;
+    document.getElementById('ts-disp').classList.remove('empty');
     document.getElementById('tb-start').classList.add('on');
-    const b=document.getElementById('ts-btn');b.textContent='✓ STARTED';b.classList.add('on');b.disabled=true;
-    document.getElementById('te-btn').disabled=false;toast('✅ Start: '+ts);
-  }else{
-    S.jEnd={d:ts,t:now};
-    document.getElementById('te-disp').textContent=ts;document.getElementById('te-disp').classList.remove('empty');
+    const b = document.getElementById('ts-btn');
+    b.textContent='✓ STARTED'; b.classList.add('on'); b.disabled=true;
+    document.getElementById('te-btn').disabled = false;
+    toast('✅ Start: ' + ts);
+  } else {
+    S.jEnd = {d:ts, t:now};
+    document.getElementById('te-disp').textContent = ts;
+    document.getElementById('te-disp').classList.remove('empty');
     document.getElementById('tb-end').classList.add('on');
-    const b=document.getElementById('te-btn');b.textContent='✓ ENDED';b.classList.add('on');b.disabled=true;
-    if(S.jStart){const dur=((now-S.jStart.t)/3600000).toFixed(2);document.getElementById('dur-val').textContent=dur+' hrs';document.getElementById('dur-row').classList.add('show');toast('✅ '+dur+' hrs on job');}
+    const b = document.getElementById('te-btn');
+    b.textContent='✓ ENDED'; b.classList.add('on'); b.disabled=true;
+    if (S.jStart) {
+      const dur = ((now-S.jStart.t)/3600000).toFixed(2);
+      document.getElementById('dur-val').textContent = dur+' hrs';
+      document.getElementById('dur-row').classList.add('show');
+      toast('✅ ' + dur + ' hrs on job');
+    }
   }
+  updateFormLock(); // re-evaluate lock state on every time tap
 }
 
-function addPhoto(file){if(!file.type.startsWith('image/'))return;const i=S.photos.length;S.photos.push(file);const r=new FileReader();r.onload=e=>{const t=document.createElement('div');t.className='p-thumb';t.innerHTML=`<img src="${e.target.result}"/><button class="p-rm" onclick="rmPhoto(${i},this.closest('.p-thumb'))">×</button>`;document.getElementById('photo-grid').appendChild(t);};r.readAsDataURL(file);}
-function rmPhoto(i,el){S.photos[i]=null;el.remove();}
-async function compressPhoto(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>{const img=new Image();img.onload=()=>{const M=1200;let w=img.width,h=img.height;if(w>M||h>M){if(w>h){h=Math.round(h*M/w);w=M;}else{w=Math.round(w*M/h);h=M;}}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res({name:file.name.replace(/\.[^.]+$/,'')+'.jpg',data:c.toDataURL('image/jpeg',.7).replace(/^data:image\/jpeg;base64,/,'')});};img.onerror=rej;img.src=e.target.result;};r.onerror=rej;r.readAsDataURL(file);});}
+function addPhoto(file) {
+  if (!file.type.startsWith('image/')) return;
+  const i=S.photos.length; S.photos.push(file);
+  const r=new FileReader();
+  r.onload=e=>{
+    const t=document.createElement('div');t.className='p-thumb';
+    t.innerHTML=`<img src="${e.target.result}"/><button class="p-rm" onclick="rmPhoto(${i},this.closest('.p-thumb'))">×</button>`;
+    document.getElementById('photo-grid').appendChild(t);
+  };
+  r.readAsDataURL(file);
+}
+function rmPhoto(i,el) { S.photos[i]=null; el.remove(); }
 
-async function submitJob(){
-  if(!S.cust){toast('⚠ Please select a customer');return;}
-  if(!S.svc){toast('⚠ Please select a service type');return;}
-  const p=S.svc==='residential'?'r':S.svc==='commercial'?'c':'o';
-  const checks=p==='c'?['c-blow','c-weed','c-bugs','c-hedges','c-perim']:p==='r'?['r-weed','r-bugs','r-hedges','r-perim']:['o-weed','o-bugs','o-hedges','o-perim'];
-  let fail=false;
-  checks.forEach(id=>{const v=document.getElementById(id)?.value;const g=document.getElementById('yn-'+id);if(!v){fail=true;if(g)g.classList.add('invalid');}else{if(g)g.classList.remove('invalid');}});
-  if(fail){toast('⚠ Complete all checklist items');document.querySelector('.yn.invalid')?.scrollIntoView({behavior:'smooth',block:'center'});return;}
-  const btn=document.getElementById('sub-btn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Submitting…';
-  try{
-    const c=S.cust,date=new Date().toLocaleDateString('en-US');
-    const photos=S.photos.filter(Boolean);
-    const pd=await Promise.all(photos.map(compressPhoto));
-    const urls=[];
-    for(let i=0;i<pd.length;i++){
+async function compressPhoto(file) {
+  return new Promise((res,rej) => {
+    const r=new FileReader();
+    r.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        const M=1200;let w=img.width,h=img.height;
+        if(w>M||h>M){if(w>h){h=Math.round(h*M/w);w=M;}else{w=Math.round(w*M/h);h=M;}}
+        const c=document.createElement('canvas');c.width=w;c.height=h;
+        c.getContext('2d').drawImage(img,0,0,w,h);
+        res({name:file.name.replace(/\.[^.]+$/,'')+'.jpg',data:c.toDataURL('image/jpeg',.7).replace(/^data:image\/jpeg;base64,/,'')});
+      };
+      img.onerror=rej; img.src=e.target.result;
+    };
+    r.onerror=rej; r.readAsDataURL(file);
+  });
+}
+
+async function submitJob() {
+  if (!S.cust)  { toast('⚠ Please select a customer'); return; }
+  if (!S.svc)   { toast('⚠ Please select a service type'); return; }
+  if (!S.jStart){ toast('⚠ Please start the job first'); return; }
+  if (!S.jEnd)  { toast('⚠ Please end the job before submitting'); return; }
+
+  const p = S.svc==='residential'?'r':S.svc==='commercial'?'c':'o';
+  const checks = p==='c'
+    ? ['c-blow','c-weed','c-bugs','c-hedges','c-perim']
+    : p==='r'
+    ? ['r-weed','r-bugs','r-hedges','r-perim']
+    : ['o-weed','o-bugs','o-hedges','o-perim'];
+
+  let fail = false;
+  checks.forEach(id => {
+    const v=document.getElementById(id)?.value;
+    const g=document.getElementById('yn-'+id);
+    if (!v) { fail=true; if(g)g.classList.add('invalid'); }
+    else    { if(g)g.classList.remove('invalid'); }
+  });
+  if (fail) {
+    toast('⚠ Complete all checklist items');
+    document.querySelector('.yn.invalid')?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+
+  const btn = document.getElementById('sub-btn');
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Submitting…';
+
+  try {
+    const c=S.cust, date=new Date().toLocaleDateString('en-US');
+    const photos = S.photos.filter(Boolean);
+    const pd = await Promise.all(photos.map(compressPhoto));
+    const urls = [];
+    for (let i=0;i<pd.length;i++) {
       btn.innerHTML=`<span class="spinner"></span> Photo ${i+1}/${pd.length}…`;
-      try{const r=await fetch(CFG.cfWorker,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({photo:pd[i].data,filename:`${c.name} - ${date} - ${i+1}.jpg`})});const j=await r.json();if(j.url)urls.push(j.url);}catch(e){}
+      try {
+        const r=await fetch(CFG.cfWorker,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({photo:pd[i].data,filename:`${c.name} - ${date} - ${i+1}.jpg`})});
+        const j=await r.json(); if(j.url) urls.push(j.url);
+      } catch(e){}
     }
     btn.innerHTML='<span class="spinner"></span> Sending…';
-    const dur=S.jStart&&S.jEnd?((S.jEnd.t-S.jStart.t)/3600000).toFixed(2):'';
-    const grass=S.svc==='commercial'?document.getElementById('c-grass').value:(document.getElementById('r-grass')?.value||'');
-    const height=S.svc==='residential'?document.getElementById('r-height').value:S.svc==='commercial'?document.getElementById('c-height').value:'';
-    const dir=document.getElementById('r-dir')?.value||'';
-    const techs=document.getElementById('f-techs').value||S.user.name;
-    const notes=document.getElementById(p+'-notes')?.value||document.getElementById('c-notes')?.value||'';
-    const onote=document.getElementById('f-onote').value.trim();
-    const payload={
-      type:'job_complete',date,submittedAt:new Date().toISOString(),
-      customerName:c.name,customerEmail:c.email,customerPhone:c.phone,
-      serviceAddress:c.address,serviceType:S.svc,
-      techNames:techs,grassType:grass,cutHeight:height,mowingDirection:dir,
+
+    const dur  = ((S.jEnd.t - S.jStart.t)/3600000).toFixed(2);
+    const grass  = S.svc==='commercial'?document.getElementById('c-grass').value:(document.getElementById('r-grass')?.value||'');
+    const height = S.svc==='residential'?document.getElementById('r-height').value:S.svc==='commercial'?document.getElementById('c-height').value:'';
+    const dir    = document.getElementById('r-dir')?.value||'';
+    const techs  = document.getElementById('f-techs').value||S.user.name;
+    const notes  = document.getElementById(p+'-notes')?.value||document.getElementById('c-notes')?.value||'';
+    const onote  = document.getElementById('f-onote').value.trim();
+
+    const payload = {
+      type:'job_complete', date, submittedAt:new Date().toISOString(),
+      customerName:c.name, customerEmail:c.email, customerPhone:c.phone,
+      serviceAddress:c.address, serviceType:S.svc,
+      techNames:techs, grassType:grass, cutHeight:height, mowingDirection:dir,
       weedControl:document.getElementById(p+'-weed')?.value||'',
-      bugSpray:document.getElementById(p+'-bugs')?.value||'',
-      hedgeTrim:document.getElementById(p+'-hedges')?.value||'',
-      perimeter:document.getElementById(p+'-perim')?.value||'',
-      blowLot:S.svc==='commercial'?document.getElementById('c-blow').value:'',
-      recommend:document.getElementById('c-rec')?.value||'',
-      notes,startTime:S.jStart?.d||'',endTime:S.jEnd?.d||'',jobDuration:dur,
-      petStatus:S.pet,
+      bugSpray:   document.getElementById(p+'-bugs')?.value||'',
+      hedgeTrim:  document.getElementById(p+'-hedges')?.value||'',
+      perimeter:  document.getElementById(p+'-perim')?.value||'',
+      blowLot:    S.svc==='commercial'?document.getElementById('c-blow').value:'',
+      recommend:  document.getElementById('c-rec')?.value||'',
+      notes, startTime:S.jStart.d, endTime:S.jEnd.d, jobDuration:dur,
+      petStatus: S.pet,
       photoCount:urls.length,
-      photo1Url:urls[0]||'',photo2Url:urls[1]||'',photo3Url:urls[2]||'',photo4Url:urls[3]||'',
-      photosHtml:urls.length?urls.map((u,i)=>`<a href="${u}" style="display:inline-block;margin:4px 8px 4px 0;background:#1e6b2e;color:#fff;padding:10px 20px;border-radius:4px;text-decoration:none;font-size:13px;font-weight:bold;">📷 View Photo ${i+1}</a>`).join(''):'<p style="color:#888;font-size:13px">No photos submitted.</p>',
-      servicePerformed:S.svc==='other'?document.getElementById('o-svc')?.value:'',
+      photo1Url:urls[0]||'', photo2Url:urls[1]||'', photo3Url:urls[2]||'', photo4Url:urls[3]||'',
+      photosHtml: urls.length
+        ? urls.map((u,i)=>`<a href="${u}" style="display:inline-block;margin:4px 8px 4px 0;background:#1e6b2e;color:#fff;padding:10px 20px;border-radius:4px;text-decoration:none;font-size:13px;font-weight:bold;">📷 View Photo ${i+1}</a>`).join('')
+        : '<p style="color:#888;font-size:13px">No photos submitted.</p>',
+      servicePerformed: S.svc==='other'?document.getElementById('o-svc')?.value:'',
     };
-    await zap(CFG.whJob,payload);
-    const hasPet=S.pet==='warn',hasNote=onote.length>0;
-    if(hasPet||hasNote){
-      await zap(CFG.whAlert,{type:'office_alert',customerName:c.name,serviceAddress:c.address,date,
-        petAlert:hasPet?'⚠️ PET WASTE REPORTED ON PROPERTY':'',officeNote:onote,
-        toEmail:'info'+'@'+'wslawncareservicesllc.com',
-        subject:'[WS Lawn Care Alert] '+(hasPet?'🐾 Pet Waste':'')+(hasPet&&hasNote?' + ':'')+(hasNote?'📋 Office Note':'')+' — '+c.name});
+
+    await zap(CFG.whJob, payload);
+
+    const hasPet=S.pet==='warn', hasNote=onote.length>0;
+    if (hasPet||hasNote) {
+      await zap(CFG.whAlert, {
+        type:'office_alert', customerName:c.name, serviceAddress:c.address, date,
+        petAlert: hasPet?'⚠️ PET WASTE REPORTED ON PROPERTY':'',
+        officeNote: onote,
+        toEmail: 'info@wslawncareservicesllc.com',
+        subject: '[WS Lawn Care Alert] '+(hasPet?'🐾 Pet Waste':'')+(hasPet&&hasNote?' + ':'')+(hasNote?'📋 Office Note':'')+' — '+c.name,
+      });
     }
-    if(grass||height||dir||dur||techs){
-      await zap(CFG.whSheet,{type:'sheet_update',customerName:c.name,serviceAddress:c.address,
-        email:c.email,grassType:grass,mowingHeight:height,mowingDirection:dir,
-        lastVisitDuration:dur,lastVisitTechs:techs,startTime:payload.startTime,endTime:payload.endTime,date});
+    if (grass||height||dir||dur||techs) {
+      await zap(CFG.whSheet, {
+        type:'sheet_update', customerName:c.name, serviceAddress:c.address,
+        email:c.email, grassType:grass, mowingHeight:height, mowingDirection:dir,
+        lastVisitDuration:dur, lastVisitTechs:techs,
+        startTime:payload.startTime, endTime:payload.endTime, date,
+      });
     }
-    if(S.selJobIdx!==null){S.jobs[S.selJobIdx].jobStatus='complete';renderDispatch();updateStrip();S.selJobIdx=null;}
+
+    // Mark job complete in dispatch (#2)
+    if (S.selJobIdx !== null) {
+      S.jobs[S.selJobIdx].jobStatus = 'complete';
+      renderDispatch(); updateStrip(); S.selJobIdx = null;
+    }
+
     document.getElementById('form-body').classList.add('hidden');
     document.getElementById('form-success').classList.add('show');
-  }catch(err){
-    if(err.name==='TypeError'){document.getElementById('form-body').classList.add('hidden');document.getElementById('form-success').classList.add('show');}
-    else{toast('❌ Submission failed');btn.disabled=false;btn.innerHTML='✓ SUBMIT JOB';}
+
+  } catch(err) {
+    if (err.name==='TypeError') {
+      document.getElementById('form-body').classList.add('hidden');
+      document.getElementById('form-success').classList.add('show');
+    } else {
+      toast('❌ Submission failed');
+      btn.disabled=false; btn.innerHTML='✓ SUBMIT JOB';
+    }
   }
 }
 
-function resetForm(){
+function resetForm() {
   S.cust=null;S.svc=null;S.pet='';S.jStart=null;S.jEnd=null;S.photos=[];S.selectedTechs=[];S.selJobIdx=null;
   clearCust();
   ['res','com','oth'].forEach(p=>{document.getElementById('svc-'+p).classList.remove('on');document.getElementById('f-'+p).classList.add('hidden');});
@@ -1241,38 +1517,42 @@ function resetForm(){
   document.querySelectorAll('select').forEach(el=>el.selectedIndex=0);
   document.getElementById('f-techs').value='';
   document.querySelectorAll('.tech-pill').forEach(b=>b.classList.remove('on'));
-  document.getElementById('pet-clr').className='pet-opt';document.getElementById('pet-wrn').className='pet-opt';
-  document.getElementById('ts-disp').textContent='Not set';document.getElementById('ts-disp').classList.add('empty');
-  document.getElementById('te-disp').textContent='Not set';document.getElementById('te-disp').classList.add('empty');
-  document.getElementById('tb-start').classList.remove('on');document.getElementById('tb-end').classList.remove('on');
-  const sb=document.getElementById('ts-btn');sb.textContent='TAP TO START';sb.classList.remove('on');sb.disabled=false;
-  const eb=document.getElementById('te-btn');eb.textContent='TAP TO END';eb.classList.remove('on');eb.disabled=true;
+  document.getElementById('pet-clr').className='pet-opt';
+  document.getElementById('pet-wrn').className='pet-opt';
+  document.getElementById('ts-disp').textContent='Not set'; document.getElementById('ts-disp').classList.add('empty');
+  document.getElementById('te-disp').textContent='Not set'; document.getElementById('te-disp').classList.add('empty');
+  document.getElementById('tb-start').classList.remove('on'); document.getElementById('tb-end').classList.remove('on');
+  const sb=document.getElementById('ts-btn'); sb.textContent='TAP TO START'; sb.classList.remove('on'); sb.disabled=false;
+  const eb=document.getElementById('te-btn'); eb.textContent='TAP TO END';   eb.classList.remove('on'); eb.disabled=true;
   document.getElementById('dur-row').classList.remove('show');
-  document.getElementById('sub-btn').disabled=false;document.getElementById('sub-btn').innerHTML='✓ SUBMIT JOB';
-  document.getElementById('form-body').classList.remove('hidden');document.getElementById('form-success').classList.remove('show');
+  document.getElementById('sub-btn').innerHTML='✓ SUBMIT JOB';
+  document.getElementById('form-body').classList.remove('hidden');
+  document.getElementById('form-success').classList.remove('show');
   window.scrollTo(0,0);
+  updateFormLock(); // re-lock after reset
 }
 
 // ════════════════════════════════════════════════════════════════
-// BOARD
+// BOARD (home preview only — tab removed)
 // ════════════════════════════════════════════════════════════════
-function renderBoard(){
-  const posts=S.board;
-  const bEl=document.getElementById('board-list');
-  const hEl=document.getElementById('h-board');
-  if(!posts.length){
-    bEl.innerHTML='<div class="empty-state">No messages from office.</div>';
+function renderBoard() {
+  const posts = S.board;
+  const hEl   = document.getElementById('h-board');
+  if (!posts.length) {
     hEl.innerHTML='<div class="empty-state">No messages from office</div>';
     return;
   }
-  bEl.innerHTML=posts.map(p=>`<div class="board-post ${p.tag||'general'}"><span class="bp-tag ${p.tag||'general'}">${(p.tag||'general').toUpperCase()}</span><div class="bp-body">${p.text}</div><div class="bp-time">📅 ${p.time}</div></div>`).join('');
-  hEl.innerHTML=posts.slice(0,2).map(p=>`<div class="bp-msg"><div class="bp-text">${p.text}</div><div class="bp-meta">${p.time}</div></div>`).join('');
+  hEl.innerHTML = posts.slice(0,2).map(p=>
+    `<div class="bp-msg"><div class="bp-text">${p.text}</div><div class="bp-meta">${p.time}</div></div>`
+  ).join('');
 }
 
 // ════════════════════════════════════════════════════════════════
-// NAV
+// NAV — 3 tabs only
 // ════════════════════════════════════════════════════════════════
-function goTab(tab){
+function goTab(tab) {
+  // Map any old 'board' references to 'home'
+  if (tab==='board') tab='home';
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
@@ -1283,13 +1563,13 @@ function goTab(tab){
 // ════════════════════════════════════════════════════════════════
 // UTILS
 // ════════════════════════════════════════════════════════════════
-function fmt(d){return d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});}
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
-document.addEventListener('DOMContentLoaded',()=>{
+function fmt(d) { return d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true}); }
+function toast(msg) { const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 });
-async function zap(url,data){try{await fetch(url,{method:'POST',body:new URLSearchParams(data),mode:'no-cors'});}catch(e){}}
+async function zap(url,data) { try{await fetch(url,{method:'POST',body:new URLSearchParams(data),mode:'no-cors'});}catch(e){} }
 </script>
 </body>
 </html>
