@@ -338,8 +338,13 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
   <div class="login-title">CREW APP</div>
   <div class="login-sub">Brevard County Field Operations</div>
   <div class="name-wrap">
-    <label>Select Your Name</label>
-    <select id="name-sel"><option value="">Loading crew…</option></select>
+    <label for="name-sel">Select Your Name</label>
+    <select id="name-sel">
+        <option value="">— Select your name —</option>
+        <option value="0">Willie Arreola</option>
+        <option value="1">William Arreola</option>
+        <option value="2">Sandra Arreola</option>
+      </select>
   </div>
   <div class="pin-lbl">Enter Your PIN</div>
   <div class="pin-dots">
@@ -456,7 +461,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
         <!-- Crew -->
         <div class="card">
           <div class="card-title"><div class="ctn">2</div> Crew on Job</div>
-          <div class="tech-wrap" id="tech-wrap"><div style="font-size:13px;color:var(--muted);font-style:italic">Loading crew…</div></div>
+          <div class="tech-wrap" id="tech-wrap"></div>
           <input type="hidden" id="f-techs"/>
         </div>
 
@@ -651,7 +656,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
             <label>Office Note (Optional)</label>
             <textarea id="f-onote" rows="3" placeholder="e.g. Gate code changed, dog left in yard, irrigation head damaged…"></textarea>
           </div>
-          <p style="font-size:11px;color:var(--muted);font-style:italic">📧 Alert sent to info@wslawncareservicesllc.com if filled in.</p>
+          <p style="font-size:11px;color:var(--muted);font-style:italic">📧 Alert sent to <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="92fbfcf4fdd2e5e1fef3e5fcf1f3e0f7e1f7e0e4fbf1f7e1fefef1bcf1fdff">[email&#160;protected]</a> if filled in.</p>
         </div>
 
         <!-- Photos -->
@@ -722,67 +727,56 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 
 <div class="toast" id="toast"></div>
 
+
 <script>
 // ════════════════════════════════════════════════════════════════
-// CONFIG  — all webhook URLs and IDs in one place
+// CONFIG
 // ════════════════════════════════════════════════════════════════
 const CFG = {
-  appsScript:  'https://script.google.com/macros/s/AKfycbxuGa7IjVnaZdYrzECByJX3cVyShnNceMfmKOYN36-3iHa0xKKVUdLqcLXlYmn37W_s/exec',
-  token:       'wslawn-data-2026',
-  whJob:       'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/',
-  whAlert:     'https://hooks.zapier.com/hooks/catch/20549459/uxw6ope/',
-  whSheet:     'https://hooks.zapier.com/hooks/catch/20549459/uxwh463/',
-  cfWorker:    'https://wsphotoupload.will-671.workers.dev/',
+  appsScript: 'https://script.google.com/macros/s/AKfycbxuGa7IjVnaZdYrzECByJX3cVyShnNceMfmKOYN36-3iHa0xKKVUdLqcLXlYmn37W_s/exec',
+  token:      'wslawn-data-2026',
+  whJob:      'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/',
+  whAlert:    'https://hooks.zapier.com/hooks/catch/20549459/uxw6ope/',
+  whSheet:    'https://hooks.zapier.com/hooks/catch/20549459/uxwh463/',
+  cfWorker:   'https://wsphotoupload.will-671.workers.dev/',
 };
 
 // ════════════════════════════════════════════════════════════════
 // STATE
 // ════════════════════════════════════════════════════════════════
 const S = {
-  crew: [], customers: [], board: [],
-  user: null, clockIn: null, clockOut: null, clocked: false,
-  jobs: [], selJobIdx: null,
-  cust: null, svc: null, pet: '',
-  jStart: null, jEnd: null,
-  photos: [], selectedTechs: [],
+  crew:[], customers:[], board:[],
+  user:null, clockIn:null, clockOut:null, clocked:false,
+  jobs:[], selJobIdx:null,
+  cust:null, svc:null, pet:'',
+  jStart:null, jEnd:null,
+  photos:[], selectedTechs:[],
 };
 
-// ════════════════════════════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════════════════════════════
 const FALLBACK_CREW = [
-  {name:'Willie Arreola', position:'Crew Lead', pin:'1234'},
-  {name:'William Arreola', position:'Field Tech', pin:'2345'},
-  {name:'Sandra Arreola', position:'Field Tech', pin:'3456'},
+  {name:'Willie Arreola',  position:'Crew Lead',   pin:'1111'},
+  {name:'William Arreola', position:'Field Tech',  pin:'2222'},
+  {name:'Sandra Arreola',  position:'Field Tech',  pin:'3333'},
 ];
 
-// Always render fallback crew immediately so login is never blocked
+// Render fallback immediately — login never blocked
 S.crew = FALLBACK_CREW;
-renderCrew(FALLBACK_CREW);
+renderCrewLater();
 
-// Then try to load real data from sheet in background
 async function init() {
   try {
     const res = await fetch(CFG.appsScript + '?token=' + CFG.token);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const d = await res.json();
     if (d.error) throw new Error(d.error);
-
-    // Update crew if sheet returned data
-    if (d.techs?.length) {
-      S.crew = d.techs;
-      renderCrew(d.techs);
-    }
-    if (d.customers?.length) S.customers = d.customers;
-    if (d.board?.length)     S.board     = d.board;
-    if (d.dispatch?.length)  S.jobs      = d.dispatch;
-
+    if (d.techs && d.techs.length)     { S.crew = d.techs; renderCrew(d.techs); }
+    if (d.customers && d.customers.length) S.customers = d.customers;
+    if (d.board && d.board.length)         S.board     = d.board;
+    if (d.dispatch && d.dispatch.length)   S.jobs      = d.dispatch;
   } catch(e) {
-    console.warn('Sheet load failed — using fallback crew:', e.message);
-    // Fallback already rendered above, nothing to do
+    console.warn('Sheet load failed:', e.message);
+    renderCrew(FALLBACK_CREW);
   }
-
-  // Restore session regardless of sheet load result
   try {
     const u = sessionStorage.getItem('ws_user');
     if (u) {
@@ -793,15 +787,23 @@ async function init() {
     }
   } catch(e) {}
 }
-init();
+
+function renderCrewLater() {
+  // Defer until DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => { renderCrew(FALLBACK_CREW); init(); });
+  } else {
+    renderCrew(FALLBACK_CREW); init();
+  }
+}
 
 function renderCrew(crew) {
   const sel = document.getElementById('name-sel');
+  if (!sel) return;
   sel.innerHTML = '<option value="">— Select your name —</option>' +
     crew.map((c,i) => `<option value="${i}">${c.name}</option>`).join('');
-
-  // Tech pills in form
   const wrap = document.getElementById('tech-wrap');
+  if (!wrap) return;
   wrap.innerHTML = crew.map((c,i) => {
     const av = c.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
     return `<div class="tech-pill" id="tp-${i}" onclick="togTech(${i},'${c.name}')">
@@ -817,23 +819,27 @@ let pin = '';
 function pinKey(k) {
   if (pin.length >= 4) return;
   pin += k; updDots();
-  if (pin.length === 4) setTimeout(psubmit, 80);
+  if (pin.length === 4) setTimeout(pinSubmit, 80);
 }
 function pinDel() { pin = pin.slice(0,-1); updDots(); }
 function updDots() {
   for (let i=0;i<4;i++) {
-    document.getElementById('d'+i).classList.toggle('on', i < pin.length);
-    document.getElementById('d'+i).classList.remove('err');
+    const d = document.getElementById('d'+i);
+    d.classList.toggle('on', i < pin.length);
+    d.classList.remove('err');
   }
 }
 function pinSubmit() {
   const idx = parseInt(document.getElementById('name-sel').value);
-  if (isNaN(idx)) { document.getElementById('lerr').textContent = 'Please select your name'; pin=''; updDots(); return; }
+  if (isNaN(idx) || document.getElementById('name-sel').value === '') {
+    document.getElementById('lerr').textContent = 'Please select your name';
+    pin = ''; updDots(); return;
+  }
   const member = S.crew[idx];
   if (pin === (member.pin || '0000')) {
-    S.user = {name: member.name, position: member.position};
+    S.user = {name:member.name, position:member.position};
     try { sessionStorage.setItem('ws_user', JSON.stringify(S.user)); } catch(e){}
-    pin=''; updDots();
+    pin = ''; updDots();
     showApp();
   } else {
     document.getElementById('lerr').textContent = 'Incorrect PIN — try again';
@@ -843,7 +849,7 @@ function pinSubmit() {
 }
 
 // ════════════════════════════════════════════════════════════════
-// APP INIT
+// APP
 // ════════════════════════════════════════════════════════════════
 function showApp() {
   document.getElementById('scr-login').classList.remove('active');
@@ -853,24 +859,23 @@ function showApp() {
   const emoji = h<12?'👋':h<17?'☀️':h<21?'🌅':'🌙';
   document.getElementById('tb-name').textContent = u.name.split(' ')[0];
   document.getElementById('tb-role').textContent = u.position;
-  document.getElementById('h-name').innerHTML = `${u.name.split(' ')[0]} ${emoji}`;
+  document.querySelector('.hero-greet').innerHTML = `${greet},<br><span style="color:var(--g4)">${u.name.split(' ')[0]} ${emoji}</span>`;
   document.getElementById('h-date').textContent = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
   document.getElementById('d-date').textContent = now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  // Fix greeting word
-  document.querySelector('.hero-greet').innerHTML = `${greet},<br><span id="h-name">${u.name.split(' ')[0]} ${emoji}</span>`;
   renderBoard(); updateClockUI(); updateStrip();
   if (S.jobs.length) renderDispatch();
   startDurTimer();
 }
+
 function doLogout() {
-  try { sessionStorage.clear(); } catch(e) {}
+  try { sessionStorage.clear(); } catch(e){}
   S.user=null; S.clocked=false; S.clockIn=null;
   document.getElementById('scr-app').classList.remove('active');
   document.getElementById('scr-login').classList.add('active');
 }
 
 // ════════════════════════════════════════════════════════════════
-// CLOCK IN/OUT
+// CLOCK
 // ════════════════════════════════════════════════════════════════
 let durTimer = null;
 function toggleClock() {
@@ -884,30 +889,27 @@ function toggleClock() {
     try { sessionStorage.removeItem('ws_ci'); } catch(e){}
     sendClockEvent('Clock Out');
     toast('👋 Day ended — ' + fmt(S.clockOut));
-    if (durTimer) { clearInterval(durTimer); durTimer=null; }
+    if (durTimer) { clearInterval(durTimer); durTimer = null; }
   }
   updateClockUI();
 }
+
 async function sendClockEvent(type) {
   const now = new Date();
-  const hrs = (type === 'Clock Out' && S.clockIn) ? ((now-S.clockIn)/3600000).toFixed(2) : '';
+  const hrs = (type === 'Clock Out' && S.clockIn) ? ((now - S.clockIn) / 3600000).toFixed(2) : '';
   const payload = {
     type:'clock_event', eventType:type,
     techName:S.user.name, position:S.user.position,
-    date:now.toLocaleDateString('en-US'),
-    time:fmt(now), hoursWorked:hrs,
+    date:now.toLocaleDateString('en-US'), time:fmt(now), hoursWorked:hrs,
   };
-  // POST directly to Apps Script to write to Payroll tab
+  // POST to Apps Script for Payroll tab
   try {
-    await fetch(CFG.appsScript, {
-      method:'POST',
-      body: new URLSearchParams(payload),
-      mode:'no-cors',
-    });
-  } catch(e){ console.warn('Clock POST failed:', e.message); }
-  // Also fire Zapier webhook for any existing Zap automations
+    await fetch(CFG.appsScript, { method:'POST', body:new URLSearchParams(payload), mode:'no-cors' });
+  } catch(e) { console.warn('Clock POST failed:', e.message); }
+  // Also fire Zapier
   await zap(CFG.whSheet, payload);
 }
+
 function updateClockUI() {
   const btn = document.getElementById('clock-btn');
   const badge = document.getElementById('ci-badge');
@@ -916,7 +918,7 @@ function updateClockUI() {
   if (S.clocked) {
     btn.className='clock-btn stop'; btn.innerHTML='<span>🔴 END YOUR DAY</span>';
     badge.textContent='IN'; badge.classList.add('in');
-    inEl.textContent = S.clockIn ? fmt(S.clockIn) : '—'; inEl.classList.remove('mt');
+    if (S.clockIn) { inEl.textContent=fmt(S.clockIn); inEl.classList.remove('mt'); }
     startDurTimer();
   } else {
     btn.className='clock-btn start'; btn.innerHTML='<span>🟢 START YOUR DAY</span>';
@@ -940,61 +942,50 @@ function openPasteModal() { document.getElementById('paste-modal').classList.add
 function parseDispatch() {
   const raw = document.getElementById('paste-area').value.trim();
   if (!raw) { toast('⚠ Nothing to paste'); return; }
-
   const lines = raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
-  const jobs  = [], seen = new Set();
-  const mRe=/\$[\d,]+\.\d{2}/, stRe=/\b(Dispatched|Completed|Scheduled|Cancelled)\b/i;
+  const jobs=[], seen=new Set();
+  const mRe=/\$[\d,]+\.\d{2}/,stRe=/\b(Dispatched|Completed|Scheduled|Cancelled)\b/i;
   const tyRe=/\b(Custom\s+Recurring|One\s+Time|Recurring|Custom)\b/i;
   const svRe=/(Ground\s+Cover\s+Maintenance|Commercial\s+Grounds\s+Maintenance|General\s+Clean\s+Up|Bi-Weekly\s+Mowing|Weekly\s+Mowing|Mowing\s+Service|Mulch\s+Installation|Shrub\s+Trimming|Hedge\s+Trim|Power\s+Wash|Fertiliz\w*|Aerat\w*|Sod\s+Install\w*)/i;
   const skip=/^(Daily\s+Dispatch|Job\s+Date|Client\s+Name|Appointment\s+Start|Appointment\s+End|Job\s+Amount|Job\s+Status|Job\s+Type|^Service$|^Source$|^Amount$)/i;
-
   function times(s){const a=[];let m;const p=/(1[0-2]|0?[1-9]):[0-5]\d\s?[AP]M/gi;while((m=p.exec(s))!==null)a.push(m[0].replace(/\s/,' ').toUpperCase());return a;}
   function strip(s){return s.replace(/(1[0-2]|0?[1-9]):[0-5]\d\s?[AP]M/gi,'').replace(mRe,'').replace(stRe,'').replace(tyRe,'').replace(svRe,'').replace(/\d{1,2}\/\d{1,2}\/\d{2,4}/g,'').replace(/\s{2,}/g,' ').replace(/^\s+|\s+$/g,'').trim();}
   function nextDate(p){for(let k=p+1;k<lines.length;k++)if(/^\d{1,2}\/\d{1,2}\/\d{2,4}/.test(lines[k]))return k;return lines.length;}
   function add(j){if(!j.client||j.client.length<2)return;const k=(j.date+'|'+j.client.toLowerCase()+'|'+j.startTime).replace(/\s/g,'');if(seen.has(k))return;seen.add(k);jobs.push(j);}
-
   let i=0;
   while(i<lines.length){
     const line=lines[i];
     if(skip.test(line)||/^\$[\d,]+\.?\d*$/.test(line)||line.length<3){i++;continue;}
     const dm=line.match(/^(\d{1,2}\/\d{1,2}\/\d{2,4})\s+(.*)/);
     if(!dm){i++;continue;}
-    const date=dm[1]; let after=dm[2].trim(), ts=times(after), dataLine=after, dataIdx=i, pre='';
+    const date=dm[1];let after=dm[2].trim(),ts=times(after),dataLine=after,dataIdx=i,pre='';
     if(!ts.length){
-      let buf=after, pk=i+1, found=false;
-      while(pk<lines.length&&pk<=i+10){
-        const pl=lines[pk];
-        if(skip.test(pl)||/^\$[\d,]+\.?\d*$/.test(pl)){pk++;continue;}
+      let buf=after,pk2=i+1,found=false;
+      while(pk2<lines.length&&pk2<=i+10){
+        const pl=lines[pk2];
+        if(skip.test(pl)||/^\$[\d,]+\.?\d*$/.test(pl)){pk2++;continue;}
         if(/^\d{1,2}\/\d{1,2}\/\d{2,4}/.test(pl))break;
         const pt=times(pl);
         if(pt.length&&mRe.test(pl)){
-          for(let k=i+1;k<pk;k++){const kl=lines[k];if(!skip.test(kl)&&/^[A-Za-z\s]+$/.test(kl)&&kl.length<30&&!svRe.test(kl))buf+=' '+kl.trim();}
-          pre=buf.trim();dataLine=pl;dataIdx=pk;ts=pt;i=pk;found=true;break;
+          for(let k=i+1;k<pk2;k++){const kl=lines[k];if(!skip.test(kl)&&/^[A-Za-z\s]+$/.test(kl)&&kl.length<30&&!svRe.test(kl))buf+=' '+kl.trim();}
+          pre=buf.trim();dataLine=pl;dataIdx=pk2;ts=pt;i=pk2;found=true;break;
         }
-        pk++;
+        pk2++;
       }
       if(!found){i++;continue;}
     }
     const st=ts[0]||'',et=ts[1]||'';
     let cl=strip(dataLine);
-    if(pre){const p2=pre.replace(/^\s+|\s+$/g,'');cl=p2.endsWith(',')?(p2+' '+cl):(p2+(cl?' '+cl:''));}
+    if(pre){const p2=pre.replace(/^\s+|\s+$/g,'');cl=p2.endsWith(',')?p2+' '+cl:p2+(cl?' '+cl:'');}
     cl=cl.replace(/\s+,\s*/g,', ').replace(/,([^\s])/g,', ').replace(/\s{2,}/g,' ').replace(/^\s+|\s+$/g,'').trim();
     let svc='';
-    const sd=(line+' '+dataLine).match(svRe); if(sd)svc=sd[1];
-    if(!svc){
-      const we=nextDate(dataIdx);
-      for(let w=dataIdx+1;w<we;w++){
-        const wl=lines[w];if(skip.test(wl))continue;
-        if(times(wl).length||mRe.test(wl))break;
-        const sm=wl.match(svRe);if(sm){svc=sm[1];i=w;break;}
-      }
-    }
-    const stm=(line+' '+dataLine).match(stRe), tym=(line+' '+dataLine).match(tyRe);
+    const sd=(line+' '+dataLine).match(svRe);if(sd)svc=sd[1];
+    if(!svc){const we=nextDate(dataIdx);for(let w=dataIdx+1;w<we;w++){const wl=lines[w];if(skip.test(wl))continue;if(times(wl).length||mRe.test(wl))break;const sm=wl.match(svRe);if(sm){svc=sm[1];i=w;break;}}}
+    const stm=(line+' '+dataLine).match(stRe),tym=(line+' '+dataLine).match(tyRe);
     add({date,client:cl,startTime:st,endTime:et,status:stm?stm[1]:'Dispatched',jobType:tym?tym[1]:'',service:svc,budgetedHours:'',jobStatus:'dispatched'});
     i++;
   }
-
-  if(!jobs.length){toast('⚠ No jobs found — check paste format');return;}
+  if(!jobs.length){toast('⚠ No jobs found');return;}
   S.jobs=jobs; closeModal('paste-modal');
   document.getElementById('paste-area').value='';
   renderDispatch(); updateStrip();
@@ -1019,8 +1010,7 @@ function renderDispatch() {
           <div class="jc-left">
             <div class="jc-client">${j.client}</div>
             ${j.service?`<div class="jc-svc">${j.service}</div>`:''}
-            <div class="jc-time">🕐 <span>${j.startTime}</span>${j.endTime?` – <span>${j.endTime}</span>`:''}
-            </div>
+            <div class="jc-time">🕐 <span>${j.startTime||'—'}</span>${j.endTime?` – <span>${j.endTime}</span>`:''}</div>
             ${j.budgetedHours?`<div class="jc-time" style="margin-top:3px;color:var(--blue);font-weight:600">⏳ Budget: <span>${j.budgetedHours} hrs</span></div>`:''}
           </div>
           ${j.jobType?`<div class="jc-type">${j.jobType}</div>`:''}
@@ -1035,16 +1025,16 @@ function renderDispatch() {
   el.innerHTML=html; updateBadge();
 }
 
-function quickAct(i) {
+function quickAct(i){
   const j=S.jobs[i];
   if(j.jobStatus==='complete')return;
-  S.jobs[i].jobStatus=j.jobStatus==='dispatched'?'in-progress':'complete';
-  if(j.jobStatus!=='complete'){prefillFromJob(i);goTab('form');}
-  renderDispatch(); updateStrip();
+  if(j.jobStatus==='dispatched'){S.jobs[i].jobStatus='in-progress';prefillFromJob(i);goTab('form');}
+  else{S.jobs[i].jobStatus='complete';}
+  renderDispatch();updateStrip();
 }
 
-function openDetail(i) {
-  S.selJobIdx=i; const j=S.jobs[i];
+function openDetail(i){
+  S.selJobIdx=i;const j=S.jobs[i];
   document.getElementById('detail-content').innerHTML=`
     <div class="sheet-title">${j.client}</div>
     <div class="sheet-sub" style="margin-bottom:12px">${j.service||j.jobType||''}</div>
@@ -1055,28 +1045,26 @@ function openDetail(i) {
     <div class="detail-row"><span class="dr-lbl">Status</span><span class="dr-val">${j.status||'—'}</span></div>
     ${j.budgetedHours?`<div class="detail-row"><span class="dr-lbl">Budget Hours</span><span class="dr-val" style="color:var(--blue);font-weight:700">${j.budgetedHours} hrs</span></div>`:''}`;
   const btn=document.getElementById('detail-start-btn');
-  btn.disabled=j.jobStatus==='complete'; btn.textContent=j.jobStatus==='complete'?'✓ Completed':'Start This Job →';
+  btn.disabled=j.jobStatus==='complete';
+  btn.textContent=j.jobStatus==='complete'?'✓ Completed':'Start This Job →';
   document.getElementById('detail-modal').classList.add('open');
 }
-function startJobFromDetail(){closeModal('detail-modal');if(S.selJobIdx!==null){prefillFromJob(S.selJobIdx);}goTab('form');}
+function startJobFromDetail(){closeModal('detail-modal');if(S.selJobIdx!==null)prefillFromJob(S.selJobIdx);goTab('form');}
 
 function prefillFromJob(i){
-  const j=S.jobs[i]; S.selJobIdx=i;
+  const j=S.jobs[i];S.selJobIdx=i;
   S.jobs[i].jobStatus='in-progress';
-  const match=S.customers.find(c=>c.name.toLowerCase().includes(j.client.toLowerCase().split(',')[0].trim().toLowerCase())||j.client.toLowerCase().includes(c.name.toLowerCase().split(' ').pop().toLowerCase()));
-  if(match) selCust(S.customers.indexOf(match));
-  else{
-    S.cust={name:j.client,address:'',email:'',phone:'',mowingHeight:'',grassType:'',mowingDirection:'',internalNote:'',lastVisitDuration:''};
-    showCustBanner();
-  }
+  const match=S.customers.find(c=>c.name.toLowerCase().includes(j.client.toLowerCase().split(',')[0].trim().toLowerCase()));
+  if(match)selCust(S.customers.indexOf(match));
+  else{S.cust={name:j.client,address:'',email:'',phone:'',mowingHeight:'',grassType:'',mowingDirection:'',internalNote:'',lastVisitDuration:''};showCustBanner();}
   const sl=(j.service||'').toLowerCase();
   if(sl.includes('commercial')||sl.includes('ground'))selSvc('commercial');
   else if(sl.includes('mow')||sl.includes('bi-weekly')||sl.includes('weekly'))selSvc('residential');
-  renderDispatch(); updateStrip();
+  renderDispatch();updateStrip();
 }
 
 function updateStrip(){
-  const t=S.jobs.length, d=S.jobs.filter(j=>j.jobStatus==='complete').length;
+  const t=S.jobs.length,d=S.jobs.filter(j=>j.jobStatus==='complete').length;
   document.getElementById('strip-cnt').textContent=t||'—';
   document.getElementById('strip-sub').textContent=t?`${d} done · ${t-d} remaining`:'Tap to view dispatch';
 }
@@ -1088,27 +1076,27 @@ function updateBadge(){
 // ════════════════════════════════════════════════════════════════
 // JOB FORM
 // ════════════════════════════════════════════════════════════════
-// Customer search
-document.getElementById('f-srch').addEventListener('input',function(){
-  const q=this.value.toLowerCase().trim(), res=document.getElementById('f-results');
-  if(q.length<2){res.classList.remove('open');return;}
-  const m=S.customers.filter(c=>c.name.toLowerCase().includes(q)||c.address.toLowerCase().includes(q)).slice(0,8);
-  res.innerHTML=m.length?m.map(c=>`<div class="sri" onclick="selCust(${S.customers.indexOf(c)})"><div class="sri-name">${c.name}</div><div class="sri-addr">${c.address}</div></div>`).join(''):'<div class="sri"><div class="sri-name" style="color:var(--muted)">No customers found</div></div>';
-  res.classList.add('open');
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('f-srch').addEventListener('input',function(){
+    const q=this.value.toLowerCase().trim(),res=document.getElementById('f-results');
+    if(q.length<2){res.classList.remove('open');return;}
+    const m=S.customers.filter(c=>c.name.toLowerCase().includes(q)||c.address.toLowerCase().includes(q)).slice(0,8);
+    res.innerHTML=m.length?m.map(c=>`<div class="sri" onclick="selCust(${S.customers.indexOf(c)})"><div class="sri-name">${c.name}</div><div class="sri-addr">${c.address}</div></div>`).join(''):'<div class="sri"><div class="sri-name" style="color:var(--muted)">No customers found</div></div>';
+    res.classList.add('open');
+  });
+  document.getElementById('f-photos').addEventListener('change',function(){
+    Array.from(this.files).forEach(addPhoto);this.value='';
+  });
 });
 document.addEventListener('click',e=>{if(!e.target.closest('.srch-wrap'))document.getElementById('f-results').classList.remove('open');});
 
 function selCust(i){
-  const c=S.customers[i]; S.cust=c;
+  const c=S.customers[i];S.cust=c;
   document.getElementById('f-results').classList.remove('open');
   document.getElementById('f-srch').value='';
   showCustBanner();
-  // Pre-fill height
   if(c.mowingHeight){const h=parseFloat(c.mowingHeight).toFixed(2);['r-height','c-height'].forEach(id=>{const el=document.getElementById(id);if(el)for(let o of el.options)if(parseFloat(o.value||0).toFixed(2)===h){el.value=o.value;break;}});}
-  // Pre-fill grass hint
-  if(c.grassType){['r-grass','c-grass'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=c.grassType;});
-    document.querySelectorAll('#f-res .gb, #f-com .gb').forEach(b=>{if(b.querySelector('.gl')?.textContent===c.grassType)b.style.opacity='.6';});}
-  // Pre-fill direction
+  if(c.grassType){['r-grass','c-grass'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=c.grassType;});document.querySelectorAll('#f-res .gb,#f-com .gb').forEach(b=>{if(b.querySelector('.gl')?.textContent===c.grassType)b.style.opacity='.6';});}
   if(c.mowingDirection){const el=document.getElementById('r-dir');if(el)el.value=c.mowingDirection;}
 }
 
@@ -1117,16 +1105,14 @@ function showCustBanner(){
   document.getElementById('f-srch-wrap').classList.add('hidden');
   document.getElementById('f-csel').classList.remove('hidden');
   document.getElementById('f-cname').textContent=c.name;
-  document.getElementById('f-cdet').innerHTML=(c.address?`📍 ${c.address}<br>`:'')+(c.email?`✉ ${c.email}<br>`:'')+(c.phone?`📞 ${c.phone}`:'');
+  document.getElementById('f-cdet').innerHTML=(c.address?`📍 ${c.address}<br>`:'')+( c.email?`✉ ${c.email}<br>`:'')+( c.phone?`📞 ${c.phone}`:'');
   let chips='';
   if(c.mowingHeight) chips+=`<div class="chip"><div><div class="chip-lbl">Last Height</div><div class="chip-val">${c.mowingHeight}"</div></div></div>`;
   if(c.grassType)    chips+=`<div class="chip"><div><div class="chip-lbl">Grass</div><div class="chip-val">${c.grassType}</div></div></div>`;
   if(c.mowingDirection) chips+=`<div class="chip"><div><div class="chip-lbl">Direction</div><div class="chip-val">${c.mowingDirection}</div></div></div>`;
   if(c.lastVisitDuration) chips+=`<div class="chip blue"><div><div class="chip-lbl">Last Visit</div><div class="chip-val">${c.lastVisitDuration} hrs</div></div></div>`;
-  // Show budgeted hours from dispatch job if available
-  if(S.selJobIdx!==null && S.jobs[S.selJobIdx]?.budgetedHours) {
+  if(S.selJobIdx!==null&&S.jobs[S.selJobIdx]&&S.jobs[S.selJobIdx].budgetedHours)
     chips+=`<div class="chip blue"><div><div class="chip-lbl">⏳ Budget</div><div class="chip-val">${S.jobs[S.selJobIdx].budgetedHours} hrs</div></div></div>`;
-  }
   document.getElementById('f-chips').innerHTML=chips;
 }
 function clearCust(){
@@ -1137,7 +1123,6 @@ function clearCust(){
   document.getElementById('f-chips').innerHTML='';
 }
 
-// Service selection
 function selSvc(type){
   S.svc=type;
   const map={residential:'res',commercial:'com',other:'oth'};
@@ -1148,41 +1133,22 @@ function selSvc(type){
   document.getElementById('svc-none').classList.add('hidden');
 }
 
-// Grass/direction selectors
-function selGrass(el,v){document.querySelectorAll('#f-res .gg:nth-of-type(1) .gb').forEach(b=>{b.classList.remove('on');b.style.opacity='';});el.classList.add('on');document.getElementById('r-grass').value=v;}
-function selGrassCom(el,v){document.querySelectorAll('#f-com .gg .gb').forEach(b=>{b.classList.remove('on');b.style.opacity='';});el.classList.add('on');document.getElementById('c-grass').value=v;}
+function selGrass(el,v){el.closest('.gg').querySelectorAll('.gb').forEach(b=>{b.classList.remove('on');b.style.opacity='';});el.classList.add('on');document.getElementById('r-grass').value=v;}
+function selGrassCom(el,v){el.closest('.gg').querySelectorAll('.gb').forEach(b=>{b.classList.remove('on');b.style.opacity='';});el.classList.add('on');document.getElementById('c-grass').value=v;}
 function selDir(el,v){el.closest('.gg').querySelectorAll('.gb').forEach(b=>b.classList.remove('on'));el.classList.add('on');document.getElementById('r-dir').value=v;}
-
-// YN toggles
 function yntog(el,id,val){el.closest('.yn').querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('on'));el.closest('.yn').classList.remove('invalid');el.classList.add('on');document.getElementById(id).value=val;}
+function setPet(v){S.pet=v;document.getElementById('f-pet').value=v;document.getElementById('pet-clr').className='pet-opt'+(v==='clear'?' clear':'');document.getElementById('pet-wrn').className='pet-opt'+(v==='warn'?' warn':'');}
+function togTech(i,name){const btn=document.getElementById('tp-'+i);const ai=S.selectedTechs.indexOf(name);if(ai>-1){S.selectedTechs.splice(ai,1);btn.classList.remove('on');}else{S.selectedTechs.push(name);btn.classList.add('on');}document.getElementById('f-techs').value=S.selectedTechs.join(', ');}
 
-// Pet
-function setPet(v){
-  S.pet=v;document.getElementById('f-pet').value=v;
-  document.getElementById('pet-clr').className='pet-opt'+(v==='clear'?' clear':'');
-  document.getElementById('pet-wrn').className='pet-opt'+(v==='warn'?' warn':'');
-}
-
-// Crew toggles
-function togTech(i,name){
-  const btn=document.getElementById('tp-'+i);
-  const ai=S.selectedTechs.indexOf(name);
-  if(ai>-1){S.selectedTechs.splice(ai,1);btn.classList.remove('on');}
-  else{S.selectedTechs.push(name);btn.classList.add('on');}
-  document.getElementById('f-techs').value=S.selectedTechs.join(', ');
-}
-
-// Job time
 function jobTime(type){
-  const now=new Date(), ts=fmt(now);
+  const now=new Date(),ts=fmt(now);
   if(type==='start'){
     S.jStart={d:ts,t:now};
     document.getElementById('ts-disp').textContent=ts;document.getElementById('ts-disp').classList.remove('empty');
     document.getElementById('tb-start').classList.add('on');
     const b=document.getElementById('ts-btn');b.textContent='✓ STARTED';b.classList.add('on');b.disabled=true;
-    document.getElementById('te-btn').disabled=false;
-    toast('✅ Start: '+ts);
-  } else {
+    document.getElementById('te-btn').disabled=false;toast('✅ Start: '+ts);
+  }else{
     S.jEnd={d:ts,t:now};
     document.getElementById('te-disp').textContent=ts;document.getElementById('te-disp').classList.remove('empty');
     document.getElementById('tb-end').classList.add('on');
@@ -1191,13 +1157,10 @@ function jobTime(type){
   }
 }
 
-// Photos
-document.getElementById('f-photos').addEventListener('change',function(){Array.from(this.files).forEach(addPhoto);this.value='';});
 function addPhoto(file){if(!file.type.startsWith('image/'))return;const i=S.photos.length;S.photos.push(file);const r=new FileReader();r.onload=e=>{const t=document.createElement('div');t.className='p-thumb';t.innerHTML=`<img src="${e.target.result}"/><button class="p-rm" onclick="rmPhoto(${i},this.closest('.p-thumb'))">×</button>`;document.getElementById('photo-grid').appendChild(t);};r.readAsDataURL(file);}
 function rmPhoto(i,el){S.photos[i]=null;el.remove();}
 async function compressPhoto(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>{const img=new Image();img.onload=()=>{const M=1200;let w=img.width,h=img.height;if(w>M||h>M){if(w>h){h=Math.round(h*M/w);w=M;}else{w=Math.round(w*M/h);h=M;}}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res({name:file.name.replace(/\.[^.]+$/,'')+'.jpg',data:c.toDataURL('image/jpeg',.7).replace(/^data:image\/jpeg;base64,/,'')});};img.onerror=rej;img.src=e.target.result;};r.onerror=rej;r.readAsDataURL(file);});}
 
-// Submit
 async function submitJob(){
   if(!S.cust){toast('⚠ Please select a customer');return;}
   if(!S.svc){toast('⚠ Please select a service type');return;}
@@ -1206,10 +1169,9 @@ async function submitJob(){
   let fail=false;
   checks.forEach(id=>{const v=document.getElementById(id)?.value;const g=document.getElementById('yn-'+id);if(!v){fail=true;if(g)g.classList.add('invalid');}else{if(g)g.classList.remove('invalid');}});
   if(fail){toast('⚠ Complete all checklist items');document.querySelector('.yn.invalid')?.scrollIntoView({behavior:'smooth',block:'center'});return;}
-
   const btn=document.getElementById('sub-btn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Submitting…';
   try{
-    const c=S.cust, date=new Date().toLocaleDateString('en-US');
+    const c=S.cust,date=new Date().toLocaleDateString('en-US');
     const photos=S.photos.filter(Boolean);
     const pd=await Promise.all(photos.map(compressPhoto));
     const urls=[];
@@ -1218,60 +1180,50 @@ async function submitJob(){
       try{const r=await fetch(CFG.cfWorker,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({photo:pd[i].data,filename:`${c.name} - ${date} - ${i+1}.jpg`})});const j=await r.json();if(j.url)urls.push(j.url);}catch(e){}
     }
     btn.innerHTML='<span class="spinner"></span> Sending…';
-
     const dur=S.jStart&&S.jEnd?((S.jEnd.t-S.jStart.t)/3600000).toFixed(2):'';
-    const grass=S.svc==='commercial'?document.getElementById('c-grass').value:document.getElementById('r-grass')?.value||'';
+    const grass=S.svc==='commercial'?document.getElementById('c-grass').value:(document.getElementById('r-grass')?.value||'');
     const height=S.svc==='residential'?document.getElementById('r-height').value:S.svc==='commercial'?document.getElementById('c-height').value:'';
     const dir=document.getElementById('r-dir')?.value||'';
     const techs=document.getElementById('f-techs').value||S.user.name;
     const notes=document.getElementById(p+'-notes')?.value||document.getElementById('c-notes')?.value||'';
     const onote=document.getElementById('f-onote').value.trim();
-
     const payload={
-      type:'job_complete', date, submittedAt:new Date().toISOString(),
-      customerName:c.name, customerEmail:c.email, customerPhone:c.phone,
-      serviceAddress:c.address, serviceType:S.svc,
-      techNames:techs, grassType:grass, cutHeight:height, mowingDirection:dir,
+      type:'job_complete',date,submittedAt:new Date().toISOString(),
+      customerName:c.name,customerEmail:c.email,customerPhone:c.phone,
+      serviceAddress:c.address,serviceType:S.svc,
+      techNames:techs,grassType:grass,cutHeight:height,mowingDirection:dir,
       weedControl:document.getElementById(p+'-weed')?.value||'',
       bugSpray:document.getElementById(p+'-bugs')?.value||'',
       hedgeTrim:document.getElementById(p+'-hedges')?.value||'',
       perimeter:document.getElementById(p+'-perim')?.value||'',
       blowLot:S.svc==='commercial'?document.getElementById('c-blow').value:'',
       recommend:document.getElementById('c-rec')?.value||'',
-      notes, startTime:S.jStart?.d||'', endTime:S.jEnd?.d||'', jobDuration:dur,
+      notes,startTime:S.jStart?.d||'',endTime:S.jEnd?.d||'',jobDuration:dur,
       petStatus:S.pet,
       photoCount:urls.length,
       photo1Url:urls[0]||'',photo2Url:urls[1]||'',photo3Url:urls[2]||'',photo4Url:urls[3]||'',
       photosHtml:urls.length?urls.map((u,i)=>`<a href="${u}" style="display:inline-block;margin:4px 8px 4px 0;background:#1e6b2e;color:#fff;padding:10px 20px;border-radius:4px;text-decoration:none;font-size:13px;font-weight:bold;">📷 View Photo ${i+1}</a>`).join(''):'<p style="color:#888;font-size:13px">No photos submitted.</p>',
       servicePerformed:S.svc==='other'?document.getElementById('o-svc')?.value:'',
     };
-
-    await zap(CFG.whJob, payload);
-
-    // Alert webhook — pet or office note
-    const hasPet=S.pet==='warn', hasNote=onote.length>0;
+    await zap(CFG.whJob,payload);
+    const hasPet=S.pet==='warn',hasNote=onote.length>0;
     if(hasPet||hasNote){
       await zap(CFG.whAlert,{type:'office_alert',customerName:c.name,serviceAddress:c.address,date,
-        petAlert:hasPet?'⚠️ PET WASTE REPORTED ON PROPERTY':'',
-        officeNote:onote,toEmail:'info' + '@' + 'wslawncareservicesllc.com',
+        petAlert:hasPet?'⚠️ PET WASTE REPORTED ON PROPERTY':'',officeNote:onote,
+        toEmail:'info'+'@'+'wslawncareservicesllc.com',
         subject:'[WS Lawn Care Alert] '+(hasPet?'🐾 Pet Waste':'')+(hasPet&&hasNote?' + ':'')+(hasNote?'📋 Office Note':'')+' — '+c.name});
     }
-
-    // Sheet update
     if(grass||height||dir||dur||techs){
       await zap(CFG.whSheet,{type:'sheet_update',customerName:c.name,serviceAddress:c.address,
         email:c.email,grassType:grass,mowingHeight:height,mowingDirection:dir,
         lastVisitDuration:dur,lastVisitTechs:techs,startTime:payload.startTime,endTime:payload.endTime,date});
     }
-
-    // Mark dispatch job complete
     if(S.selJobIdx!==null){S.jobs[S.selJobIdx].jobStatus='complete';renderDispatch();updateStrip();S.selJobIdx=null;}
     document.getElementById('form-body').classList.add('hidden');
     document.getElementById('form-success').classList.add('show');
-
   }catch(err){
     if(err.name==='TypeError'){document.getElementById('form-body').classList.add('hidden');document.getElementById('form-success').classList.add('show');}
-    else{toast('❌ Submission failed — try again');btn.disabled=false;btn.innerHTML='✓ SUBMIT JOB';}
+    else{toast('❌ Submission failed');btn.disabled=false;btn.innerHTML='✓ SUBMIT JOB';}
   }
 }
 
@@ -1284,7 +1236,7 @@ function resetForm(){
   document.querySelectorAll('.yn-btn.on').forEach(b=>b.classList.remove('on'));
   document.querySelectorAll('.yn.invalid').forEach(b=>b.classList.remove('invalid'));
   document.querySelectorAll('.gb.on').forEach(b=>{b.classList.remove('on');b.style.opacity='';});
-  document.querySelectorAll('input[type=hidden]').forEach(el=>{if(el.id!=='f-techs')el.value='';});
+  document.querySelectorAll('input[type=hidden]').forEach(el=>el.value='');
   document.querySelectorAll('textarea').forEach(el=>el.value='');
   document.querySelectorAll('select').forEach(el=>el.selectedIndex=0);
   document.getElementById('f-techs').value='';
@@ -1308,8 +1260,12 @@ function renderBoard(){
   const posts=S.board;
   const bEl=document.getElementById('board-list');
   const hEl=document.getElementById('h-board');
-  if(!posts.length){bEl.innerHTML='<div class="empty-state">No messages from office.</div>';hEl.innerHTML='<div class="empty-state">No messages from office</div>';return;}
-  bEl.innerHTML=posts.map(p=>`<div class="board-post ${p.tag}"><span class="bp-tag ${p.tag}">${(p.tag||'general').toUpperCase()}</span><div class="bp-body">${p.text}</div><div class="bp-time">📅 ${p.time}</div></div>`).join('');
+  if(!posts.length){
+    bEl.innerHTML='<div class="empty-state">No messages from office.</div>';
+    hEl.innerHTML='<div class="empty-state">No messages from office</div>';
+    return;
+  }
+  bEl.innerHTML=posts.map(p=>`<div class="board-post ${p.tag||'general'}"><span class="bp-tag ${p.tag||'general'}">${(p.tag||'general').toUpperCase()}</span><div class="bp-body">${p.text}</div><div class="bp-time">📅 ${p.time}</div></div>`).join('');
   hEl.innerHTML=posts.slice(0,2).map(p=>`<div class="bp-msg"><div class="bp-text">${p.text}</div><div class="bp-meta">${p.time}</div></div>`).join('');
 }
 
@@ -1330,4 +1286,10 @@ function goTab(tab){
 function fmt(d){return d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
-document.querySelectorAll('.overlay').
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+});
+async function zap(url,data){try{await fetch(url,{method:'POST',body:new URLSearchParams(data),mode:'no-cors'});}catch(e){}}
+</script>
+</body>
+</html>
