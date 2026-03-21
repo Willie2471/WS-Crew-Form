@@ -347,11 +347,11 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
     <div class="pin-dot" id="d2"></div><div class="pin-dot" id="d3"></div>
   </div>
   <div class="pin-pad">
-    <div class="pk" onclick="pk('1')">1</div><div class="pk" onclick="pk('2')">2</div><div class="pk" onclick="pk('3')">3</div>
-    <div class="pk" onclick="pk('4')">4</div><div class="pk" onclick="pk('5')">5</div><div class="pk" onclick="pk('6')">6</div>
-    <div class="pk" onclick="pk('7')">7</div><div class="pk" onclick="pk('8')">8</div><div class="pk" onclick="pk('9')">9</div>
-    <div class="pk" onclick="pdel()">⌫</div><div class="pk" onclick="pk('0')">0</div>
-    <div class="pk wide" onclick="psubmit()">ENTER</div>
+    <div class="pk" onclick="pinKey('1')">1</div><div class="pk" onclick="pinKey('2')">2</div><div class="pk" onclick="pinKey('3')">3</div>
+    <div class="pk" onclick="pinKey('4')">4</div><div class="pk" onclick="pinKey('5')">5</div><div class="pk" onclick="pinKey('6')">6</div>
+    <div class="pk" onclick="pinKey('7')">7</div><div class="pk" onclick="pinKey('8')">8</div><div class="pk" onclick="pinKey('9')">9</div>
+    <div class="pk" onclick="pinDel()">⌫</div><div class="pk" onclick="pinKey('0')">0</div>
+    <div class="pk wide" onclick="pinSubmit()">ENTER</div>
   </div>
   <div class="login-err" id="lerr"></div>
 </div>
@@ -651,7 +651,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
             <label>Office Note (Optional)</label>
             <textarea id="f-onote" rows="3" placeholder="e.g. Gate code changed, dog left in yard, irrigation head damaged…"></textarea>
           </div>
-          <p style="font-size:11px;color:var(--muted);font-style:italic">📧 Alert sent to <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e58c8b838aa592968984928b86849780968097938c868096898986cb868a88">[email&#160;protected]</a> if filled in.</p>
+          <p style="font-size:11px;color:var(--muted);font-style:italic">📧 Alert sent to info@wslawncareservicesllc.com if filled in.</p>
         </div>
 
         <!-- Photos -->
@@ -722,7 +722,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 
 <div class="toast" id="toast"></div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ════════════════════════════════════════════════════════════════
 // CONFIG  — all webhook URLs and IDs in one place
 // ════════════════════════════════════════════════════════════════
@@ -814,19 +814,19 @@ function renderCrew(crew) {
 // PIN LOGIN
 // ════════════════════════════════════════════════════════════════
 let pin = '';
-function pk(k) {
+function pinKey(k) {
   if (pin.length >= 4) return;
   pin += k; updDots();
   if (pin.length === 4) setTimeout(psubmit, 80);
 }
-function pdel() { pin = pin.slice(0,-1); updDots(); }
+function pinDel() { pin = pin.slice(0,-1); updDots(); }
 function updDots() {
   for (let i=0;i<4;i++) {
     document.getElementById('d'+i).classList.toggle('on', i < pin.length);
     document.getElementById('d'+i).classList.remove('err');
   }
 }
-function psubmit() {
+function pinSubmit() {
   const idx = parseInt(document.getElementById('name-sel').value);
   if (isNaN(idx)) { document.getElementById('lerr').textContent = 'Please select your name'; pin=''; updDots(); return; }
   const member = S.crew[idx];
@@ -1253,7 +1253,7 @@ async function submitJob(){
     if(hasPet||hasNote){
       await zap(CFG.whAlert,{type:'office_alert',customerName:c.name,serviceAddress:c.address,date,
         petAlert:hasPet?'⚠️ PET WASTE REPORTED ON PROPERTY':'',
-        officeNote:onote,toEmail:'info@wslawncareservicesllc.com',
+        officeNote:onote,toEmail:'info' + '@' + 'wslawncareservicesllc.com',
         subject:'[WS Lawn Care Alert] '+(hasPet?'🐾 Pet Waste':'')+(hasPet&&hasNote?' + ':'')+(hasNote?'📋 Office Note':'')+' — '+c.name});
     }
 
