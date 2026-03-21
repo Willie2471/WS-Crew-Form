@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>WS Crew</title>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="theme-color" content="#0d2410"/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
@@ -755,26 +756,33 @@ const FALLBACK_CREW = [
   {name:'Sandra Arreola', position:'Field Tech', pin:'3456'},
 ];
 
+// Always render fallback crew immediately so login is never blocked
+S.crew = FALLBACK_CREW;
+renderCrew(FALLBACK_CREW);
+
+// Then try to load real data from sheet in background
 async function init() {
-  let loaded = false;
   try {
-    const ctrl = new AbortController();
-    const t    = setTimeout(() => ctrl.abort(), 10000);
-    const res  = await fetch(CFG.appsScript + '?token=' + CFG.token, {signal: ctrl.signal});
-    clearTimeout(t);
+    const res = await fetch(CFG.appsScript + '?token=' + CFG.token);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const d = await res.json();
+    if (d.error) throw new Error(d.error);
+
+    // Update crew if sheet returned data
+    if (d.techs?.length) {
+      S.crew = d.techs;
+      renderCrew(d.techs);
+    }
     if (d.customers?.length) S.customers = d.customers;
     if (d.board?.length)     S.board     = d.board;
     if (d.dispatch?.length)  S.jobs      = d.dispatch;
-    const crew = d.techs?.length ? d.techs : FALLBACK_CREW;
-    S.crew = crew;
-    renderCrew(crew);
-    loaded = true;
-  } catch(e) { console.warn('Sheet load failed:', e.message); }
 
-  if (!loaded) { S.crew = FALLBACK_CREW; renderCrew(FALLBACK_CREW); }
+  } catch(e) {
+    console.warn('Sheet load failed — using fallback crew:', e.message);
+    // Fallback already rendered above, nothing to do
+  }
 
-  // Restore session
+  // Restore session regardless of sheet load result
   try {
     const u = sessionStorage.getItem('ws_user');
     if (u) {
@@ -882,13 +890,23 @@ function toggleClock() {
 }
 async function sendClockEvent(type) {
   const now = new Date();
-  const hrs = (S.clocked===false && S.clockIn) ? ((now-S.clockIn)/3600000).toFixed(2) : '';
-  await zap(CFG.whSheet, {
+  const hrs = (type === 'Clock Out' && S.clockIn) ? ((now-S.clockIn)/3600000).toFixed(2) : '';
+  const payload = {
     type:'clock_event', eventType:type,
     techName:S.user.name, position:S.user.position,
     date:now.toLocaleDateString('en-US'),
     time:fmt(now), hoursWorked:hrs,
-  });
+  };
+  // POST directly to Apps Script to write to Payroll tab
+  try {
+    await fetch(CFG.appsScript, {
+      method:'POST',
+      body: new URLSearchParams(payload),
+      mode:'no-cors',
+    });
+  } catch(e){ console.warn('Clock POST failed:', e.message); }
+  // Also fire Zapier webhook for any existing Zap automations
+  await zap(CFG.whSheet, payload);
 }
 function updateClockUI() {
   const btn = document.getElementById('clock-btn');
@@ -1003,7 +1021,7 @@ function renderDispatch() {
             ${j.service?`<div class="jc-svc">${j.service}</div>`:''}
             <div class="jc-time">🕐 <span>${j.startTime}</span>${j.endTime?` – <span>${j.endTime}</span>`:''}
             </div>
-            ${j.budgetedHours?`<div class="jc-time" style="margin-top:3px">⏳ Budget: <span>${j.budgetedHours} hrs</span></div>`:''}
+            ${j.budgetedHours?`<div class="jc-time" style="margin-top:3px;color:var(--blue);font-weight:600">⏳ Budget: <span>${j.budgetedHours} hrs</span></div>`:''}
           </div>
           ${j.jobType?`<div class="jc-type">${j.jobType}</div>`:''}
         </div>
