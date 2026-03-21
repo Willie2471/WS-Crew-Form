@@ -693,7 +693,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
               <label>Office Note (Optional)</label>
               <textarea id="f-onote" rows="3" placeholder="e.g. Gate code changed, dog left in yard, irrigation head damaged…"></textarea>
             </div>
-            <p style="font-size:11px;color:var(--muted);font-style:italic">📧 Alert sent to info@wslawncareservicesllc.com if filled in.</p>
+            <p style="font-size:11px;color:var(--muted);font-style:italic">📧 Alert sent to <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2e474048416e595d424f59404d4f5c4b5d4b5c58474d4b5d42424d004d4143">[email&#160;protected]</a> if filled in.</p>
           </div>
 
           <!-- Photos -->
@@ -769,16 +769,17 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 
 <div class="toast" id="toast"></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ════════════════════════════════════════════════════════════════
 // CONFIG
 // ════════════════════════════════════════════════════════════════
 const CFG = {
   appsScript: 'https://script.google.com/macros/s/AKfycbxuGa7IjVnaZdYrzECByJX3cVyShnNceMfmKOYN36-3iHa0xKKVUdLqcLXlYmn37W_s/exec',
   token:      'wslawn-data-2026',
-  whJob:      'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/',
-  whAlert:    'https://hooks.zapier.com/hooks/catch/20549459/uxw6ope/',
-  whSheet:    'https://hooks.zapier.com/hooks/catch/20549459/uxwh463/',
+  whJob:      'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/',   // job completion
+  whAlert:    'https://hooks.zapier.com/hooks/catch/20549459/uxw6ope/',   // pet/office alerts
+  whSheet:    'https://hooks.zapier.com/hooks/catch/20549459/uxwh463/',   // job sheet updates only
+  whClock:    'https://hooks.zapier.com/hooks/catch/20549459/upavpzb/',   // clock in/out only
   cfWorker:   'https://wsphotoupload.will-671.workers.dev/',
 };
 
@@ -938,8 +939,10 @@ async function sendClockEvent(type) {
     techName:S.user.name, position:S.user.position,
     date:now.toLocaleDateString('en-US'), time:fmt(now), hoursWorked:hrs,
   };
+  // POST to Apps Script for Payroll tab write
   try { await fetch(CFG.appsScript, {method:'POST', body:new URLSearchParams(payload), mode:'no-cors'}); } catch(e){}
-  await zap(CFG.whSheet, payload);
+  // Fire clock-ONLY webhook — never touches job form Zap
+  await zap(CFG.whClock, payload);
 }
 
 function updateClockUI() {
@@ -1567,9 +1570,4 @@ function fmt(d) { return d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-
 function toast(msg) { const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
-});
-async function zap(url,data) { try{await fetch(url,{method:'POST',body:new URLSearchParams(data),mode:'no-cors'});}catch(e){} }
-</script>
-</body>
-</html>
+  document.querySelectorAll('.overlay').forEach
