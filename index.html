@@ -28,40 +28,20 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .screen.active{display:flex;flex-direction:column}
 
 /* ══ LOGIN ══════════════════════════════════════════════════════════ */
-#scr-login{
-  background:linear-gradient(150deg,var(--g9) 0%,var(--g8) 60%,#0a1f0d 100%);
-  align-items:center;justify-content:center;padding:24px;
-}
-.login-card{
-  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
-  backdrop-filter:blur(20px);border-radius:24px;padding:36px 28px;
-  width:100%;max-width:360px;text-align:center;
-}
-.login-logo{width:68px;height:68px;background:var(--g7);border:2px solid var(--g6);border-radius:18px;
-  display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 18px;
-  box-shadow:0 8px 28px rgba(30,107,46,.4)}
-.login-brand{font-size:11px;letter-spacing:3px;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:4px}
-.login-title{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;color:#fff;letter-spacing:1px;margin-bottom:2px}
-.login-sub{font-size:13px;color:rgba(255,255,255,.35);margin-bottom:28px}
-.name-wrap{text-align:left;margin-bottom:18px}
-.name-wrap label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.4);display:block;margin-bottom:6px}
-.name-wrap select{width:100%;padding:13px 14px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);
-  border-radius:12px;color:#fff;font-family:'Barlow',sans-serif;font-size:15px;outline:none;-webkit-appearance:none}
-.name-wrap select option{background:var(--g9)}
-.pin-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.4);text-align:left;margin-bottom:8px}
-.pin-dots{display:flex;justify-content:center;gap:14px;margin-bottom:20px}
-.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.25);background:transparent;transition:all .2s}
-.pin-dot.on{background:var(--g4);border-color:var(--g4);box-shadow:0 0 8px rgba(76,175,99,.6)}
-.pin-dot.err{background:var(--red);border-color:var(--red);animation:shake .3s}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
-.pk{aspect-ratio:1;max-height:62px;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.1);
+
+
+
+
+
+
+
+
+
+
+
   border-radius:14px;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;
   cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;user-select:none}
-.pk:active{background:rgba(76,175,99,.3);border-color:var(--g4);transform:scale(.94)}
-.pk.wide{grid-column:span 3;max-height:50px;font-size:15px;letter-spacing:2px;background:var(--g7);border-color:var(--g6)}
-.pk.wide:active{background:var(--g6)}
-.login-err{font-size:13px;color:#ff6b6b;font-weight:600;min-height:18px;text-align:center;margin-top:4px}
+
 
 /* ══ APP SHELL ══════════════════════════════════════════════════════ */
 #scr-app{background:var(--g0)}
@@ -75,8 +55,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .ci-badge{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;
   padding:5px 10px;font-size:12px;font-weight:700;color:rgba(255,255,255,.6);font-family:'Barlow Condensed',sans-serif}
 .ci-badge.in{background:rgba(76,175,99,.2);border-color:var(--g4);color:var(--g4)}
-.logout{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;
-  padding:6px 10px;font-size:12px;color:rgba(255,255,255,.5);cursor:pointer;font-family:'Barlow',sans-serif}
+
 
 .content{flex:1;overflow-y:auto;padding:16px 14px 100px;max-width:680px;width:100%;margin:0 auto}
 .tab{display:none}.tab.active{display:block}
@@ -356,48 +335,23 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 </head>
 <body>
 
-<!-- ══════════ LOGIN ══════════ -->
-<div class="screen active" id="scr-login">
-<div class="login-card">
-  <div class="login-logo">🌿</div>
-  <div class="login-brand">WS Lawn Care Services</div>
-  <div class="login-title">CREW APP</div>
-  <div class="login-sub">Brevard County Field Operations</div>
-  <div class="name-wrap">
-    <label for="name-sel">Select Your Name</label>
-    <select id="name-sel">
-      <option value="">— Select your name —</option>
-      <option value="0">Willie Arreola</option>
-      <option value="1">William Arreola</option>
-      <option value="2">Sandra Arreola</option>
-    </select>
-  </div>
-  <div class="pin-lbl">Enter Your PIN</div>
-  <div class="pin-dots">
-    <div class="pin-dot" id="d0"></div><div class="pin-dot" id="d1"></div>
-    <div class="pin-dot" id="d2"></div><div class="pin-dot" id="d3"></div>
-  </div>
-  <div class="pin-pad">
-    <div class="pk" onclick="pinKey('1')">1</div><div class="pk" onclick="pinKey('2')">2</div><div class="pk" onclick="pinKey('3')">3</div>
-    <div class="pk" onclick="pinKey('4')">4</div><div class="pk" onclick="pinKey('5')">5</div><div class="pk" onclick="pinKey('6')">6</div>
-    <div class="pk" onclick="pinKey('7')">7</div><div class="pk" onclick="pinKey('8')">8</div><div class="pk" onclick="pinKey('9')">9</div>
-    <div class="pk" onclick="pinDel()">⌫</div><div class="pk" onclick="pinKey('0')">0</div>
-    <div class="pk wide" onclick="pinSubmit()">ENTER</div>
-  </div>
-  <div class="login-err" id="lerr"></div>
-</div>
 </div>
 
 <!-- ══════════ APP ══════════ -->
-<div class="screen" id="scr-app">
+<div class="screen active" id="scr-app">
   <div class="topbar">
     <div class="tb-left">
       <div class="tb-icon">🌿</div>
-      <div><div class="tb-name" id="tb-name">—</div><div class="tb-role" id="tb-role">—</div></div>
+      <div>
+        <select id="tb-name-sel" style="background:transparent;border:none;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;outline:none;cursor:pointer;max-width:140px;">
+          <option value="">— Who are you? —</option>
+        </select>
+        <div class="tb-role" id="tb-role">—</div>
+      </div>
     </div>
     <div class="tb-right">
       <div class="ci-badge" id="ci-badge">NOT IN</div>
-      <div class="logout" onclick="doLogout()">OUT</div>
+      
     </div>
   </div>
 
@@ -409,13 +363,13 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
         <div class="hero-date" id="h-date"></div>
         <div class="hero-greet">Good morning,<br><span id="h-name">—</span> 👋</div>
       </div>
-      <button class="clock-btn start" id="clock-btn" onclick="toggleClock()"><span>🟢 START YOUR DAY</span></button>
+      <button class="clock-btn start" id="clock-btn" data-action="clock"><span>🟢 START YOUR DAY</span></button>
       <div class="stats-row">
         <div class="stat"><div class="stat-lbl">Clocked In</div><div class="stat-val mt" id="s-in">—</div></div>
         <div class="stat live"><div class="stat-lbl">On Clock</div><div class="stat-val" id="s-dur">—</div></div>
         <div class="stat"><div class="stat-lbl">Clocked Out</div><div class="stat-val mt" id="s-out">—</div></div>
       </div>
-      <div class="jobs-strip" onclick="goTab('dispatch')">
+      <div class="jobs-strip" data-action="goto-dispatch">
         <div class="js-left"><span style="font-size:24px">📋</span>
           <div><div class="js-title">Today's Jobs</div><div class="js-sub" id="strip-sub">Tap to view dispatch</div></div>
         </div>
@@ -432,7 +386,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
       <div class="disp-hdr">
         <div><div class="disp-title">Daily Dispatch</div><div class="disp-date" id="d-date"></div></div>
       </div>
-      <button class="load-btn" onclick="openPasteModal()">📥 Load / Refresh Jobs</button>
+      <button class="load-btn" data-action="open-paste">📥 Load / Refresh Jobs</button>
       <div id="route-info" class="hidden"></div>
       <div id="dispatch-list"><div class="empty-state">📋<br><br>No jobs loaded yet.<br>Tap "Load / Refresh Jobs" to paste the report.</div></div>
     </div>
@@ -448,12 +402,12 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
             <div class="tblock" id="tb-start">
               <div class="tblock-lbl">🟢 Start</div>
               <div class="tblock-val empty" id="ts-disp">Not set</div>
-              <button class="tbtn" id="ts-btn" onclick="jobTime('start')">TAP TO START</button>
+              <button class="tbtn" id="ts-btn" data-action="time-start">TAP TO START</button>
             </div>
             <div class="tblock" id="tb-end">
               <div class="tblock-lbl">🔴 End</div>
               <div class="tblock-val empty" id="te-disp">Not set</div>
-              <button class="tbtn" id="te-btn" onclick="jobTime('end')" disabled>TAP TO END</button>
+              <button class="tbtn" id="te-btn" data-action="time-end" disabled>TAP TO END</button>
             </div>
           </div>
           <div class="dur-row" id="dur-row">
@@ -489,7 +443,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
               <div class="csel-banner">
                 <div class="csel-name" id="f-cname"></div>
                 <div class="csel-det" id="f-cdet"></div>
-                <button class="csel-chg" onclick="clearCust()">✕ Change customer</button>
+                <button class="csel-chg" data-action="clear-cust">✕ Change customer</button>
               </div>
               <div class="info-chips" id="f-chips"></div>
             </div>
@@ -506,9 +460,9 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
           <div class="card">
             <div class="card-title"><div class="ctn">3</div> Service Type</div>
             <div class="svc-grid">
-              <div class="svc-btn" id="svc-res" onclick="selSvc('residential')"><span class="si">🏠</span><span class="sl">Residential Mowing</span></div>
-              <div class="svc-btn" id="svc-com" onclick="selSvc('commercial')"><span class="si">🏢</span><span class="sl">Commercial Mowing</span></div>
-              <div class="svc-btn" id="svc-oth" onclick="selSvc('other')"><span class="si">🔧</span><span class="sl">All Other Services</span></div>
+              <div class="svc-btn" id="svc-res" data-action="svc-residential"><span class="si">🏠</span><span class="sl">Residential Mowing</span></div>
+              <div class="svc-btn" id="svc-com" data-action="svc-commercial"><span class="si">🏢</span><span class="sl">Commercial Mowing</span></div>
+              <div class="svc-btn" id="svc-oth" data-action="svc-other"><span class="si">🔧</span><span class="sl">All Other Services</span></div>
             </div>
           </div>
 
@@ -527,51 +481,51 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
               </div>
               <div class="field"><label>Grass Type</label>
                 <div class="gg">
-                  <div class="gb" onclick="selGrass(this,'Bahia')"><span class="gi">🌾</span><span class="gl">Bahia</span></div>
-                  <div class="gb" onclick="selGrass(this,'Bermuda')"><span class="gi">☀️</span><span class="gl">Bermuda</span></div>
-                  <div class="gb" onclick="selGrass(this,'St. Augustine')"><span class="gi">🌿</span><span class="gl">St. Augustine</span></div>
-                  <div class="gb" onclick="selGrass(this,'Zoysia')"><span class="gi">🍃</span><span class="gl">Zoysia</span></div>
-                  <div class="gb" onclick="selGrass(this,'Centipede')"><span class="gi">🐛</span><span class="gl">Centipede</span></div>
-                  <div class="gb" onclick="selGrass(this,'Unknown')"><span class="gi">❓</span><span class="gl">Unable To ID</span></div>
+                  <div class="gb" data-action="grass-res" data-val="Bahia"><span class="gi">🌾</span><span class="gl">Bahia</span></div>
+                  <div class="gb" data-action="grass-res" data-val="Bermuda"><span class="gi">☀️</span><span class="gl">Bermuda</span></div>
+                  <div class="gb" data-action="grass-res" data-val="St. Augustine"><span class="gi">🌿</span><span class="gl">St. Augustine</span></div>
+                  <div class="gb" data-action="grass-res" data-val="Zoysia"><span class="gi">🍃</span><span class="gl">Zoysia</span></div>
+                  <div class="gb" data-action="grass-res" data-val="Centipede"><span class="gi">🐛</span><span class="gl">Centipede</span></div>
+                  <div class="gb"><span class="gi">❓</span><span class="gl">Unable To ID</span></div>
                 </div><input type="hidden" id="r-grass"/>
               </div>
               <div class="field"><label>Mowing Direction</label>
                 <div class="gg">
-                  <div class="gb" onclick="selDir(this,'12 to 6')"><span class="gi">🕛</span><span class="gl">12 to 6</span></div>
-                  <div class="gb" onclick="selDir(this,'3 to 9')"><span class="gi">🕒</span><span class="gl">3 to 9</span></div>
-                  <div class="gb" onclick="selDir(this,'2 to 8')"><span class="gi">🕑</span><span class="gl">2 to 8</span></div>
-                  <div class="gb" onclick="selDir(this,'11 to 5')"><span class="gi">🕚</span><span class="gl">11 to 5</span></div>
-                  <div class="gb" onclick="selDir(this,'1 to 7')"><span class="gi">🕐</span><span class="gl">1 to 7</span></div>
-                  <div class="gb" onclick="selDir(this,'Circular')"><span class="gi">🔄</span><span class="gl">Circular</span></div>
+                  <div class="gb" data-action="dir" data-val="12 to 6"><span class="gi">🕛</span><span class="gl">12 to 6</span></div>
+                  <div class="gb" data-action="dir" data-val="3 to 9"><span class="gi">🕒</span><span class="gl">3 to 9</span></div>
+                  <div class="gb" data-action="dir" data-val="2 to 8"><span class="gi">🕑</span><span class="gl">2 to 8</span></div>
+                  <div class="gb" data-action="dir" data-val="11 to 5"><span class="gi">🕚</span><span class="gl">11 to 5</span></div>
+                  <div class="gb" data-action="dir" data-val="1 to 7"><span class="gi">🕐</span><span class="gl">1 to 7</span></div>
+                  <div class="gb" data-action="dir" data-val="Circular"><span class="gi">🔄</span><span class="gl">Circular</span></div>
                 </div><input type="hidden" id="r-dir"/>
               </div>
               <div class="divider"></div>
               <div class="sec-lbl">Service Checklist</div>
               <div class="field"><label>Applied Weed Control?</label>
                 <div class="yn" id="yn-r-weed">
-                  <div class="yn-btn y" onclick="yntog(this,'r-weed','✅ Yes')">✅ Yes</div>
-                  <div class="yn-btn nx" onclick="yntog(this,'r-weed','🔜 Next Visit')">🔜 Next Visit</div>
-                  <div class="yn-btn n" onclick="yntog(this,'r-weed','❌ No')">❌ No</div>
+                  <div class="yn-btn y" data-action="yn" data-field="r-weed" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn nx" data-action="yn" data-field="r-weed" data-val="🔜 Next Visit">🔜 Next Visit</div>
+                  <div class="yn-btn n" data-action="yn" data-field="r-weed" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="r-weed"/>
               </div>
               <div class="field"><label>Sprayed for Bugs?</label>
                 <div class="yn" id="yn-r-bugs">
-                  <div class="yn-btn y" onclick="yntog(this,'r-bugs','✅ Yes')">✅ Yes</div>
-                  <div class="yn-btn nx" onclick="yntog(this,'r-bugs','🔜 Next Visit')">🔜 Next Visit</div>
-                  <div class="yn-btn n" onclick="yntog(this,'r-bugs','❌ No')">❌ No</div>
+                  <div class="yn-btn y" data-action="yn" data-field="r-bugs" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn nx" data-action="yn" data-field="r-bugs" data-val="🔜 Next Visit">🔜 Next Visit</div>
+                  <div class="yn-btn n" data-action="yn" data-field="r-bugs" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="r-bugs"/>
               </div>
               <div class="field"><label>Trimmed Hedges / Limbs?</label>
                 <div class="yn" id="yn-r-hedges">
-                  <div class="yn-btn y" onclick="yntog(this,'r-hedges','✅ Yes')">✅ Yes</div>
-                  <div class="yn-btn nx" onclick="yntog(this,'r-hedges','🔜 Next Visit')">🔜 Next Visit</div>
-                  <div class="yn-btn n" onclick="yntog(this,'r-hedges','❌ No')">❌ No</div>
+                  <div class="yn-btn y" data-action="yn" data-field="r-hedges" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn nx" data-action="yn" data-field="r-hedges" data-val="🔜 Next Visit">🔜 Next Visit</div>
+                  <div class="yn-btn n" data-action="yn" data-field="r-hedges" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="r-hedges"/>
               </div>
               <div class="field"><label>Walked Perimeter?</label>
                 <div class="yn" id="yn-r-perim">
-                  <div class="yn-btn y" onclick="yntog(this,'r-perim','✅ Clear')">✅ Clear</div>
-                  <div class="yn-btn n" onclick="yntog(this,'r-perim','⚠️ Issue Found')">⚠️ Issue</div>
+                  <div class="yn-btn y" data-action="yn" data-field="r-perim" data-val="✅ Clear">✅ Clear</div>
+                  <div class="yn-btn n">⚠️ Issue</div>
                 </div><input type="hidden" id="r-perim"/>
               </div>
               <div class="divider"></div>
@@ -589,47 +543,47 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
               </div>
               <div class="field"><label>Grass Type</label>
                 <div class="gg">
-                  <div class="gb" onclick="selGrassCom(this,'Bahia')"><span class="gi">🌾</span><span class="gl">Bahia</span></div>
-                  <div class="gb" onclick="selGrassCom(this,'Bermuda')"><span class="gi">☀️</span><span class="gl">Bermuda</span></div>
-                  <div class="gb" onclick="selGrassCom(this,'St. Augustine')"><span class="gi">🌿</span><span class="gl">St. Augustine</span></div>
-                  <div class="gb" onclick="selGrassCom(this,'Zoysia')"><span class="gi">🍃</span><span class="gl">Zoysia</span></div>
-                  <div class="gb" onclick="selGrassCom(this,'Centipede')"><span class="gi">🐛</span><span class="gl">Centipede</span></div>
-                  <div class="gb" onclick="selGrassCom(this,'Unknown')"><span class="gi">❓</span><span class="gl">Unable To ID</span></div>
+                  <div class="gb" data-action="grass-com" data-val="Bahia"><span class="gi">🌾</span><span class="gl">Bahia</span></div>
+                  <div class="gb" data-action="grass-com" data-val="Bermuda"><span class="gi">☀️</span><span class="gl">Bermuda</span></div>
+                  <div class="gb" data-action="grass-com" data-val="St. Augustine"><span class="gi">🌿</span><span class="gl">St. Augustine</span></div>
+                  <div class="gb" data-action="grass-com" data-val="Zoysia"><span class="gi">🍃</span><span class="gl">Zoysia</span></div>
+                  <div class="gb" data-action="grass-com" data-val="Centipede"><span class="gi">🐛</span><span class="gl">Centipede</span></div>
+                  <div class="gb"><span class="gi">❓</span><span class="gl">Unable To ID</span></div>
                 </div><input type="hidden" id="c-grass"/>
               </div>
               <div class="divider"></div>
               <div class="sec-lbl">Service Checklist</div>
               <div class="field"><label>Blew Parking Lot &amp; Common Areas?</label>
                 <div class="yn" id="yn-c-blow">
-                  <div class="yn-btn y" onclick="yntog(this,'c-blow','✅ Yes')">✅ Yes</div>
-                  <div class="yn-btn n" onclick="yntog(this,'c-blow','❌ No')">❌ No</div>
+                  <div class="yn-btn y" data-action="yn" data-field="c-blow" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn n" data-action="yn" data-field="c-blow" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="c-blow"/>
               </div>
               <div class="field"><label>Applied Weed Control?</label>
                 <div class="yn" id="yn-c-weed">
-                  <div class="yn-btn y" onclick="yntog(this,'c-weed','✅ Yes')">✅ Yes</div>
-                  <div class="yn-btn nx" onclick="yntog(this,'c-weed','🔜 Next Visit')">🔜 Next Visit</div>
-                  <div class="yn-btn n" onclick="yntog(this,'c-weed','❌ No')">❌ No</div>
+                  <div class="yn-btn y" data-action="yn" data-field="c-weed" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn nx" data-action="yn" data-field="c-weed" data-val="🔜 Next Visit">🔜 Next Visit</div>
+                  <div class="yn-btn n" data-action="yn" data-field="c-weed" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="c-weed"/>
               </div>
               <div class="field"><label>Sprayed for Bugs?</label>
                 <div class="yn" id="yn-c-bugs">
-                  <div class="yn-btn y" onclick="yntog(this,'c-bugs','✅ Yes')">✅ Yes</div>
-                  <div class="yn-btn nx" onclick="yntog(this,'c-bugs','🔜 Next Visit')">🔜 Next Visit</div>
-                  <div class="yn-btn n" onclick="yntog(this,'c-bugs','❌ No')">❌ No</div>
+                  <div class="yn-btn y" data-action="yn" data-field="c-bugs" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn nx" data-action="yn" data-field="c-bugs" data-val="🔜 Next Visit">🔜 Next Visit</div>
+                  <div class="yn-btn n" data-action="yn" data-field="c-bugs" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="c-bugs"/>
               </div>
               <div class="field"><label>Trimmed Hedges / Limbs?</label>
                 <div class="yn" id="yn-c-hedges">
-                  <div class="yn-btn y" onclick="yntog(this,'c-hedges','✅ Yes')">✅ Yes</div>
-                  <div class="yn-btn nx" onclick="yntog(this,'c-hedges','🔜 Next Visit')">🔜 Next Visit</div>
-                  <div class="yn-btn n" onclick="yntog(this,'c-hedges','❌ No')">❌ No</div>
+                  <div class="yn-btn y" data-action="yn" data-field="c-hedges" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn nx" data-action="yn" data-field="c-hedges" data-val="🔜 Next Visit">🔜 Next Visit</div>
+                  <div class="yn-btn n" data-action="yn" data-field="c-hedges" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="c-hedges"/>
               </div>
               <div class="field"><label>Walked Perimeter?</label>
                 <div class="yn" id="yn-c-perim">
-                  <div class="yn-btn y" onclick="yntog(this,'c-perim','✅ Clear')">✅ Clear</div>
-                  <div class="yn-btn n" onclick="yntog(this,'c-perim','⚠️ Issue Found')">⚠️ Issue</div>
+                  <div class="yn-btn y" data-action="yn" data-field="c-perim" data-val="✅ Clear">✅ Clear</div>
+                  <div class="yn-btn n">⚠️ Issue</div>
                 </div><input type="hidden" id="c-perim"/>
               </div>
               <div class="divider"></div>
@@ -644,29 +598,29 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
               <div class="sec-lbl">Service Checklist</div>
               <div class="field"><label>Applied Weed Control?</label>
                 <div class="yn" id="yn-o-weed">
-                  <div class="yn-btn y" onclick="yntog(this,'o-weed','✅ Yes')">✅ Yes</div>
-                  <div class="yn-btn nx" onclick="yntog(this,'o-weed','🔜 Next Visit')">🔜 Next Visit</div>
-                  <div class="yn-btn n" onclick="yntog(this,'o-weed','❌ No')">❌ No</div>
+                  <div class="yn-btn y" data-action="yn" data-field="o-weed" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn nx" data-action="yn" data-field="o-weed" data-val="🔜 Next Visit">🔜 Next Visit</div>
+                  <div class="yn-btn n" data-action="yn" data-field="o-weed" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="o-weed"/>
               </div>
               <div class="field"><label>Sprayed for Bugs?</label>
                 <div class="yn" id="yn-o-bugs">
-                  <div class="yn-btn y" onclick="yntog(this,'o-bugs','✅ Yes')">✅ Yes</div>
-                  <div class="yn-btn nx" onclick="yntog(this,'o-bugs','🔜 Next Visit')">🔜 Next Visit</div>
-                  <div class="yn-btn n" onclick="yntog(this,'o-bugs','❌ No')">❌ No</div>
+                  <div class="yn-btn y" data-action="yn" data-field="o-bugs" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn nx" data-action="yn" data-field="o-bugs" data-val="🔜 Next Visit">🔜 Next Visit</div>
+                  <div class="yn-btn n" data-action="yn" data-field="o-bugs" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="o-bugs"/>
               </div>
               <div class="field"><label>Trimmed Hedges / Limbs?</label>
                 <div class="yn" id="yn-o-hedges">
-                  <div class="yn-btn y" onclick="yntog(this,'o-hedges','✅ Yes')">✅ Yes</div>
-                  <div class="yn-btn nx" onclick="yntog(this,'o-hedges','🔜 Next Visit')">🔜 Next Visit</div>
-                  <div class="yn-btn n" onclick="yntog(this,'o-hedges','❌ No')">❌ No</div>
+                  <div class="yn-btn y" data-action="yn" data-field="o-hedges" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn nx" data-action="yn" data-field="o-hedges" data-val="🔜 Next Visit">🔜 Next Visit</div>
+                  <div class="yn-btn n" data-action="yn" data-field="o-hedges" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="o-hedges"/>
               </div>
               <div class="field"><label>Walked Perimeter?</label>
                 <div class="yn" id="yn-o-perim">
-                  <div class="yn-btn y" onclick="yntog(this,'o-perim','✅ Clear')">✅ Clear</div>
-                  <div class="yn-btn n" onclick="yntog(this,'o-perim','⚠️ Issue Found')">⚠️ Issue</div>
+                  <div class="yn-btn y" data-action="yn" data-field="o-perim" data-val="✅ Clear">✅ Clear</div>
+                  <div class="yn-btn n">⚠️ Issue</div>
                 </div><input type="hidden" id="o-perim"/>
               </div>
               <div class="divider"></div>
@@ -679,8 +633,8 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
             <div class="card-title"><span style="font-size:20px">🐾</span> Pet Waste on Property?</div>
             <p style="font-size:13px;color:var(--muted);margin-bottom:12px">If pet waste caused issues tap <strong>Alert Office</strong>.</p>
             <div class="pet-toggle">
-              <div class="pet-opt" id="pet-clr" onclick="setPet('clear')"><span class="poi">✅</span><span class="pol">All Clear</span></div>
-              <div class="pet-opt" id="pet-wrn" onclick="setPet('warn')"><span class="poi">⚠️</span><span class="pol">Alert Office</span></div>
+              <div class="pet-opt" id="pet-clr" data-action="pet-clear"><span class="poi">✅</span><span class="pol">All Clear</span></div>
+              <div class="pet-opt" id="pet-wrn" data-action="pet-warn"><span class="poi">⚠️</span><span class="pol">Alert Office</span></div>
             </div>
             <input type="hidden" id="f-pet"/>
           </div>
@@ -693,7 +647,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
               <label>Office Note (Optional)</label>
               <textarea id="f-onote" rows="3" placeholder="e.g. Gate code changed, dog left in yard, irrigation head damaged…"></textarea>
             </div>
-            <p style="font-size:11px;color:var(--muted);font-style:italic">📧 Alert sent to <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2e474048416e595d424f59404d4f5c4b5d4b5c58474d4b5d42424d004d4143">[email&#160;protected]</a> if filled in.</p>
+            <p style="font-size:11px;color:var(--muted);font-style:italic">📧 Alert sent to office if filled in.</p>
           </div>
 
           <!-- Photos -->
@@ -716,7 +670,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
               <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:#7a5000;margin-bottom:4px">End the Job First</div>
               <div style="font-size:13px;color:#996600">Tap <strong>TAP TO END</strong> in the Job Time section above before submitting.</div>
             </div>
-            <button class="sub-btn" id="sub-btn" onclick="submitJob()">✓ SUBMIT JOB</button>
+            <button class="sub-btn" id="sub-btn" data-action="submit-job">✓ SUBMIT JOB</button>
             <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:8px;padding-bottom:20px">Sends completion email to customer automatically.</p>
           </div>
 
@@ -727,7 +681,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
         <div class="si">✅</div>
         <h2>Job Submitted!</h2>
         <p>Completion email sent to your customer.</p>
-        <button class="nj-btn" onclick="resetForm()">+ Start Next Job</button>
+        <button class="nj-btn" data-action="reset-form">+ Start Next Job</button>
       </div>
     </div>
 
@@ -735,9 +689,9 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 
   <!-- 3-tab nav — Board removed -->
   <div class="bnav">
-    <div class="ni active" id="ni-home" onclick="goTab('home')"><span class="ni-icon">🏠</span><span class="ni-lbl">Home</span></div>
-    <div class="ni" id="ni-dispatch" onclick="goTab('dispatch')"><span class="ni-icon">📋</span><span class="ni-lbl">Dispatch</span><span class="ni-dot"></span></div>
-    <div class="ni" id="ni-form" onclick="goTab('form')"><span class="ni-icon">✅</span><span class="ni-lbl">Job Form</span></div>
+    <div class="ni active" id="ni-home" data-action="goto-home"><span class="ni-icon">🏠</span><span class="ni-lbl">Home</span></div>
+    <div class="ni" id="ni-dispatch" data-action="goto-dispatch"><span class="ni-icon">📋</span><span class="ni-lbl">Dispatch</span><span class="ni-dot"></span></div>
+    <div class="ni" id="ni-form" data-action="goto-form"><span class="ni-icon">✅</span><span class="ni-lbl">Job Form</span></div>
   </div>
 </div>
 
@@ -749,8 +703,8 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
     <div class="sheet-sub">Copy the table from the SA email and paste it below. The app will parse each job automatically.</div>
     <textarea class="sheet-textarea" id="paste-area" placeholder="Paste dispatch table here…"></textarea>
     <div class="sheet-actions">
-      <button class="sh-btn secondary" onclick="closeModal('paste-modal')">Cancel</button>
-      <button class="sh-btn primary" onclick="parseDispatch()">📋 Load Jobs</button>
+      <button class="sh-btn secondary" data-action="close-paste">Cancel</button>
+      <button class="sh-btn primary" data-action="parse-dispatch">📋 Load Jobs</button>
     </div>
   </div>
 </div>
@@ -761,15 +715,15 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
     <div class="sheet-handle"></div>
     <div id="detail-content"></div>
     <div class="sheet-actions">
-      <button class="sh-btn secondary" onclick="closeModal('detail-modal')">Close</button>
-      <button class="sh-btn primary" id="detail-start-btn" onclick="startJobFromDetail()">Start This Job →</button>
+      <button class="sh-btn secondary" data-action="close-detail">Close</button>
+      <button class="sh-btn primary" id="detail-start-btn" data-action="start-from-detail">Start This Job →</button>
     </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ════════════════════════════════════════════════════════════════
 // CONFIG
 // ════════════════════════════════════════════════════════════════
@@ -802,6 +756,7 @@ const FALLBACK_CREW = [
 ];
 
 S.crew = FALLBACK_CREW;
+// No login — app loads directly, user set after name picked in topbar
 renderCrewLater();
 
 async function init() {
@@ -810,7 +765,7 @@ async function init() {
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const d = await res.json();
     if (d.error) throw new Error(d.error);
-    if (d.techs     && d.techs.length)     { S.crew = d.techs;     renderCrew(d.techs); }
+    if (d.techs     && d.techs.length)     { S.crew = d.techs; renderCrew(d.techs); }
     if (d.customers && d.customers.length) S.customers = d.customers;
     if (d.board     && d.board.length)     S.board     = d.board;
     if (d.dispatch  && d.dispatch.length)  S.jobs      = d.dispatch;
@@ -818,15 +773,8 @@ async function init() {
     console.warn('Sheet load failed:', e.message);
     renderCrew(FALLBACK_CREW);
   }
-  try {
-    const u = sessionStorage.getItem('ws_user');
-    if (u) {
-      S.user = JSON.parse(u);
-      const ci = sessionStorage.getItem('ws_ci');
-      if (ci) { S.clockIn = new Date(ci); S.clocked = true; }
-      showApp();
-    }
-  } catch(e) {}
+  // No login — go straight into app
+  showApp();
 }
 
 function renderCrewLater() {
@@ -838,62 +786,44 @@ function renderCrewLater() {
 }
 
 function renderCrew(crew) {
-  const sel = document.getElementById('name-sel');
-  if (!sel) return;
-  sel.innerHTML = '<option value="">— Select your name —</option>' +
-    crew.map((c,i) => `<option value="${i}">${c.name}</option>`).join('');
+  // Populate topbar name selector
+  const tbSel = document.getElementById('tb-name-sel');
+  if (tbSel) {
+    tbSel.innerHTML = crew.map((c,i) => `<option value="${i}">${c.name}</option>`).join('');
+    tbSel.value = '0';
+    // Set user to first crew member by default
+    if (crew[0]) {
+      S.user = {name: crew[0].name, position: crew[0].position};
+      try { sessionStorage.setItem('ws_user', JSON.stringify(S.user)); } catch(e){}
+      document.getElementById('tb-role').textContent = crew[0].position;
+    }
+    tbSel.addEventListener('change', function() {
+      const idx = parseInt(this.value);
+      if (!isNaN(idx) && crew[idx]) {
+        S.user = {name: crew[idx].name, position: crew[idx].position};
+        try { sessionStorage.setItem('ws_user', JSON.stringify(S.user)); } catch(e){}
+        document.getElementById('tb-role').textContent = crew[idx].position;
+      }
+    });
+  }
   const wrap = document.getElementById('tech-wrap');
   if (!wrap) return;
   wrap.innerHTML = crew.map((c,i) => {
     const av = c.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-    return `<div class="tech-pill" id="tp-${i}" onclick="togTech(${i},'${c.name}')">
+    return `<div class="tech-pill" id="tp-${i}" data-action="tog-tech" data-idx="${i}" data-name="${c.name}">
       <div class="tech-av">${av}</div><span class="tech-name">${c.name}</span>
     </div>`;
   }).join('');
 }
 
 // ════════════════════════════════════════════════════════════════
-// PIN LOGIN
-// ════════════════════════════════════════════════════════════════
-let pin = '';
-function pinKey(k) { if (pin.length >= 4) return; pin += k; updDots(); if (pin.length === 4) setTimeout(pinSubmit, 80); }
-function pinDel()  { pin = pin.slice(0,-1); updDots(); }
-function updDots() {
-  for (let i=0;i<4;i++) {
-    const d = document.getElementById('d'+i);
-    d.classList.toggle('on', i < pin.length);
-    d.classList.remove('err');
-  }
-}
-function pinSubmit() {
-  const idx = parseInt(document.getElementById('name-sel').value);
-  if (isNaN(idx) || document.getElementById('name-sel').value === '') {
-    document.getElementById('lerr').textContent = 'Please select your name';
-    pin = ''; updDots(); return;
-  }
-  const member = S.crew[idx];
-  if (pin === (member.pin || '0000')) {
-    S.user = {name:member.name, position:member.position};
-    try { sessionStorage.setItem('ws_user', JSON.stringify(S.user)); } catch(e){}
-    pin = ''; updDots();
-    showApp();
-  } else {
-    document.getElementById('lerr').textContent = 'Incorrect PIN — try again';
-    for (let i=0;i<4;i++) document.getElementById('d'+i).classList.add('err');
-    setTimeout(() => { pin=''; updDots(); document.getElementById('lerr').textContent=''; }, 1400);
-  }
-}
-
-// ════════════════════════════════════════════════════════════════
 // APP
 // ════════════════════════════════════════════════════════════════
 function showApp() {
-  document.getElementById('scr-login').classList.remove('active');
-  document.getElementById('scr-app').classList.add('active');
   const u = S.user, now = new Date(), h = now.getHours();
   const greet = h<12?'Good morning':h<17?'Good afternoon':h<21?'Good evening':'Working late';
   const emoji = h<12?'👋':h<17?'☀️':h<21?'🌅':'🌙';
-  document.getElementById('tb-name').textContent  = u.name.split(' ')[0];
+  // name shown via tb-name-sel dropdown
   document.getElementById('tb-role').textContent  = u.position;
   document.querySelector('.hero-greet').innerHTML = `${greet},<br><span style="color:var(--g4)">${u.name.split(' ')[0]} ${emoji}</span>`;
   document.getElementById('h-date').textContent   = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
@@ -904,12 +834,7 @@ function showApp() {
   updateFormLock(); // set initial lock state
 }
 
-function doLogout() {
-  try { sessionStorage.clear(); } catch(e){}
-  S.user=null; S.clocked=false; S.clockIn=null;
-  document.getElementById('scr-app').classList.remove('active');
-  document.getElementById('scr-login').classList.add('active');
-}
+
 
 // ════════════════════════════════════════════════════════════════
 // CLOCK
@@ -1132,7 +1057,7 @@ function renderDispatch() {
       ? `<div class="jc-contact">📞 <a href="tel:${j.phone}" style="color:var(--muted);text-decoration:none">${j.phone}</a></div>`
       : '';
 
-    html += `<div class="job-card${isDone?' done':''}" onclick="openDetail(${i})">
+    html += `<div class="job-card${isDone?' done':''}" data-action="open-detail" data-idx="${i}">
       <div class="jc-top">
         <div class="stop-num${isDone?' done-num':''}">${displayStop}</div>
         <div class="jc-left" style="margin-left:10px">
@@ -1147,7 +1072,7 @@ function renderDispatch() {
       </div>
       <div class="jc-bar">
         <span class="status-pill ${sc}">${sl}</span>
-        <button class="jc-act ${ac}" onclick="event.stopPropagation();quickAct(${i})">${al}</button>
+        <button class="jc-act ${ac}" data-action="quick-act" data-idx="${i}">${al}</button>
       </div>
     </div>`;
   });
@@ -1258,7 +1183,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (q.length<2) { res.classList.remove('open'); return; }
     const m = S.customers.filter(c=>c.name.toLowerCase().includes(q)||c.address.toLowerCase().includes(q)).slice(0,8);
     res.innerHTML = m.length
-      ? m.map(c=>`<div class="sri" onclick="selCust(${S.customers.indexOf(c)})"><div class="sri-name">${c.name}</div><div class="sri-addr">${c.address}</div></div>`).join('')
+      ? m.map(c=>`<div class="sri" data-action="sel-cust" data-idx="${S.customers.indexOf(c)}"><div class="sri-name">${c.name}</div><div class="sri-addr">${c.address}</div></div>`).join('')
       : '<div class="sri"><div class="sri-name" style="color:var(--muted)">No customers found</div></div>';
     res.classList.add('open');
   });
@@ -1269,6 +1194,51 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('click', e => {
   if (!e.target.closest('.srch-wrap')) document.getElementById('f-results').classList.remove('open');
 });
+
+// ════════════════════════════════════════════════════════════════
+// EVENT DELEGATION — replaces all inline onclick handlers
+// Cloudflare-safe: no onclick attributes anywhere in the HTML
+// Script is at end of body so DOM is already ready — no
+// DOMContentLoaded wrapper needed for pin pad wiring.
+// ════════════════════════════════════════════════════════════════
+
+// ── Global delegation — handles all data-action buttons ───────
+document.addEventListener('click', function(e) {
+  var el = e.target.closest('[data-action]');
+  if (!el) return;
+  var action = el.dataset.action;
+  switch(action) {
+
+    case 'clock':             toggleClock(); break;
+    case 'goto-home':         goTab('home'); break;
+    case 'goto-dispatch':     goTab('dispatch'); break;
+    case 'goto-form':         goTab('form'); break;
+    case 'open-paste':        openPasteModal(); break;
+    case 'parse-dispatch':    parseDispatch(); break;
+    case 'close-paste':       closeModal('paste-modal'); break;
+    case 'close-detail':      closeModal('detail-modal'); break;
+    case 'start-from-detail': startJobFromDetail(); break;
+    case 'time-start':        jobTime('start'); break;
+    case 'time-end':          jobTime('end'); break;
+    case 'clear-cust':        clearCust(); break;
+    case 'sel-cust':          selCust(parseInt(el.dataset.idx)); break;
+    case 'svc-residential':   selSvc('residential'); break;
+    case 'svc-commercial':    selSvc('commercial'); break;
+    case 'svc-other':         selSvc('other'); break;
+    case 'grass-res':         selGrass(el, el.dataset.val); break;
+    case 'grass-com':         selGrassCom(el, el.dataset.val); break;
+    case 'dir':               selDir(el, el.dataset.val); break;
+    case 'yn':                yntog(el, el.dataset.field, el.dataset.val); break;
+    case 'pet-clear':         setPet('clear'); break;
+    case 'pet-warn':          setPet('warn'); break;
+    case 'submit-job':        submitJob(); break;
+    case 'reset-form':        resetForm(); break;
+    case 'tog-tech':          togTech(parseInt(el.dataset.idx), el.dataset.name); break;
+    case 'open-detail':       openDetail(parseInt(el.dataset.idx)); break;
+    case 'quick-act':         e.stopPropagation(); quickAct(parseInt(el.dataset.idx)); break;
+  }
+});
+
 
 function selCust(i) {
   const c = S.customers[i]; S.cust = c;
@@ -1368,7 +1338,7 @@ function addPhoto(file) {
   const r=new FileReader();
   r.onload=e=>{
     const t=document.createElement('div');t.className='p-thumb';
-    t.innerHTML=`<img src="${e.target.result}"/><button class="p-rm" onclick="rmPhoto(${i},this.closest('.p-thumb'))">×</button>`;
+    t.innerHTML=`<img src="${e.target.result}"/><button class="p-rm">×</button>`;
     document.getElementById('photo-grid').appendChild(t);
   };
   r.readAsDataURL(file);
@@ -1473,7 +1443,7 @@ async function submitJob() {
         type:'office_alert', customerName:c.name, serviceAddress:c.address, date,
         petAlert: hasPet?'⚠️ PET WASTE REPORTED ON PROPERTY':'',
         officeNote: onote,
-        toEmail: 'info@wslawncareservicesllc.com',
+        toEmail: 'info' + '@' + 'wslawncareservicesllc.com',
         subject: '[WS Lawn Care Alert] '+(hasPet?'🐾 Pet Waste':'')+(hasPet&&hasNote?' + ':'')+(hasNote?'📋 Office Note':'')+' — '+c.name,
       });
     }
