@@ -10,7 +10,6 @@
 <meta name="theme-color" content="#0d2410"/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
-/* ── TOKENS ─────────────────────────────────────────────────────── */
 :root {
   --g9:#0d2410; --g8:#1a3d20; --g7:#1e6b2e; --g6:#2e8b42;
   --g4:#4caf63; --g2:#c8e6cc; --g1:#e8f5eb; --g0:#f0f7f1;
@@ -23,123 +22,78 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color:var(--text);overflow-x:hidden}
 
-/* ── SCREENS ─────────────────────────────────────────────────────── */
-.screen{display:none;min-height:100vh}
-.screen.active{display:flex;flex-direction:column}
-
-/* ══ LOGIN ══════════════════════════════════════════════════════════ */
-
-
-
-
-
-
-
-
-
-
-
-  border-radius:14px;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;user-select:none}
-
-
-/* ══ APP SHELL ══════════════════════════════════════════════════════ */
-#scr-app{background:var(--g0)}
+/* APP */
+#scr-app{display:flex;flex-direction:column;min-height:100vh;background:var(--g0)}
 .topbar{background:var(--g9);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;
   position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.3)}
 .tb-left{display:flex;align-items:center;gap:10px}
 .tb-icon{width:34px;height:34px;background:var(--g7);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px}
-.tb-name{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:#fff;letter-spacing:.5px;line-height:1}
-.tb-role{font-size:11px;color:rgba(255,255,255,.4);margin-top:1px}
-.tb-right{display:flex;align-items:center;gap:8px}
+.tb-sel{background:transparent;border:none;color:#fff;font-family:'Barlow Condensed',sans-serif;
+  font-size:17px;font-weight:700;outline:none;cursor:pointer;max-width:160px}
+.tb-sel option{background:var(--g9);color:#fff}
+.tb-role{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
 .ci-badge{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;
   padding:5px 10px;font-size:12px;font-weight:700;color:rgba(255,255,255,.6);font-family:'Barlow Condensed',sans-serif}
 .ci-badge.in{background:rgba(76,175,99,.2);border-color:var(--g4);color:var(--g4)}
 
-
 .content{flex:1;overflow-y:auto;padding:16px 14px 100px;max-width:680px;width:100%;margin:0 auto}
 .tab{display:none}.tab.active{display:block}
 
-/* ── BOTTOM NAV (3 tabs now — Board removed) ─────────────────── */
+/* BNAV */
 .bnav{position:fixed;bottom:0;left:0;right:0;background:var(--g9);border-top:1px solid rgba(255,255,255,.08);
   display:flex;padding:8px 0 env(safe-area-inset-bottom,8px);z-index:100}
 .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;cursor:pointer;position:relative}
 .ni-icon{font-size:22px;line-height:1}
-.ni-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.3);transition:color .2s}
+.ni-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.3)}
 .ni.active .ni-lbl{color:var(--g4)}
 .ni-dot{position:absolute;top:4px;right:20%;width:8px;height:8px;background:var(--acc);border-radius:50%;display:none}
 .ni.has-dot .ni-dot{display:block}
 
-/* ── SHARED COMPONENTS ───────────────────────────────────────────── */
+/* CARDS */
 .card{background:var(--white);border-radius:var(--card-r);padding:18px;margin-bottom:14px;
   border:1.5px solid var(--border);box-shadow:0 2px 10px rgba(30,107,46,.06)}
 .card-title{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:var(--g7);
   margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .ctn{background:var(--g7);color:#fff;width:26px;height:26px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
-.sec-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px}
 .divider{height:1px;background:var(--g2);margin:14px 0}
+.sec-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px}
 .hidden{display:none!important}
 .field{margin-bottom:14px}
-.field label{display:block;font-size:12px;font-weight:700;color:var(--muted);
-  text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.field label{display:block;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
 .field input,.field select,.field textarea{width:100%;padding:12px 14px;border:1.5px solid var(--border);
   border-radius:10px;font-family:'Barlow',sans-serif;font-size:15px;color:var(--text);
-  background:#f9fcf9;outline:none;transition:border-color .2s;-webkit-appearance:none}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--g7);background:#fff}
+  background:#f9fcf9;outline:none;-webkit-appearance:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--g7)}
 .field textarea{min-height:80px;resize:vertical}
 
-/* ── FORM LOCKED STATE ───────────────────────────────────────────── */
-.form-lock-banner{
-  background:linear-gradient(135deg,#fff8e1,#fff3cd);
-  border:2px solid var(--acc);border-radius:12px;
-  padding:18px 16px;margin-bottom:16px;text-align:center;
-}
-.form-lock-banner .flb-icon{font-size:36px;margin-bottom:8px}
-.form-lock-banner .flb-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:#7a5000;margin-bottom:4px}
-.form-lock-banner .flb-sub{font-size:13px;color:#996600;line-height:1.5}
-.form-section-lock{
-  position:relative;pointer-events:none;opacity:.45;user-select:none;
-}
-.form-section-lock::after{
-  content:'';position:absolute;inset:0;z-index:10;border-radius:var(--card-r);
-  background:rgba(255,255,255,.01);cursor:not-allowed;
-}
-
-/* sub button locked */
-.sub-btn:disabled.end-required{
-  background:#cc7a00!important;cursor:not-allowed;
-}
-
-/* yn buttons */
+/* YN BUTTONS */
 .yn{display:flex;gap:8px}
 .yn-btn{flex:1;padding:11px 6px;border:2px solid var(--border);border-radius:10px;text-align:center;
-  cursor:pointer;font-size:12px;font-weight:700;color:var(--muted);background:#f9fcf9;transition:all .2s;user-select:none}
+  cursor:pointer;font-size:12px;font-weight:700;color:var(--muted);background:#f9fcf9;user-select:none}
 .yn-btn.y.on{border-color:var(--g7);background:var(--g1);color:var(--g7)}
 .yn-btn.n.on{border-color:var(--red);background:var(--red2);color:var(--red)}
 .yn-btn.nx.on{border-color:var(--acc);background:var(--acc2);color:#b37800}
 .yn.invalid .yn-btn{border-color:var(--red)!important;background:var(--red2)!important}
 
-/* grid selectors */
+/* GRID SELECTORS */
 .gg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.gb{border:2px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center;
-  cursor:pointer;background:#f9fcf9;transition:all .2s}
+.gb{border:2px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;background:#f9fcf9}
 .gb .gi{font-size:20px;display:block;margin-bottom:4px}
 .gb .gl{font-size:11px;font-weight:700;color:var(--muted);line-height:1.3}
 .gb.on{border-color:var(--g7);background:var(--g1)}.gb.on .gl{color:var(--g7)}
 
-/* service type */
+/* SERVICE GRID */
 .svc-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:4px}
-.svc-btn{border:2px solid var(--border);border-radius:12px;padding:14px 8px;text-align:center;
-  cursor:pointer;transition:all .2s;background:#f9fcf9}
+.svc-btn{border:2px solid var(--border);border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer;background:#f9fcf9}
 .svc-btn .si{font-size:26px;display:block;margin-bottom:5px}
 .svc-btn .sl{font-size:11px;font-weight:700;color:var(--muted);line-height:1.3}
 .svc-btn.on{border-color:var(--g7);background:var(--g1)}.svc-btn.on .sl{color:var(--g7)}
 
-/* tech pills */
+/* TECH PILLS */
 .tech-wrap{display:flex;flex-wrap:wrap;gap:8px;padding:4px 0}
 .tech-pill{display:flex;align-items:center;gap:6px;padding:8px 14px;border:2px solid var(--border);
-  border-radius:100px;background:#f9fcf9;cursor:pointer;transition:all .2s;user-select:none}
+  border-radius:100px;background:#f9fcf9;cursor:pointer;user-select:none}
 .tech-av{width:22px;height:22px;border-radius:50%;background:var(--g2);color:var(--g7);
   font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .tech-name{font-size:13px;font-weight:600;color:var(--muted)}
@@ -147,7 +101,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .tech-pill.on .tech-av{background:var(--g7);color:#fff}
 .tech-pill.on .tech-name{color:var(--g7)}
 
-/* time block */
+/* TIME BLOCKS */
 .time-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
 .tblock{border:2px solid var(--blue3);border-radius:12px;padding:12px 10px;text-align:center;background:#fff}
 .tblock.on{border-color:var(--blue);background:var(--blue2)}
@@ -155,17 +109,24 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .tblock-val{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--blue);min-height:28px;line-height:1;margin-bottom:8px}
 .tblock-val.empty{font-size:13px;color:var(--blue3);font-family:'Barlow',sans-serif;font-weight:500}
 .tbtn{width:100%;padding:8px;background:var(--blue);color:#fff;border:none;border-radius:8px;
-  font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+  font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;cursor:pointer}
 .tbtn.on{background:#388e3c}.tbtn:disabled{background:#aaa;cursor:not-allowed}
 .dur-row{display:none;background:#fff;border:2px solid var(--blue);border-radius:10px;
   padding:10px 14px;margin-bottom:14px;align-items:center;gap:8px;justify-content:center}
 .dur-row.show{display:flex}
 .dur-val{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--blue)}
 
-/* photo */
+/* FORM LOCK */
+.form-lock-banner{background:linear-gradient(135deg,#fff8e1,#fff3cd);border:2px solid var(--acc);
+  border-radius:12px;padding:18px 16px;margin-bottom:16px;text-align:center}
+.flb-icon{font-size:36px;margin-bottom:8px}
+.flb-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:#7a5000;margin-bottom:4px}
+.flb-sub{font-size:13px;color:#996600;line-height:1.5}
+.form-section-lock{position:relative;pointer-events:none;opacity:.45;user-select:none}
+
+/* PHOTO */
 .photo-area{border:2.5px dashed var(--g2);border-radius:12px;padding:22px 16px;text-align:center;
-  cursor:pointer;background:#f9fcf9;position:relative;transition:all .2s}
-.photo-area:hover{border-color:var(--g7);background:var(--g1)}
+  cursor:pointer;background:#f9fcf9;position:relative}
 .photo-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
 .photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
 .p-thumb{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;border:1.5px solid var(--border)}
@@ -173,32 +134,30 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .p-rm{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.55);color:#fff;border:none;
   border-radius:50%;width:20px;height:20px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 
-/* submit */
+/* SUBMIT */
 .sub-btn{width:100%;padding:16px;background:var(--g7);color:#fff;border:none;border-radius:12px;
   font-family:'Barlow Condensed',sans-serif;font-size:20px;letter-spacing:1px;cursor:pointer;
-  transition:all .2s;box-shadow:0 4px 16px rgba(30,107,46,.3);margin-top:6px}
+  box-shadow:0 4px 16px rgba(30,107,46,.3);margin-top:6px}
 .sub-btn:disabled{background:var(--muted);cursor:not-allowed;box-shadow:none}
 .success{display:none;text-align:center;padding:48px 20px}
 .success.show{display:block}
-.success .si{font-size:64px;margin-bottom:14px;animation:pop .4s ease}
-@keyframes pop{0%{transform:scale(.5);opacity:0}80%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.success .si{font-size:64px;margin-bottom:14px}
 .success h2{font-family:'Barlow Condensed',sans-serif;font-size:26px;color:var(--g7);margin-bottom:6px}
 .success p{font-size:14px;color:var(--muted);margin-bottom:20px}
 .nj-btn{padding:12px 28px;background:var(--g7);color:#fff;border:none;border-radius:10px;
   font-family:'Barlow Condensed',sans-serif;font-size:16px;cursor:pointer}
 
-/* alert card */
+/* ALERT CARD */
 .alert-card{background:#fef5ec;border:1.5px solid #f5cba7;border-radius:var(--card-r);padding:18px;margin-bottom:14px}
 .alert-card .card-title{color:var(--acc)}
 .pet-toggle{display:flex;gap:10px}
-.pet-opt{flex:1;border:2px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;
-  cursor:pointer;background:#f9fcf9;transition:all .2s}
+.pet-opt{flex:1;border:2px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;background:#f9fcf9}
 .pet-opt .poi{font-size:24px;display:block;margin-bottom:5px}
 .pet-opt .pol{font-size:11px;font-weight:700;color:var(--muted);line-height:1.3}
 .pet-opt.clear{border-color:var(--g7);background:var(--g1)}
 .pet-opt.warn{border-color:var(--red);background:var(--red2)}
 
-/* customer search */
+/* CUSTOMER SEARCH */
 .srch-wrap{position:relative}
 .srch-wrap input{padding-left:40px}
 .srch-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:16px;pointer-events:none}
@@ -220,7 +179,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .chip.blue{background:var(--blue2);border-color:var(--blue3)}
 .chip.blue .chip-lbl,.chip.blue .chip-val{color:var(--blue)}
 
-/* ── HOME TAB ────────────────────────────────────────────────────── */
+/* HOME */
 .hero{background:linear-gradient(135deg,var(--g9),var(--g8));border-radius:var(--card-r);
   padding:22px 20px;margin-bottom:14px;position:relative;overflow:hidden}
 .hero::after{content:'🌿';position:absolute;right:14px;bottom:-12px;font-size:80px;opacity:.07;transform:rotate(-15deg)}
@@ -228,11 +187,10 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .hero-greet{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:#fff;line-height:1.1;margin-bottom:16px}
 .hero-greet span{color:var(--g4)}
 .clock-btn{width:100%;padding:17px;border-radius:14px;border:none;font-family:'Barlow Condensed',sans-serif;
-  font-size:22px;font-weight:700;letter-spacing:1.5px;cursor:pointer;transition:all .2s;
-  display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px}
+  font-size:22px;font-weight:700;letter-spacing:1.5px;cursor:pointer;display:flex;align-items:center;
+  justify-content:center;gap:10px;margin-bottom:14px}
 .clock-btn.start{background:linear-gradient(135deg,var(--g7),var(--g6));color:#fff;box-shadow:0 6px 22px rgba(30,107,46,.35)}
 .clock-btn.stop{background:linear-gradient(135deg,#b71c1c,var(--red));color:#fff;box-shadow:0 6px 22px rgba(192,57,43,.35)}
-.clock-btn:active{transform:scale(.98)}
 .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
 .stat{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:12px 10px;text-align:center}
 .stat-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px}
@@ -240,7 +198,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .stat-val.mt{font-size:14px;color:var(--g2)}
 .stat.live{border-color:var(--g4);background:var(--g1)}
 .jobs-strip{background:var(--acc2);border:1.5px solid var(--acc);border-radius:12px;padding:12px 16px;
-  display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;cursor:pointer;transition:all .15s}
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;cursor:pointer}
 .js-left{display:flex;align-items:center;gap:10px}
 .js-title{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:var(--g9)}
 .js-sub{font-size:12px;color:var(--muted)}
@@ -248,19 +206,17 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .board-preview{background:#fff;border-radius:var(--card-r);padding:14px 16px;margin-bottom:14px;border:1.5px solid var(--border)}
 .bp-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px}
 .bp-msg{background:var(--g1);border-left:3px solid var(--g7);border-radius:0 8px 8px 0;padding:10px 12px;margin-bottom:8px}
-.bp-msg:last-child{margin-bottom:0}
 .bp-text{font-size:14px;color:var(--text);line-height:1.5}
 .bp-meta{font-size:11px;color:var(--muted);margin-top:4px}
 .empty-state{text-align:center;padding:32px 20px;color:var(--muted);font-size:14px}
 
-/* ── DISPATCH TAB ────────────────────────────────────────────────── */
+/* DISPATCH */
 .disp-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .disp-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--g9)}
 .disp-date{background:var(--g1);border:1px solid var(--g2);border-radius:100px;padding:4px 12px;font-size:12px;font-weight:600;color:var(--g7)}
 .load-btn{background:var(--g7);color:#fff;border:none;border-radius:10px;padding:9px 16px;
   font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;cursor:pointer;
-  display:flex;align-items:center;gap:6px;margin-bottom:12px;transition:all .2s}
-.load-btn:active{background:var(--g6);transform:scale(.97)}
+  display:flex;align-items:center;gap:6px;margin-bottom:12px}
 .route-banner{background:var(--blue2);border:1.5px solid var(--blue3);border-radius:10px;
   padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .rb-text{font-size:13px;color:var(--blue);font-weight:600}
@@ -268,18 +224,16 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .tg-hdr{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--muted);
   text-transform:uppercase;letter-spacing:1px;padding:8px 4px 6px;display:flex;align-items:center;gap:8px}
 .tg-hdr::after{content:'';flex:1;height:1px;background:var(--border)}
-.job-card{background:#fff;border-radius:12px;border:1.5px solid var(--border);margin-bottom:10px;overflow:hidden;cursor:pointer;transition:all .2s}
-.job-card:active{transform:scale(.99)}
+.job-card{background:#fff;border-radius:12px;border:1.5px solid var(--border);margin-bottom:10px;overflow:hidden;cursor:pointer}
 .job-card.done{opacity:.55}
 .jc-top{padding:14px 14px 10px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
-.jc-left{flex:1}
+.jc-left{flex:1;margin-left:10px}
 .jc-client{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:700;color:var(--g9);line-height:1.1;margin-bottom:3px}
 .jc-svc{font-size:13px;font-weight:600;color:var(--g7);margin-bottom:4px}
 .jc-time{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
 .jc-time span{font-weight:600}
 .jc-addr{font-size:12px;margin-top:5px}
-.jc-addr a{color:var(--blue);font-weight:600;text-decoration:none;display:flex;align-items:center;gap:4px}
-.jc-addr a:hover{text-decoration:underline}
+.jc-addr a{color:var(--blue);font-weight:600;text-decoration:none}
 .jc-contact{font-size:12px;color:var(--muted);margin-top:3px}
 .jc-type{background:var(--g1);border:1px solid var(--g2);border-radius:8px;padding:4px 10px;
   font-size:11px;font-weight:700;color:var(--g7);white-space:nowrap;flex-shrink:0}
@@ -289,41 +243,36 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .sp-prog{background:var(--acc2);color:#b37800}
 .sp-done{background:var(--g1);color:var(--g7)}
 .jc-act{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;
-  padding:6px 14px;border-radius:8px;border:none;cursor:pointer;transition:all .15s}
+  padding:6px 14px;border-radius:8px;border:none;cursor:pointer}
 .jc-act.begin{background:var(--g7);color:#fff}
 .jc-act.complete{background:var(--g4);color:var(--g9)}
 .jc-act.done{background:transparent;color:var(--muted);cursor:default;font-size:12px}
-
-/* stop number badge */
 .stop-num{width:26px;height:26px;background:var(--g7);color:#fff;border-radius:50%;
   font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;
   display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
 .stop-num.done-num{background:var(--g2);color:var(--g7)}
 
-/* ── MODALS ──────────────────────────────────────────────────────── */
+/* MODALS */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:flex-end;justify-content:center}
 .overlay.open{display:flex}
-.sheet{background:#fff;border-radius:20px 20px 0 0;padding:22px 18px 40px;width:100%;max-width:680px;max-height:88vh;overflow-y:auto;animation:slideUp .3s ease}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sheet{background:#fff;border-radius:20px 20px 0 0;padding:22px 18px 40px;width:100%;max-width:680px;max-height:88vh;overflow-y:auto}
 .sheet-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px}
 .sheet-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--g9);margin-bottom:6px}
 .sheet-sub{font-size:13px;color:var(--muted);margin-bottom:14px}
 .sheet-textarea{width:100%;min-height:180px;padding:12px 14px;border:1.5px solid var(--border);
   border-radius:10px;font-family:'Barlow',sans-serif;font-size:13px;color:var(--text);resize:vertical;outline:none;margin-bottom:12px}
-.sheet-textarea:focus{border-color:var(--g7)}
 .sheet-actions{display:flex;gap:10px}
 .sh-btn{flex:1;padding:14px;border-radius:12px;border:none;font-family:'Barlow Condensed',sans-serif;
-  font-size:17px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .2s}
+  font-size:17px;font-weight:700;letter-spacing:.5px;cursor:pointer}
 .sh-btn.primary{background:var(--g7);color:#fff}
 .sh-btn.secondary{background:var(--g1);color:var(--g7)}
-.sh-btn:active{transform:scale(.98)}
 .detail-row{display:flex;gap:8px;padding:9px 0;border-bottom:1px solid var(--g1)}
 .detail-row:last-child{border-bottom:none}
 .dr-lbl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);min-width:100px;flex-shrink:0}
 .dr-val{font-size:14px;color:var(--text);font-weight:500}
 .dr-val a{color:var(--blue);font-weight:600;text-decoration:none}
 
-/* ── SPINNER / TOAST ─────────────────────────────────────────────── */
+/* SPINNER / TOAST */
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.35);
   border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -335,41 +284,39 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 </head>
 <body>
 
-</div>
-
-<!-- ══════════ APP ══════════ -->
-<div class="screen active" id="scr-app">
+<div id="scr-app">
   <div class="topbar">
     <div class="tb-left">
       <div class="tb-icon">🌿</div>
       <div>
-        <select id="tb-name-sel" style="background:transparent;border:none;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;outline:none;cursor:pointer;max-width:140px;">
-          <option value="">— Who are you? —</option>
+        <select id="tb-name-sel" class="tb-sel">
+          <option value="0">Willie Arreola</option>
+          <option value="1">William Arreola</option>
+          <option value="2">Sandra Arreola</option>
         </select>
-        <div class="tb-role" id="tb-role">—</div>
+        <div class="tb-role" id="tb-role">Crew Lead</div>
       </div>
     </div>
     <div class="tb-right">
       <div class="ci-badge" id="ci-badge">NOT IN</div>
-      
     </div>
   </div>
 
   <div class="content" id="content">
 
-    <!-- HOME -->
+    <!-- HOME TAB -->
     <div class="tab active" id="tab-home">
       <div class="hero">
         <div class="hero-date" id="h-date"></div>
-        <div class="hero-greet">Good morning,<br><span id="h-name">—</span> 👋</div>
+        <div class="hero-greet">Good morning,<br><span id="h-name">Willie</span> 👋</div>
       </div>
-      <button class="clock-btn start" id="clock-btn" data-action="clock"><span>🟢 START YOUR DAY</span></button>
+      <button class="clock-btn start" id="clock-btn">🟢 START YOUR DAY</button>
       <div class="stats-row">
         <div class="stat"><div class="stat-lbl">Clocked In</div><div class="stat-val mt" id="s-in">—</div></div>
         <div class="stat live"><div class="stat-lbl">On Clock</div><div class="stat-val" id="s-dur">—</div></div>
         <div class="stat"><div class="stat-lbl">Clocked Out</div><div class="stat-val mt" id="s-out">—</div></div>
       </div>
-      <div class="jobs-strip" data-action="goto-dispatch">
+      <div class="jobs-strip" id="jobs-strip">
         <div class="js-left"><span style="font-size:24px">📋</span>
           <div><div class="js-title">Today's Jobs</div><div class="js-sub" id="strip-sub">Tap to view dispatch</div></div>
         </div>
@@ -381,33 +328,32 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
       </div>
     </div>
 
-    <!-- DISPATCH -->
+    <!-- DISPATCH TAB -->
     <div class="tab" id="tab-dispatch">
       <div class="disp-hdr">
         <div><div class="disp-title">Daily Dispatch</div><div class="disp-date" id="d-date"></div></div>
       </div>
-      <button class="load-btn" data-action="open-paste">📥 Load / Refresh Jobs</button>
-      <div id="route-info" class="hidden"></div>
+      <button class="load-btn" id="load-btn">📥 Load / Refresh Jobs</button>
+      <div id="route-info"></div>
       <div id="dispatch-list"><div class="empty-state">📋<br><br>No jobs loaded yet.<br>Tap "Load / Refresh Jobs" to paste the report.</div></div>
     </div>
 
-    <!-- JOB FORM -->
+    <!-- JOB FORM TAB -->
     <div class="tab" id="tab-form">
       <div id="form-body">
-
-        <!-- ── JOB TIME — always on top, always interactive ── -->
+        <!-- Job Time -->
         <div class="card">
           <div class="card-title"><div class="ctn" style="background:var(--blue)">⏱</div> Job Time</div>
           <div class="time-row">
             <div class="tblock" id="tb-start">
               <div class="tblock-lbl">🟢 Start</div>
               <div class="tblock-val empty" id="ts-disp">Not set</div>
-              <button class="tbtn" id="ts-btn" data-action="time-start">TAP TO START</button>
+              <button class="tbtn" id="ts-btn">TAP TO START</button>
             </div>
             <div class="tblock" id="tb-end">
               <div class="tblock-lbl">🔴 End</div>
               <div class="tblock-val empty" id="te-disp">Not set</div>
-              <button class="tbtn" id="te-btn" data-action="time-end" disabled>TAP TO END</button>
+              <button class="tbtn" id="te-btn" disabled>TAP TO END</button>
             </div>
           </div>
           <div class="dur-row" id="dur-row">
@@ -416,16 +362,14 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
           </div>
         </div>
 
-        <!-- ── LOCK BANNER — shown until job is started ── -->
+        <!-- Lock banner -->
         <div class="form-lock-banner" id="form-lock-banner">
           <div class="flb-icon">⏱</div>
           <div class="flb-title">Start the Job First</div>
-          <div class="flb-sub">Tap <strong>TAP TO START</strong> above to unlock the job form and begin tracking time.</div>
+          <div class="flb-sub">Tap <strong>TAP TO START</strong> above to unlock the form.</div>
         </div>
 
-        <!-- ── ALL FIELDS BELOW — locked until start tapped ── -->
         <div id="form-fields-wrap">
-
           <!-- Customer -->
           <div class="card">
             <div class="card-title"><div class="ctn">1</div> Customer</div>
@@ -443,7 +387,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
               <div class="csel-banner">
                 <div class="csel-name" id="f-cname"></div>
                 <div class="csel-det" id="f-cdet"></div>
-                <button class="csel-chg" data-action="clear-cust">✕ Change customer</button>
+                <button class="csel-chg" id="csel-chg-btn">✕ Change customer</button>
               </div>
               <div class="info-chips" id="f-chips"></div>
             </div>
@@ -456,17 +400,17 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
             <input type="hidden" id="f-techs"/>
           </div>
 
-          <!-- Service type -->
+          <!-- Service -->
           <div class="card">
             <div class="card-title"><div class="ctn">3</div> Service Type</div>
             <div class="svc-grid">
-              <div class="svc-btn" id="svc-res" data-action="svc-residential"><span class="si">🏠</span><span class="sl">Residential Mowing</span></div>
-              <div class="svc-btn" id="svc-com" data-action="svc-commercial"><span class="si">🏢</span><span class="sl">Commercial Mowing</span></div>
-              <div class="svc-btn" id="svc-oth" data-action="svc-other"><span class="si">🔧</span><span class="sl">All Other Services</span></div>
+              <div class="svc-btn" id="svc-res"><span class="si">🏠</span><span class="sl">Residential Mowing</span></div>
+              <div class="svc-btn" id="svc-com"><span class="si">🏢</span><span class="sl">Commercial Mowing</span></div>
+              <div class="svc-btn" id="svc-oth"><span class="si">🔧</span><span class="sl">All Other Services</span></div>
             </div>
           </div>
 
-          <!-- Job details -->
+          <!-- Job Details -->
           <div class="card">
             <div class="card-title"><div class="ctn">4</div> Job Details</div>
             <div id="svc-none" style="color:var(--muted);font-size:13px;text-align:center;padding:16px 0">← Select a service type above</div>
@@ -480,52 +424,52 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
                 </select>
               </div>
               <div class="field"><label>Grass Type</label>
-                <div class="gg">
-                  <div class="gb" data-action="grass-res" data-val="Bahia"><span class="gi">🌾</span><span class="gl">Bahia</span></div>
-                  <div class="gb" data-action="grass-res" data-val="Bermuda"><span class="gi">☀️</span><span class="gl">Bermuda</span></div>
-                  <div class="gb" data-action="grass-res" data-val="St. Augustine"><span class="gi">🌿</span><span class="gl">St. Augustine</span></div>
-                  <div class="gb" data-action="grass-res" data-val="Zoysia"><span class="gi">🍃</span><span class="gl">Zoysia</span></div>
-                  <div class="gb" data-action="grass-res" data-val="Centipede"><span class="gi">🐛</span><span class="gl">Centipede</span></div>
-                  <div class="gb"><span class="gi">❓</span><span class="gl">Unable To ID</span></div>
+                <div class="gg" id="grass-res-grid">
+                  <div class="gb" data-val="Bahia"><span class="gi">🌾</span><span class="gl">Bahia</span></div>
+                  <div class="gb" data-val="Bermuda"><span class="gi">☀️</span><span class="gl">Bermuda</span></div>
+                  <div class="gb" data-val="St. Augustine"><span class="gi">🌿</span><span class="gl">St. Augustine</span></div>
+                  <div class="gb" data-val="Zoysia"><span class="gi">🍃</span><span class="gl">Zoysia</span></div>
+                  <div class="gb" data-val="Centipede"><span class="gi">🐛</span><span class="gl">Centipede</span></div>
+                  <div class="gb" data-val="Unknown"><span class="gi">❓</span><span class="gl">Unable To ID</span></div>
                 </div><input type="hidden" id="r-grass"/>
               </div>
               <div class="field"><label>Mowing Direction</label>
-                <div class="gg">
-                  <div class="gb" data-action="dir" data-val="12 to 6"><span class="gi">🕛</span><span class="gl">12 to 6</span></div>
-                  <div class="gb" data-action="dir" data-val="3 to 9"><span class="gi">🕒</span><span class="gl">3 to 9</span></div>
-                  <div class="gb" data-action="dir" data-val="2 to 8"><span class="gi">🕑</span><span class="gl">2 to 8</span></div>
-                  <div class="gb" data-action="dir" data-val="11 to 5"><span class="gi">🕚</span><span class="gl">11 to 5</span></div>
-                  <div class="gb" data-action="dir" data-val="1 to 7"><span class="gi">🕐</span><span class="gl">1 to 7</span></div>
-                  <div class="gb" data-action="dir" data-val="Circular"><span class="gi">🔄</span><span class="gl">Circular</span></div>
+                <div class="gg" id="dir-grid">
+                  <div class="gb" data-val="12 to 6"><span class="gi">🕛</span><span class="gl">12 to 6</span></div>
+                  <div class="gb" data-val="3 to 9"><span class="gi">🕒</span><span class="gl">3 to 9</span></div>
+                  <div class="gb" data-val="2 to 8"><span class="gi">🕑</span><span class="gl">2 to 8</span></div>
+                  <div class="gb" data-val="11 to 5"><span class="gi">🕚</span><span class="gl">11 to 5</span></div>
+                  <div class="gb" data-val="1 to 7"><span class="gi">🕐</span><span class="gl">1 to 7</span></div>
+                  <div class="gb" data-val="Circular"><span class="gi">🔄</span><span class="gl">Circular</span></div>
                 </div><input type="hidden" id="r-dir"/>
               </div>
               <div class="divider"></div>
               <div class="sec-lbl">Service Checklist</div>
               <div class="field"><label>Applied Weed Control?</label>
                 <div class="yn" id="yn-r-weed">
-                  <div class="yn-btn y" data-action="yn" data-field="r-weed" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn nx" data-action="yn" data-field="r-weed" data-val="🔜 Next Visit">🔜 Next Visit</div>
-                  <div class="yn-btn n" data-action="yn" data-field="r-weed" data-val="❌ No">❌ No</div>
+                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
+                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="r-weed"/>
               </div>
               <div class="field"><label>Sprayed for Bugs?</label>
                 <div class="yn" id="yn-r-bugs">
-                  <div class="yn-btn y" data-action="yn" data-field="r-bugs" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn nx" data-action="yn" data-field="r-bugs" data-val="🔜 Next Visit">🔜 Next Visit</div>
-                  <div class="yn-btn n" data-action="yn" data-field="r-bugs" data-val="❌ No">❌ No</div>
+                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
+                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="r-bugs"/>
               </div>
               <div class="field"><label>Trimmed Hedges / Limbs?</label>
                 <div class="yn" id="yn-r-hedges">
-                  <div class="yn-btn y" data-action="yn" data-field="r-hedges" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn nx" data-action="yn" data-field="r-hedges" data-val="🔜 Next Visit">🔜 Next Visit</div>
-                  <div class="yn-btn n" data-action="yn" data-field="r-hedges" data-val="❌ No">❌ No</div>
+                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
+                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="r-hedges"/>
               </div>
               <div class="field"><label>Walked Perimeter?</label>
                 <div class="yn" id="yn-r-perim">
-                  <div class="yn-btn y" data-action="yn" data-field="r-perim" data-val="✅ Clear">✅ Clear</div>
-                  <div class="yn-btn n">⚠️ Issue</div>
+                  <div class="yn-btn y" data-val="✅ Clear">✅ Clear</div>
+                  <div class="yn-btn n" data-val="⚠️ Issue Found">⚠️ Issue</div>
                 </div><input type="hidden" id="r-perim"/>
               </div>
               <div class="divider"></div>
@@ -534,7 +478,6 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 
             <!-- COMMERCIAL -->
             <div id="f-com" class="hidden">
-              <div class="field"><label>Service Duration</label><input type="text" id="c-dur" placeholder="e.g. 2.5 hrs"/></div>
               <div class="field"><label>Cut Height (inches)</label>
                 <select id="c-height"><option value="">Select…</option>
                   <option>2.50</option><option>2.75</option><option>3.00</option><option>3.25</option><option>3.50</option>
@@ -542,53 +485,53 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
                 </select>
               </div>
               <div class="field"><label>Grass Type</label>
-                <div class="gg">
-                  <div class="gb" data-action="grass-com" data-val="Bahia"><span class="gi">🌾</span><span class="gl">Bahia</span></div>
-                  <div class="gb" data-action="grass-com" data-val="Bermuda"><span class="gi">☀️</span><span class="gl">Bermuda</span></div>
-                  <div class="gb" data-action="grass-com" data-val="St. Augustine"><span class="gi">🌿</span><span class="gl">St. Augustine</span></div>
-                  <div class="gb" data-action="grass-com" data-val="Zoysia"><span class="gi">🍃</span><span class="gl">Zoysia</span></div>
-                  <div class="gb" data-action="grass-com" data-val="Centipede"><span class="gi">🐛</span><span class="gl">Centipede</span></div>
-                  <div class="gb"><span class="gi">❓</span><span class="gl">Unable To ID</span></div>
+                <div class="gg" id="grass-com-grid">
+                  <div class="gb" data-val="Bahia"><span class="gi">🌾</span><span class="gl">Bahia</span></div>
+                  <div class="gb" data-val="Bermuda"><span class="gi">☀️</span><span class="gl">Bermuda</span></div>
+                  <div class="gb" data-val="St. Augustine"><span class="gi">🌿</span><span class="gl">St. Augustine</span></div>
+                  <div class="gb" data-val="Zoysia"><span class="gi">🍃</span><span class="gl">Zoysia</span></div>
+                  <div class="gb" data-val="Centipede"><span class="gi">🐛</span><span class="gl">Centipede</span></div>
+                  <div class="gb" data-val="Unknown"><span class="gi">❓</span><span class="gl">Unable To ID</span></div>
                 </div><input type="hidden" id="c-grass"/>
               </div>
               <div class="divider"></div>
               <div class="sec-lbl">Service Checklist</div>
               <div class="field"><label>Blew Parking Lot &amp; Common Areas?</label>
                 <div class="yn" id="yn-c-blow">
-                  <div class="yn-btn y" data-action="yn" data-field="c-blow" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn n" data-action="yn" data-field="c-blow" data-val="❌ No">❌ No</div>
+                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="c-blow"/>
               </div>
               <div class="field"><label>Applied Weed Control?</label>
                 <div class="yn" id="yn-c-weed">
-                  <div class="yn-btn y" data-action="yn" data-field="c-weed" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn nx" data-action="yn" data-field="c-weed" data-val="🔜 Next Visit">🔜 Next Visit</div>
-                  <div class="yn-btn n" data-action="yn" data-field="c-weed" data-val="❌ No">❌ No</div>
+                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
+                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="c-weed"/>
               </div>
               <div class="field"><label>Sprayed for Bugs?</label>
                 <div class="yn" id="yn-c-bugs">
-                  <div class="yn-btn y" data-action="yn" data-field="c-bugs" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn nx" data-action="yn" data-field="c-bugs" data-val="🔜 Next Visit">🔜 Next Visit</div>
-                  <div class="yn-btn n" data-action="yn" data-field="c-bugs" data-val="❌ No">❌ No</div>
+                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
+                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="c-bugs"/>
               </div>
               <div class="field"><label>Trimmed Hedges / Limbs?</label>
                 <div class="yn" id="yn-c-hedges">
-                  <div class="yn-btn y" data-action="yn" data-field="c-hedges" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn nx" data-action="yn" data-field="c-hedges" data-val="🔜 Next Visit">🔜 Next Visit</div>
-                  <div class="yn-btn n" data-action="yn" data-field="c-hedges" data-val="❌ No">❌ No</div>
+                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
+                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="c-hedges"/>
               </div>
               <div class="field"><label>Walked Perimeter?</label>
                 <div class="yn" id="yn-c-perim">
-                  <div class="yn-btn y" data-action="yn" data-field="c-perim" data-val="✅ Clear">✅ Clear</div>
-                  <div class="yn-btn n">⚠️ Issue</div>
+                  <div class="yn-btn y" data-val="✅ Clear">✅ Clear</div>
+                  <div class="yn-btn n" data-val="⚠️ Issue Found">⚠️ Issue</div>
                 </div><input type="hidden" id="c-perim"/>
               </div>
               <div class="divider"></div>
-              <div class="field"><label>We Recommend</label><textarea id="c-rec" placeholder="Recommended services for next visit…"></textarea></div>
-              <div class="field"><label>Notes / Communicate</label><textarea id="c-notes" placeholder="Notes for office or customer…"></textarea></div>
+              <div class="field"><label>We Recommend</label><textarea id="c-rec" placeholder="Recommended services…"></textarea></div>
+              <div class="field"><label>Notes</label><textarea id="c-notes" placeholder="Notes for office or customer…"></textarea></div>
             </div>
 
             <!-- OTHER -->
@@ -598,43 +541,43 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
               <div class="sec-lbl">Service Checklist</div>
               <div class="field"><label>Applied Weed Control?</label>
                 <div class="yn" id="yn-o-weed">
-                  <div class="yn-btn y" data-action="yn" data-field="o-weed" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn nx" data-action="yn" data-field="o-weed" data-val="🔜 Next Visit">🔜 Next Visit</div>
-                  <div class="yn-btn n" data-action="yn" data-field="o-weed" data-val="❌ No">❌ No</div>
+                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
+                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="o-weed"/>
               </div>
               <div class="field"><label>Sprayed for Bugs?</label>
                 <div class="yn" id="yn-o-bugs">
-                  <div class="yn-btn y" data-action="yn" data-field="o-bugs" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn nx" data-action="yn" data-field="o-bugs" data-val="🔜 Next Visit">🔜 Next Visit</div>
-                  <div class="yn-btn n" data-action="yn" data-field="o-bugs" data-val="❌ No">❌ No</div>
+                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
+                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="o-bugs"/>
               </div>
               <div class="field"><label>Trimmed Hedges / Limbs?</label>
                 <div class="yn" id="yn-o-hedges">
-                  <div class="yn-btn y" data-action="yn" data-field="o-hedges" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn nx" data-action="yn" data-field="o-hedges" data-val="🔜 Next Visit">🔜 Next Visit</div>
-                  <div class="yn-btn n" data-action="yn" data-field="o-hedges" data-val="❌ No">❌ No</div>
+                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
+                  <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
+                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
                 </div><input type="hidden" id="o-hedges"/>
               </div>
               <div class="field"><label>Walked Perimeter?</label>
                 <div class="yn" id="yn-o-perim">
-                  <div class="yn-btn y" data-action="yn" data-field="o-perim" data-val="✅ Clear">✅ Clear</div>
-                  <div class="yn-btn n">⚠️ Issue</div>
+                  <div class="yn-btn y" data-val="✅ Clear">✅ Clear</div>
+                  <div class="yn-btn n" data-val="⚠️ Issue Found">⚠️ Issue</div>
                 </div><input type="hidden" id="o-perim"/>
               </div>
               <div class="divider"></div>
-              <div class="field"><label>Notes / Recommend</label><textarea id="o-notes" placeholder="Notes for office or customer…"></textarea></div>
+              <div class="field"><label>Notes / Recommend</label><textarea id="o-notes" placeholder="Notes…"></textarea></div>
             </div>
           </div>
 
           <!-- Pet Waste -->
           <div class="alert-card">
             <div class="card-title"><span style="font-size:20px">🐾</span> Pet Waste on Property?</div>
-            <p style="font-size:13px;color:var(--muted);margin-bottom:12px">If pet waste caused issues tap <strong>Alert Office</strong>.</p>
+            <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Tap <strong>Alert Office</strong> if pet waste caused issues.</p>
             <div class="pet-toggle">
-              <div class="pet-opt" id="pet-clr" data-action="pet-clear"><span class="poi">✅</span><span class="pol">All Clear</span></div>
-              <div class="pet-opt" id="pet-wrn" data-action="pet-warn"><span class="poi">⚠️</span><span class="pol">Alert Office</span></div>
+              <div class="pet-opt" id="pet-clr"><span class="poi">✅</span><span class="pol">All Clear</span></div>
+              <div class="pet-opt" id="pet-wrn"><span class="poi">⚠️</span><span class="pol">Alert Office</span></div>
             </div>
             <input type="hidden" id="f-pet"/>
           </div>
@@ -642,10 +585,10 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
           <!-- Office Note -->
           <div class="alert-card">
             <div class="card-title"><span style="font-size:20px">📋</span> Internal Note to Office</div>
-            <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Gate code, property issue, anything the office needs. <strong>Not sent to customer.</strong></p>
+            <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Gate code, property issue. <strong>Not sent to customer.</strong></p>
             <div class="field">
               <label>Office Note (Optional)</label>
-              <textarea id="f-onote" rows="3" placeholder="e.g. Gate code changed, dog left in yard, irrigation head damaged…"></textarea>
+              <textarea id="f-onote" rows="3" placeholder="e.g. Gate code changed, dog left in yard…"></textarea>
             </div>
             <p style="font-size:11px;color:var(--muted);font-style:italic">📧 Alert sent to office if filled in.</p>
           </div>
@@ -662,36 +605,31 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
             <div class="photo-grid" id="photo-grid"></div>
           </div>
 
-          <!-- Submit — locked until job ended -->
-          <div id="submit-wrap">
-            <div id="end-required-banner" class="hidden"
-              style="background:#fff8e1;border:2px solid var(--acc);border-radius:12px;padding:14px 16px;margin-bottom:12px;text-align:center;">
-              <div style="font-size:24px;margin-bottom:6px">🔴</div>
-              <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:#7a5000;margin-bottom:4px">End the Job First</div>
-              <div style="font-size:13px;color:#996600">Tap <strong>TAP TO END</strong> in the Job Time section above before submitting.</div>
-            </div>
-            <button class="sub-btn" id="sub-btn" data-action="submit-job">✓ SUBMIT JOB</button>
-            <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:8px;padding-bottom:20px">Sends completion email to customer automatically.</p>
+          <div id="end-required-banner" class="hidden"
+            style="background:#fff8e1;border:2px solid var(--acc);border-radius:12px;padding:14px 16px;margin-bottom:12px;text-align:center;">
+            <div style="font-size:24px;margin-bottom:6px">🔴</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:#7a5000;margin-bottom:4px">End the Job First</div>
+            <div style="font-size:13px;color:#996600">Tap <strong>TAP TO END</strong> above before submitting.</div>
           </div>
-
-        </div><!-- /form-fields-wrap -->
-      </div><!-- /form-body -->
+          <button class="sub-btn" id="sub-btn">✓ SUBMIT JOB</button>
+          <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:8px;padding-bottom:20px">Sends completion email to customer automatically.</p>
+        </div>
+      </div>
 
       <div class="success" id="form-success">
         <div class="si">✅</div>
         <h2>Job Submitted!</h2>
         <p>Completion email sent to your customer.</p>
-        <button class="nj-btn" data-action="reset-form">+ Start Next Job</button>
+        <button class="nj-btn" id="new-job-btn">+ Start Next Job</button>
       </div>
     </div>
 
   </div><!-- /content -->
 
-  <!-- 3-tab nav — Board removed -->
   <div class="bnav">
-    <div class="ni active" id="ni-home" data-action="goto-home"><span class="ni-icon">🏠</span><span class="ni-lbl">Home</span></div>
-    <div class="ni" id="ni-dispatch" data-action="goto-dispatch"><span class="ni-icon">📋</span><span class="ni-lbl">Dispatch</span><span class="ni-dot"></span></div>
-    <div class="ni" id="ni-form" data-action="goto-form"><span class="ni-icon">✅</span><span class="ni-lbl">Job Form</span></div>
+    <div class="ni active" id="ni-home"><span class="ni-icon">🏠</span><span class="ni-lbl">Home</span></div>
+    <div class="ni" id="ni-dispatch"><span class="ni-icon">📋</span><span class="ni-lbl">Dispatch</span><span class="ni-dot"></span></div>
+    <div class="ni" id="ni-form"><span class="ni-icon">✅</span><span class="ni-lbl">Job Form</span></div>
   </div>
 </div>
 
@@ -700,23 +638,23 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
   <div class="sheet">
     <div class="sheet-handle"></div>
     <div class="sheet-title">Load Today's Dispatch</div>
-    <div class="sheet-sub">Copy the table from the SA email and paste it below. The app will parse each job automatically.</div>
+    <div class="sheet-sub">Paste the dispatch table from the SA email below.</div>
     <textarea class="sheet-textarea" id="paste-area" placeholder="Paste dispatch table here…"></textarea>
     <div class="sheet-actions">
-      <button class="sh-btn secondary" data-action="close-paste">Cancel</button>
-      <button class="sh-btn primary" data-action="parse-dispatch">📋 Load Jobs</button>
+      <button class="sh-btn secondary" id="paste-cancel-btn">Cancel</button>
+      <button class="sh-btn primary" id="paste-load-btn">📋 Load Jobs</button>
     </div>
   </div>
 </div>
 
-<!-- JOB DETAIL MODAL -->
+<!-- DETAIL MODAL -->
 <div class="overlay" id="detail-modal">
   <div class="sheet">
     <div class="sheet-handle"></div>
     <div id="detail-content"></div>
     <div class="sheet-actions">
-      <button class="sh-btn secondary" data-action="close-detail">Close</button>
-      <button class="sh-btn primary" id="detail-start-btn" data-action="start-from-detail">Start This Job →</button>
+      <button class="sh-btn secondary" id="detail-close-btn">Close</button>
+      <button class="sh-btn primary" id="detail-start-btn">Start This Job →</button>
     </div>
   </div>
 </div>
@@ -727,633 +665,573 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 // ════════════════════════════════════════════════════════════════
 // CONFIG
 // ════════════════════════════════════════════════════════════════
-const CFG = {
+var CFG = {
   appsScript: 'https://script.google.com/macros/s/AKfycbxuGa7IjVnaZdYrzECByJX3cVyShnNceMfmKOYN36-3iHa0xKKVUdLqcLXlYmn37W_s/exec',
   token:      'wslawn-data-2026',
-  whJob:      'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/',   // job completion
-  whAlert:    'https://hooks.zapier.com/hooks/catch/20549459/uxw6ope/',   // pet/office alerts
-  whSheet:    'https://hooks.zapier.com/hooks/catch/20549459/uxwh463/',   // job sheet updates only
-  whClock:    'https://hooks.zapier.com/hooks/catch/20549459/upavpzb/',   // clock in/out only
+  whJob:      'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/',
+  whAlert:    'https://hooks.zapier.com/hooks/catch/20549459/uxw6ope/',
+  whSheet:    'https://hooks.zapier.com/hooks/catch/20549459/uxwh463/',
+  whClock:    'https://hooks.zapier.com/hooks/catch/20549459/upavpzb/',
   cfWorker:   'https://wsphotoupload.will-671.workers.dev/',
 };
 
 // ════════════════════════════════════════════════════════════════
 // STATE
 // ════════════════════════════════════════════════════════════════
-const S = {
-  crew:[], customers:[], board:[],
-  user:null, clockIn:null, clockOut:null, clocked:false,
-  jobs:[], selJobIdx:null,
-  cust:null, svc:null, pet:'',
-  jStart:null, jEnd:null,
-  photos:[], selectedTechs:[],
+var S = {
+  crew: [
+    {name:'Willie Arreola',  position:'Crew Lead'},
+    {name:'William Arreola', position:'Field Tech'},
+    {name:'Sandra Arreola',  position:'Field Tech'},
+  ],
+  customers: [], board: [], jobs: [],
+  user: {name:'Willie Arreola', position:'Crew Lead'},
+  clockIn: null, clockOut: null, clocked: false,
+  selJobIdx: null, cust: null, svc: null, pet: '',
+  jStart: null, jEnd: null, photos: [], selectedTechs: [],
 };
 
-const FALLBACK_CREW = [
-  {name:'Willie Arreola',  position:'Crew Lead',  pin:'1111'},
-  {name:'William Arreola', position:'Field Tech', pin:'2222'},
-  {name:'Sandra Arreola',  position:'Field Tech', pin:'3333'},
-];
-
-S.crew = FALLBACK_CREW;
-// No login — app loads directly, user set after name picked in topbar
-renderCrewLater();
-
+// ════════════════════════════════════════════════════════════════
+// INIT — fetch sheet data, then boot UI
+// ════════════════════════════════════════════════════════════════
 async function init() {
+  bootUI();
   try {
-    const res = await fetch(CFG.appsScript + '?token=' + CFG.token);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const d = await res.json();
-    if (d.error) throw new Error(d.error);
-    if (d.techs     && d.techs.length)     { S.crew = d.techs; renderCrew(d.techs); }
+    var res = await fetch(CFG.appsScript + '?token=' + CFG.token);
+    var d   = await res.json();
+    if (d.techs     && d.techs.length)    { S.crew = d.techs; rebuildTechWrap(); updateTbSel(); }
     if (d.customers && d.customers.length) S.customers = d.customers;
-    if (d.board     && d.board.length)     S.board     = d.board;
-    if (d.dispatch  && d.dispatch.length)  S.jobs      = d.dispatch;
-  } catch(e) {
-    console.warn('Sheet load failed:', e.message);
-    renderCrew(FALLBACK_CREW);
-  }
-  // No login — go straight into app
-  showApp();
+    if (d.board     && d.board.length)    { S.board = d.board; renderBoard(); }
+    if (d.dispatch  && d.dispatch.length) { S.jobs = d.dispatch; renderDispatch(); updateStrip(); }
+  } catch(e) { console.warn('Sheet fetch failed:', e.message); }
 }
 
-function renderCrewLater() {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { renderCrew(FALLBACK_CREW); init(); });
-  } else {
-    renderCrew(FALLBACK_CREW); init();
-  }
-}
-
-function renderCrew(crew) {
-  // Populate topbar name selector
-  const tbSel = document.getElementById('tb-name-sel');
-  if (tbSel) {
-    tbSel.innerHTML = crew.map((c,i) => `<option value="${i}">${c.name}</option>`).join('');
-    tbSel.value = '0';
-    // Set user to first crew member by default
-    if (crew[0]) {
-      S.user = {name: crew[0].name, position: crew[0].position};
-      try { sessionStorage.setItem('ws_user', JSON.stringify(S.user)); } catch(e){}
-      document.getElementById('tb-role').textContent = crew[0].position;
-    }
-    tbSel.addEventListener('change', function() {
-      const idx = parseInt(this.value);
-      if (!isNaN(idx) && crew[idx]) {
-        S.user = {name: crew[idx].name, position: crew[idx].position};
-        try { sessionStorage.setItem('ws_user', JSON.stringify(S.user)); } catch(e){}
-        document.getElementById('tb-role').textContent = crew[idx].position;
-      }
-    });
-  }
-  const wrap = document.getElementById('tech-wrap');
-  if (!wrap) return;
-  wrap.innerHTML = crew.map((c,i) => {
-    const av = c.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-    return `<div class="tech-pill" id="tp-${i}" data-action="tog-tech" data-idx="${i}" data-name="${c.name}">
-      <div class="tech-av">${av}</div><span class="tech-name">${c.name}</span>
-    </div>`;
-  }).join('');
-}
-
-// ════════════════════════════════════════════════════════════════
-// APP
-// ════════════════════════════════════════════════════════════════
-function showApp() {
-  const u = S.user, now = new Date(), h = now.getHours();
-  const greet = h<12?'Good morning':h<17?'Good afternoon':h<21?'Good evening':'Working late';
-  const emoji = h<12?'👋':h<17?'☀️':h<21?'🌅':'🌙';
-  // name shown via tb-name-sel dropdown
-  document.getElementById('tb-role').textContent  = u.position;
-  document.querySelector('.hero-greet').innerHTML = `${greet},<br><span style="color:var(--g4)">${u.name.split(' ')[0]} ${emoji}</span>`;
-  document.getElementById('h-date').textContent   = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
-  document.getElementById('d-date').textContent   = now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  renderBoard(); updateClockUI(); updateStrip();
-  if (S.jobs.length) renderDispatch();
+function bootUI() {
+  // Date/greeting
+  var now = new Date(), h = now.getHours();
+  var greet = h<12?'Good morning':h<17?'Good afternoon':h<21?'Good evening':'Working late';
+  var emoji = h<12?'👋':h<17?'☀️':h<21?'🌅':'🌙';
+  document.getElementById('h-date').textContent = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  document.getElementById('d-date').textContent = now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  document.querySelector('.hero-greet').innerHTML = greet+',<br><span style="color:var(--g4)">'+S.user.name.split(' ')[0]+' '+emoji+'</span>';
+  document.getElementById('tb-role').textContent = S.user.position;
+  renderBoard();
+  rebuildTechWrap();
+  updateFormLock();
   startDurTimer();
-  updateFormLock(); // set initial lock state
 }
 
+function updateTbSel() {
+  var sel = document.getElementById('tb-name-sel');
+  sel.innerHTML = S.crew.map(function(c,i){ return '<option value="'+i+'">'+c.name+'</option>'; }).join('');
+  sel.value = '0';
+}
 
+function rebuildTechWrap() {
+  var wrap = document.getElementById('tech-wrap');
+  wrap.innerHTML = '';
+  S.crew.forEach(function(c,i) {
+    var av  = c.name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+    var div = document.createElement('div');
+    div.className = 'tech-pill';
+    div.id = 'tp-'+i;
+    div.innerHTML = '<div class="tech-av">'+av+'</div><span class="tech-name">'+c.name+'</span>';
+    div.addEventListener('click', function(){ togTech(i, c.name); });
+    wrap.appendChild(div);
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+// WIRE ALL BUTTONS — called once DOM is ready
+// ════════════════════════════════════════════════════════════════
+function wireButtons() {
+  // Topbar name
+  document.getElementById('tb-name-sel').addEventListener('change', function() {
+    var idx = parseInt(this.value);
+    if (!isNaN(idx) && S.crew[idx]) {
+      S.user = {name: S.crew[idx].name, position: S.crew[idx].position};
+      document.getElementById('tb-role').textContent = S.crew[idx].position;
+      var now = new Date(), h = now.getHours();
+      var greet = h<12?'Good morning':h<17?'Good afternoon':h<21?'Good evening':'Working late';
+      var emoji = h<12?'👋':h<17?'☀️':h<21?'🌅':'🌙';
+      document.querySelector('.hero-greet').innerHTML = greet+',<br><span style="color:var(--g4)">'+S.crew[idx].name.split(' ')[0]+' '+emoji+'</span>';
+    }
+  });
+
+  // Clock
+  document.getElementById('clock-btn').addEventListener('click', toggleClock);
+
+  // Nav
+  document.getElementById('ni-home').addEventListener('click',     function(){ goTab('home'); });
+  document.getElementById('ni-dispatch').addEventListener('click', function(){ goTab('dispatch'); });
+  document.getElementById('ni-form').addEventListener('click',     function(){ goTab('form'); });
+
+  // Jobs strip
+  document.getElementById('jobs-strip').addEventListener('click', function(){ goTab('dispatch'); });
+
+  // Dispatch load btn
+  document.getElementById('load-btn').addEventListener('click', function(){
+    document.getElementById('paste-modal').classList.add('open');
+  });
+
+  // Paste modal
+  document.getElementById('paste-cancel-btn').addEventListener('click', function(){
+    document.getElementById('paste-modal').classList.remove('open');
+  });
+  document.getElementById('paste-load-btn').addEventListener('click', parseDispatch);
+
+  // Detail modal
+  document.getElementById('detail-close-btn').addEventListener('click', function(){
+    document.getElementById('detail-modal').classList.remove('open');
+  });
+  document.getElementById('detail-start-btn').addEventListener('click', startJobFromDetail);
+
+  // Overlay close on backdrop tap
+  document.getElementById('paste-modal').addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); });
+  document.getElementById('detail-modal').addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); });
+
+  // Job time
+  document.getElementById('ts-btn').addEventListener('click', function(){ jobTime('start'); });
+  document.getElementById('te-btn').addEventListener('click', function(){ jobTime('end'); });
+
+  // Customer search
+  document.getElementById('f-srch').addEventListener('input', onCustSearch);
+  document.addEventListener('click', function(e){ if(!e.target.closest('.srch-wrap')) document.getElementById('f-results').classList.remove('open'); });
+  document.getElementById('csel-chg-btn').addEventListener('click', clearCust);
+
+  // Service type
+  document.getElementById('svc-res').addEventListener('click', function(){ selSvc('residential'); });
+  document.getElementById('svc-com').addEventListener('click', function(){ selSvc('commercial'); });
+  document.getElementById('svc-oth').addEventListener('click', function(){ selSvc('other'); });
+
+  // Grass grids
+  document.getElementById('grass-res-grid').querySelectorAll('.gb').forEach(function(el){
+    el.addEventListener('click', function(){ gridSel(el, 'grass-res-grid', 'r-grass'); });
+  });
+  document.getElementById('grass-com-grid').querySelectorAll('.gb').forEach(function(el){
+    el.addEventListener('click', function(){ gridSel(el, 'grass-com-grid', 'c-grass'); });
+  });
+  document.getElementById('dir-grid').querySelectorAll('.gb').forEach(function(el){
+    el.addEventListener('click', function(){ gridSel(el, 'dir-grid', 'r-dir'); });
+  });
+
+  // YN buttons
+  ['r-weed','r-bugs','r-hedges','r-perim','c-blow','c-weed','c-bugs','c-hedges','c-perim','o-weed','o-bugs','o-hedges','o-perim'].forEach(function(id){
+    document.getElementById('yn-'+id).querySelectorAll('.yn-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){ yntog(btn, id); });
+    });
+  });
+
+  // Pet
+  document.getElementById('pet-clr').addEventListener('click', function(){ setPet('clear'); });
+  document.getElementById('pet-wrn').addEventListener('click', function(){ setPet('warn'); });
+
+  // Photos
+  document.getElementById('f-photos').addEventListener('change', function(){
+    Array.from(this.files).forEach(addPhoto); this.value='';
+  });
+
+  // Submit
+  document.getElementById('sub-btn').addEventListener('click', submitJob);
+  document.getElementById('new-job-btn').addEventListener('click', resetForm);
+}
 
 // ════════════════════════════════════════════════════════════════
 // CLOCK
 // ════════════════════════════════════════════════════════════════
-let durTimer = null;
+var durTimer = null;
 function toggleClock() {
+  var btn = document.getElementById('clock-btn');
+  var badge = document.getElementById('ci-badge');
   if (!S.clocked) {
     S.clockIn = new Date(); S.clocked = true;
-    try { sessionStorage.setItem('ws_ci', S.clockIn.toISOString()); } catch(e){}
+    btn.className = 'clock-btn stop'; btn.textContent = '🔴 END YOUR DAY';
+    badge.textContent = 'IN'; badge.classList.add('in');
+    document.getElementById('s-in').textContent = fmt(S.clockIn);
+    document.getElementById('s-in').classList.remove('mt');
     sendClockEvent('Clock In');
-    toast('✅ Day started — ' + fmt(S.clockIn));
-  } else {
-    S.clockOut = new Date(); S.clocked = false;
-    try { sessionStorage.removeItem('ws_ci'); } catch(e){}
-    sendClockEvent('Clock Out');
-    toast('👋 Day ended — ' + fmt(S.clockOut));
-    if (durTimer) { clearInterval(durTimer); durTimer = null; }
-  }
-  updateClockUI();
-}
-
-async function sendClockEvent(type) {
-  const now = new Date();
-  const hrs = (type === 'Clock Out' && S.clockIn) ? ((now - S.clockIn) / 3600000).toFixed(2) : '';
-  const payload = {
-    type:'clock_event', eventType:type,
-    techName:S.user.name, position:S.user.position,
-    date:now.toLocaleDateString('en-US'), time:fmt(now), hoursWorked:hrs,
-  };
-  // POST to Apps Script for Payroll tab write
-  try { await fetch(CFG.appsScript, {method:'POST', body:new URLSearchParams(payload), mode:'no-cors'}); } catch(e){}
-  // Fire clock-ONLY webhook — never touches job form Zap
-  await zap(CFG.whClock, payload);
-}
-
-function updateClockUI() {
-  const btn   = document.getElementById('clock-btn');
-  const badge = document.getElementById('ci-badge');
-  const inEl  = document.getElementById('s-in');
-  const outEl = document.getElementById('s-out');
-  if (S.clocked) {
-    btn.className='clock-btn stop'; btn.innerHTML='<span>🔴 END YOUR DAY</span>';
-    badge.textContent='IN'; badge.classList.add('in');
-    if (S.clockIn) { inEl.textContent=fmt(S.clockIn); inEl.classList.remove('mt'); }
+    toast('✅ Day started — '+fmt(S.clockIn));
     startDurTimer();
   } else {
-    btn.className='clock-btn start'; btn.innerHTML='<span>🟢 START YOUR DAY</span>';
-    badge.textContent='NOT IN'; badge.classList.remove('in');
-    if (S.clockOut) { outEl.textContent=fmt(S.clockOut); outEl.classList.remove('mt'); }
+    S.clockOut = new Date(); S.clocked = false;
+    btn.className = 'clock-btn start'; btn.textContent = '🟢 START YOUR DAY';
+    badge.textContent = 'NOT IN'; badge.classList.remove('in');
+    document.getElementById('s-out').textContent = fmt(S.clockOut);
+    document.getElementById('s-out').classList.remove('mt');
+    if (durTimer) { clearInterval(durTimer); durTimer = null; }
+    sendClockEvent('Clock Out');
+    toast('👋 Day ended — '+fmt(S.clockOut));
   }
 }
 function startDurTimer() {
   if (durTimer || !S.clocked) return;
-  durTimer = setInterval(() => {
+  durTimer = setInterval(function(){
     if (!S.clocked || !S.clockIn) return;
     document.getElementById('s-dur').textContent = ((Date.now()-S.clockIn)/3600000).toFixed(2)+'h';
   }, 15000);
 }
-
-// ════════════════════════════════════════════════════════════════
-// FORM LOCK / UNLOCK LOGIC  (#1 — start required, end required)
-// ════════════════════════════════════════════════════════════════
-function updateFormLock() {
-  const started = !!S.jStart;
-  const ended   = !!S.jEnd;
-  const banner  = document.getElementById('form-lock-banner');
-  const wrap    = document.getElementById('form-fields-wrap');
-  const subBtn  = document.getElementById('sub-btn');
-  const endBanner = document.getElementById('end-required-banner');
-
-  if (!started) {
-    // Not started — show lock banner, dim fields
-    banner.classList.remove('hidden');
-    wrap.classList.add('form-section-lock');
-    subBtn.disabled = true;
-    endBanner.classList.add('hidden');
-  } else {
-    // Started — unlock fields
-    banner.classList.add('hidden');
-    wrap.classList.remove('form-section-lock');
-
-    if (!ended) {
-      // Started but not ended — disable submit, show end-required banner
-      subBtn.disabled = true;
-      endBanner.classList.remove('hidden');
-    } else {
-      // Both start and end set — fully unlocked
-      subBtn.disabled = false;
-      endBanner.classList.add('hidden');
-    }
-  }
+async function sendClockEvent(type) {
+  var now = new Date();
+  var hrs = (type==='Clock Out' && S.clockIn) ? ((now-S.clockIn)/3600000).toFixed(2) : '';
+  var p = {type:'clock_event',eventType:type,techName:S.user.name,position:S.user.position,
+    date:now.toLocaleDateString('en-US'),time:fmt(now),hoursWorked:hrs};
+  try { await fetch(CFG.appsScript,{method:'POST',body:new URLSearchParams(p),mode:'no-cors'}); } catch(e){}
+  await zap(CFG.whClock, p);
 }
 
 // ════════════════════════════════════════════════════════════════
-// DISPATCH — parse & render
+// FORM LOCK
 // ════════════════════════════════════════════════════════════════
-function openPasteModal() { document.getElementById('paste-modal').classList.add('open'); }
+function updateFormLock() {
+  var started = !!S.jStart, ended = !!S.jEnd;
+  document.getElementById('form-lock-banner').classList.toggle('hidden', started);
+  document.getElementById('form-fields-wrap').classList.toggle('form-section-lock', !started);
+  document.getElementById('end-required-banner').classList.toggle('hidden', !started || ended);
+  document.getElementById('sub-btn').disabled = !started || !ended;
+}
 
+// ════════════════════════════════════════════════════════════════
+// DISPATCH
+// ════════════════════════════════════════════════════════════════
 function parseDispatch() {
-  const raw = document.getElementById('paste-area').value.trim();
+  var raw = document.getElementById('paste-area').value.trim();
   if (!raw) { toast('⚠ Nothing to paste'); return; }
-  const lines = raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
-  const jobs=[], seen=new Set();
-  const mRe  = /\$[\d,]+\.\d{2}/;
-  const stRe = /\b(Dispatched|Completed|Scheduled|Cancelled)\b/i;
-  const tyRe = /\b(Custom\s+Recurring|One\s+Time|Recurring|Custom)\b/i;
-  const svRe = /(Ground\s+Cover\s+Maintenance|Commercial\s+Grounds\s+Maintenance|General\s+Clean\s+Up|Bi-Weekly\s+Mowing|Weekly\s+Mowing|Mowing\s+Service|Mulch\s+Installation|Shrub\s+Trimming|Hedge\s+Trim|Power\s+Wash|Fertiliz\w*|Aerat\w*|Sod\s+Install\w*)/i;
-  const skip = /^(Daily\s+Dispatch|Job\s+Date|Client\s+Name|Appointment\s+Start|Appointment\s+End|Job\s+Amount|Job\s+Status|Job\s+Type|^Service$|^Source$|^Amount$)/i;
-  function times(s){const a=[];let m;const p=/(1[0-2]|0?[1-9]):[0-5]\d\s?[AP]M/gi;while((m=p.exec(s))!==null)a.push(m[0].replace(/\s/,' ').toUpperCase());return a;}
-  function strip(s){return s.replace(/(1[0-2]|0?[1-9]):[0-5]\d\s?[AP]M/gi,'').replace(mRe,'').replace(stRe,'').replace(tyRe,'').replace(svRe,'').replace(/\d{1,2}\/\d{1,2}\/\d{2,4}/g,'').replace(/\s{2,}/g,' ').replace(/^\s+|\s+$/g,'').trim();}
-  function nextDate(p){for(let k=p+1;k<lines.length;k++)if(/^\d{1,2}\/\d{1,2}\/\d{2,4}/.test(lines[k]))return k;return lines.length;}
-  function add(j){if(!j.client||j.client.length<2)return;const k=(j.date+'|'+j.client.toLowerCase()+'|'+j.startTime).replace(/\s/g,'');if(seen.has(k))return;seen.add(k);jobs.push(j);}
-  let i=0;
+  var lines = raw.split('\n').map(function(l){return l.trim();}).filter(function(l){return l.length>0;});
+  var jobs=[], seen=new Set();
+  var mRe=/\$[\d,]+\.\d{2}/,stRe=/\b(Dispatched|Completed|Scheduled|Cancelled)\b/i;
+  var tyRe=/\b(Custom\s+Recurring|One\s+Time|Recurring|Custom)\b/i;
+  var svRe=/(Ground\s+Cover\s+Maintenance|Commercial\s+Grounds\s+Maintenance|General\s+Clean\s+Up|Bi-Weekly\s+Mowing|Weekly\s+Mowing|Mowing\s+Service|Mulch\s+Installation|Shrub\s+Trimming|Hedge\s+Trim|Power\s+Wash|Fertiliz\w*|Aerat\w*|Sod\s+Install\w*)/i;
+  var skip=/^(Daily\s+Dispatch|Job\s+Date|Client\s+Name|Appointment\s+Start|Appointment\s+End|Job\s+Amount|Job\s+Status|Job\s+Type|^Service$|^Source$|^Amount$)/i;
+  function times(s){var a=[],m,p=/(1[0-2]|0?[1-9]):[0-5]\d\s?[AP]M/gi;while((m=p.exec(s))!==null)a.push(m[0].replace(/\s/,' ').toUpperCase());return a;}
+  function strip(s){return s.replace(/(1[0-2]|0?[1-9]):[0-5]\d\s?[AP]M/gi,'').replace(mRe,'').replace(stRe,'').replace(tyRe,'').replace(svRe,'').replace(/\d{1,2}\/\d{1,2}\/\d{2,4}/g,'').replace(/\s{2,}/g,' ').trim();}
+  function add(j){if(!j.client||j.client.length<2)return;var k=(j.date+'|'+j.client.toLowerCase()+'|'+j.startTime).replace(/\s/g,'');if(seen.has(k))return;seen.add(k);jobs.push(j);}
+  var i=0;
   while(i<lines.length){
-    const line=lines[i];
+    var line=lines[i];
     if(skip.test(line)||/^\$[\d,]+\.?\d*$/.test(line)||line.length<3){i++;continue;}
-    const dm=line.match(/^(\d{1,2}\/\d{1,2}\/\d{2,4})\s+(.*)/);
+    var dm=line.match(/^(\d{1,2}\/\d{1,2}\/\d{2,4})\s+(.*)/);
     if(!dm){i++;continue;}
-    const date=dm[1];let after=dm[2].trim(),ts=times(after),dataLine=after,dataIdx=i,pre='';
+    var date=dm[1],after=dm[2].trim(),ts=times(after),dataLine=after,dataIdx=i,pre='';
     if(!ts.length){
-      let buf=after,pk2=i+1,found=false;
-      while(pk2<lines.length&&pk2<=i+10){
-        const pl=lines[pk2];
-        if(skip.test(pl)||/^\$[\d,]+\.?\d*$/.test(pl)){pk2++;continue;}
+      var buf=after,pk=i+1,found=false;
+      while(pk<lines.length&&pk<=i+10){
+        var pl=lines[pk];
+        if(skip.test(pl)||/^\$[\d,]+\.?\d*$/.test(pl)){pk++;continue;}
         if(/^\d{1,2}\/\d{1,2}\/\d{2,4}/.test(pl))break;
-        const pt=times(pl);
+        var pt=times(pl);
         if(pt.length&&mRe.test(pl)){
-          for(let k=i+1;k<pk2;k++){const kl=lines[k];if(!skip.test(kl)&&/^[A-Za-z\s]+$/.test(kl)&&kl.length<30&&!svRe.test(kl))buf+=' '+kl.trim();}
-          pre=buf.trim();dataLine=pl;dataIdx=pk2;ts=pt;i=pk2;found=true;break;
+          for(var k2=i+1;k2<pk;k2++){var kl=lines[k2];if(!skip.test(kl)&&/^[A-Za-z\s]+$/.test(kl)&&kl.length<30&&!svRe.test(kl))buf+=' '+kl.trim();}
+          pre=buf.trim();dataLine=pl;dataIdx=pk;ts=pt;i=pk;found=true;break;
         }
-        pk2++;
+        pk++;
       }
       if(!found){i++;continue;}
     }
-    const st=ts[0]||'',et=ts[1]||'';
-    let cl=strip(dataLine);
-    if(pre){const p2=pre.replace(/^\s+|\s+$/g,'');cl=p2.endsWith(',')?p2+' '+cl:p2+(cl?' '+cl:'');}
-    cl=cl.replace(/\s+,\s*/g,', ').replace(/,([^\s])/g,', ').replace(/\s{2,}/g,' ').replace(/^\s+|\s+$/g,'').trim();
-    let svc='';
-    const sd=(line+' '+dataLine).match(svRe);if(sd)svc=sd[1];
-    if(!svc){const we=nextDate(dataIdx);for(let w=dataIdx+1;w<we;w++){const wl=lines[w];if(skip.test(wl))continue;if(times(wl).length||mRe.test(wl))break;const sm=wl.match(svRe);if(sm){svc=sm[1];i=w;break;}}}
-    const stm=(line+' '+dataLine).match(stRe),tym=(line+' '+dataLine).match(tyRe);
-    add({date,client:cl,startTime:st,endTime:et,
-      status:stm?stm[1]:'Dispatched',jobType:tym?tym[1]:'',service:svc,
-      budgetedHours:'',jobStatus:'dispatched',
-      // customer fields — will be enriched from customers list
-      address:'',email:'',phone:''
-    });
+    var st=ts[0]||'',et=ts[1]||'';
+    var cl=strip(dataLine);
+    if(pre){var p2=pre.replace(/^\s+|\s+$/g,'');cl=p2.endsWith(',')?p2+' '+cl:p2+(cl?' '+cl:'');}
+    cl=cl.replace(/\s+,\s*/g,', ').replace(/,([^\s])/g,', ').replace(/\s{2,}/g,' ').trim();
+    var svc='';
+    var sd=(line+' '+dataLine).match(svRe);if(sd)svc=sd[1];
+    var stm=(line+' '+dataLine).match(stRe),tym=(line+' '+dataLine).match(tyRe);
+    var job={date:date,client:cl,startTime:st,endTime:et,status:stm?stm[1]:'Dispatched',
+      jobType:tym?tym[1]:'',service:svc,budgetedHours:'',jobStatus:'dispatched',address:'',email:'',phone:''};
+    // Enrich from customers
+    var match=S.customers.find(function(c){return c.name.toLowerCase().includes(cl.toLowerCase().split(',')[0].trim().toLowerCase());});
+    if(match){job.address=match.address||'';job.email=match.email||'';job.phone=match.phone||'';}
+    add(job);
     i++;
   }
   if(!jobs.length){toast('⚠ No jobs found');return;}
-
-  // Enrich with customer data
-  jobs.forEach(j => {
-    const match = S.customers.find(c =>
-      c.name.toLowerCase().includes(j.client.toLowerCase().split(',')[0].trim().toLowerCase()) ||
-      j.client.toLowerCase().includes(c.name.toLowerCase().split(' ')[0].toLowerCase())
-    );
-    if (match) {
-      j.address = match.address || '';
-      j.email   = match.email   || '';
-      j.phone   = match.phone   || '';
-    }
-  });
-
-  // Sort by scheduled start time for route efficiency (#4)
-  sortJobsByTime(jobs);
-
-  S.jobs = jobs;
-  closeModal('paste-modal');
+  jobs.sort(function(a,b){return toMins(a.startTime)-toMins(b.startTime);});
+  S.jobs=jobs;
+  document.getElementById('paste-modal').classList.remove('open');
   document.getElementById('paste-area').value='';
   renderDispatch(); updateStrip();
-  toast('✅ ' + jobs.length + ' job' + (jobs.length>1?'s':'') + ' loaded');
+  toast('✅ '+jobs.length+' job'+(jobs.length>1?'s':'')+' loaded');
 }
 
-// ── Sort jobs by scheduled start time ────────────────────────────
-function sortJobsByTime(jobs) {
-  function toMins(t) {
-    if (!t) return 9999;
-    const m = t.match(/(\d+):(\d+)\s?(AM|PM)/i);
-    if (!m) return 9999;
-    let h = parseInt(m[1]), mn = parseInt(m[2]);
-    if (m[3].toUpperCase()==='PM' && h!==12) h+=12;
-    if (m[3].toUpperCase()==='AM' && h===12) h=0;
-    return h*60+mn;
-  }
-  jobs.sort((a,b) => toMins(a.startTime) - toMins(b.startTime));
+function toMins(t){
+  if(!t)return 9999;
+  var m=t.match(/(\d+):(\d+)\s?(AM|PM)/i);if(!m)return 9999;
+  var h=parseInt(m[1]),mn=parseInt(m[2]);
+  if(m[3].toUpperCase()==='PM'&&h!==12)h+=12;
+  if(m[3].toUpperCase()==='AM'&&h===12)h=0;
+  return h*60+mn;
 }
 
-// ── Build Google Maps link ────────────────────────────────────────
-function mapsLink(address) {
-  if (!address) return null;
-  return 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(address);
+function mapsLink(addr){
+  if(!addr)return null;
+  return 'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(addr);
 }
 
-// ── Render dispatch list with stop numbers, addresses, route sort ─
-function renderDispatch() {
-  const el = document.getElementById('dispatch-list');
-  if (!S.jobs.length) {
-    el.innerHTML='<div class="empty-state">📋<br><br>No jobs loaded.</div>';
-    updateBadge(); renderRouteInfo(); return;
-  }
-
-  let html = '', stopNum = 0;
-  S.jobs.forEach((j,i) => {
-    const isDone = j.jobStatus === 'complete';
-    const isActive = j.jobStatus === 'in-progress';
-    if (!isDone) stopNum++;
-    const displayStop = isDone ? '✓' : stopNum;
-    const sc = isDone?'sp-done':isActive?'sp-prog':'sp-disp';
-    const sl = isDone?'Complete':isActive?'In Progress':'Dispatched';
-    const ac = isDone?'done':isActive?'complete':'begin';
-    const al = isDone?'✓ Done':isActive?'Complete →':'Start →';
-
-    const mapUrl = mapsLink(j.address);
-    const addrHtml = j.address
-      ? `<div class="jc-addr"><a href="${mapUrl}" target="_blank">📍 ${j.address} <span style="font-size:10px">↗</span></a></div>`
-      : '';
-    const phoneHtml = j.phone
-      ? `<div class="jc-contact">📞 <a href="tel:${j.phone}" style="color:var(--muted);text-decoration:none">${j.phone}</a></div>`
-      : '';
-
-    html += `<div class="job-card${isDone?' done':''}" data-action="open-detail" data-idx="${i}">
-      <div class="jc-top">
-        <div class="stop-num${isDone?' done-num':''}">${displayStop}</div>
-        <div class="jc-left" style="margin-left:10px">
-          <div class="jc-client">${j.client}</div>
-          ${j.service?`<div class="jc-svc">${j.service}</div>`:''}
-          <div class="jc-time">🕐 <span>${j.startTime||'—'}</span>${j.endTime?` – <span>${j.endTime}</span>`:''}</div>
-          ${j.budgetedHours?`<div class="jc-time" style="margin-top:3px;color:var(--blue);font-weight:600">⏳ Budget: <span>${j.budgetedHours} hrs</span></div>`:''}
-          ${addrHtml}
-          ${phoneHtml}
-        </div>
-        ${j.jobType?`<div class="jc-type">${j.jobType}</div>`:''}
-      </div>
-      <div class="jc-bar">
-        <span class="status-pill ${sc}">${sl}</span>
-        <button class="jc-act ${ac}" data-action="quick-act" data-idx="${i}">${al}</button>
-      </div>
-    </div>`;
+function renderDispatch(){
+  var el=document.getElementById('dispatch-list');
+  if(!S.jobs.length){el.innerHTML='<div class="empty-state">📋<br><br>No jobs loaded.</div>';updateBadge();renderRouteInfo();return;}
+  var html='',stop=0;
+  S.jobs.forEach(function(j,i){
+    var done=j.jobStatus==='complete',active=j.jobStatus==='in-progress';
+    if(!done)stop++;
+    var sn=done?'✓':stop;
+    var sc=done?'sp-done':active?'sp-prog':'sp-disp';
+    var sl=done?'Complete':active?'In Progress':'Dispatched';
+    var ac=done?'done':active?'complete':'begin';
+    var al=done?'✓ Done':active?'Complete →':'Start →';
+    var ml=mapsLink(j.address);
+    var addrHtml=j.address?'<div class="jc-addr"><a href="'+ml+'" target="_blank">📍 '+j.address+' ↗</a></div>':'';
+    var phoneHtml=j.phone?'<div class="jc-contact">📞 <a href="tel:'+j.phone+'" style="color:var(--muted);text-decoration:none">'+j.phone+'</a></div>':'';
+    html+='<div class="job-card'+(done?' done':'')+'" id="jcard-'+i+'">'
+      +'<div class="jc-top">'
+      +'<div class="stop-num'+(done?' done-num':'')+'">'+sn+'</div>'
+      +'<div class="jc-left">'
+      +'<div class="jc-client">'+j.client+'</div>'
+      +(j.service?'<div class="jc-svc">'+j.service+'</div>':'')
+      +'<div class="jc-time">🕐 <span>'+( j.startTime||'—')+'</span>'+(j.endTime?' – <span>'+j.endTime+'</span>':'')+'</div>'
+      +(j.budgetedHours?'<div class="jc-time" style="margin-top:3px;color:var(--blue);font-weight:600">⏳ Budget: <span>'+j.budgetedHours+' hrs</span></div>':'')
+      +addrHtml+phoneHtml
+      +'</div>'
+      +(j.jobType?'<div class="jc-type">'+j.jobType+'</div>':'')
+      +'</div>'
+      +'<div class="jc-bar">'
+      +'<span class="status-pill '+sc+'">'+sl+'</span>'
+      +'<button class="jc-act '+ac+'" id="jact-'+i+'">'+al+'</button>'
+      +'</div></div>';
   });
-
-  el.innerHTML = html;
-  renderRouteInfo();
-  updateBadge();
+  el.innerHTML=html;
+  // Wire cards after render
+  S.jobs.forEach(function(j,i){
+    var card=document.getElementById('jcard-'+i);
+    var act=document.getElementById('jact-'+i);
+    if(card) card.addEventListener('click', function(){ openDetail(i); });
+    if(act)  act.addEventListener('click',  function(e){ e.stopPropagation(); quickAct(i); });
+  });
+  renderRouteInfo(); updateBadge();
 }
 
-function renderRouteInfo() {
-  const el = document.getElementById('route-info');
-  const total = S.jobs.length;
-  if (!total) { el.classList.add('hidden'); return; }
-  const remaining = S.jobs.filter(j=>j.jobStatus!=='complete').length;
-  el.classList.remove('hidden');
-  el.innerHTML = `<div class="route-banner">
-    <span style="font-size:18px">🗺️</span>
-    <span class="rb-text">Route sorted by scheduled time</span>
-    <span class="rb-badge">${remaining} stop${remaining!==1?'s':''} left</span>
-  </div>`;
+function renderRouteInfo(){
+  var el=document.getElementById('route-info');
+  if(!S.jobs.length){el.innerHTML='';return;}
+  var rem=S.jobs.filter(function(j){return j.jobStatus!=='complete';}).length;
+  el.innerHTML='<div class="route-banner"><span style="font-size:18px">🗺️</span><span class="rb-text">Route sorted by scheduled time</span><span class="rb-badge">'+rem+' stop'+(rem!==1?'s':'')+' left</span></div>';
 }
 
-function quickAct(i) {
-  const j = S.jobs[i];
-  if (j.jobStatus==='complete') return;
-  if (j.jobStatus==='dispatched') {
-    S.jobs[i].jobStatus='in-progress';
-    prefillFromJob(i);
-    goTab('form');
-  } else {
-    // Mark complete (#2)
-    S.jobs[i].jobStatus='complete';
-  }
-  renderDispatch(); updateStrip();
+function quickAct(i){
+  var j=S.jobs[i];
+  if(j.jobStatus==='complete')return;
+  if(j.jobStatus==='dispatched'){S.jobs[i].jobStatus='in-progress';prefillFromJob(i);goTab('form');}
+  else{S.jobs[i].jobStatus='complete';}
+  renderDispatch();updateStrip();
 }
 
-function openDetail(i) {
-  S.selJobIdx = i;
-  const j = S.jobs[i];
-  const mapUrl = mapsLink(j.address);
-  const addrRow = j.address
-    ? `<div class="detail-row"><span class="dr-lbl">Address</span><span class="dr-val"><a href="${mapUrl}" target="_blank">📍 ${j.address} ↗</a></span></div>`
-    : '';
-  const emailRow = j.email
-    ? `<div class="detail-row"><span class="dr-lbl">Email</span><span class="dr-val">${j.email}</span></div>`
-    : '';
-  const phoneRow = j.phone
-    ? `<div class="detail-row"><span class="dr-lbl">Phone</span><span class="dr-val"><a href="tel:${j.phone}" style="color:var(--blue)">${j.phone}</a></span></div>`
-    : '';
-
-  document.getElementById('detail-content').innerHTML=`
-    <div class="sheet-title">${j.client}</div>
-    <div class="sheet-sub" style="margin-bottom:12px">${j.service||j.jobType||''}</div>
-    <div class="detail-row"><span class="dr-lbl">Date</span><span class="dr-val">${j.date}</span></div>
-    <div class="detail-row"><span class="dr-lbl">Start Time</span><span class="dr-val">${j.startTime||'—'}</span></div>
-    <div class="detail-row"><span class="dr-lbl">End Time</span><span class="dr-val">${j.endTime||'—'}</span></div>
-    <div class="detail-row"><span class="dr-lbl">Job Type</span><span class="dr-val">${j.jobType||'—'}</span></div>
-    <div class="detail-row"><span class="dr-lbl">Status</span><span class="dr-val">${j.status||'—'}</span></div>
-    ${j.budgetedHours?`<div class="detail-row"><span class="dr-lbl">Budget Hrs</span><span class="dr-val" style="color:var(--blue);font-weight:700">${j.budgetedHours} hrs</span></div>`:''}
-    ${addrRow}${emailRow}${phoneRow}`;
-
-  const btn = document.getElementById('detail-start-btn');
-  btn.disabled = j.jobStatus==='complete';
-  btn.textContent = j.jobStatus==='complete'?'✓ Completed':'Start This Job →';
+var selJobIdx=null;
+function openDetail(i){
+  selJobIdx=i;
+  var j=S.jobs[i];
+  var ml=mapsLink(j.address);
+  var addrRow=j.address?'<div class="detail-row"><span class="dr-lbl">Address</span><span class="dr-val"><a href="'+ml+'" target="_blank">📍 '+j.address+' ↗</a></span></div>':'';
+  var emailRow=j.email?'<div class="detail-row"><span class="dr-lbl">Email</span><span class="dr-val">'+j.email+'</span></div>':'';
+  var phoneRow=j.phone?'<div class="detail-row"><span class="dr-lbl">Phone</span><span class="dr-val"><a href="tel:'+j.phone+'" style="color:var(--blue)">'+j.phone+'</a></span></div>':'';
+  document.getElementById('detail-content').innerHTML=
+    '<div class="sheet-title">'+j.client+'</div>'
+    +'<div class="sheet-sub" style="margin-bottom:12px">'+(j.service||j.jobType||'')+'</div>'
+    +'<div class="detail-row"><span class="dr-lbl">Date</span><span class="dr-val">'+j.date+'</span></div>'
+    +'<div class="detail-row"><span class="dr-lbl">Start</span><span class="dr-val">'+(j.startTime||'—')+'</span></div>'
+    +'<div class="detail-row"><span class="dr-lbl">End</span><span class="dr-val">'+(j.endTime||'—')+'</span></div>'
+    +'<div class="detail-row"><span class="dr-lbl">Type</span><span class="dr-val">'+(j.jobType||'—')+'</span></div>'
+    +'<div class="detail-row"><span class="dr-lbl">Status</span><span class="dr-val">'+(j.status||'—')+'</span></div>'
+    +(j.budgetedHours?'<div class="detail-row"><span class="dr-lbl">Budget</span><span class="dr-val" style="color:var(--blue);font-weight:700">'+j.budgetedHours+' hrs</span></div>':'')
+    +addrRow+emailRow+phoneRow;
+  var btn=document.getElementById('detail-start-btn');
+  btn.disabled=j.jobStatus==='complete';
+  btn.textContent=j.jobStatus==='complete'?'✓ Completed':'Start This Job →';
   document.getElementById('detail-modal').classList.add('open');
 }
 
-function startJobFromDetail() {
-  closeModal('detail-modal');
-  if (S.selJobIdx !== null) prefillFromJob(S.selJobIdx);
+function startJobFromDetail(){
+  document.getElementById('detail-modal').classList.remove('open');
+  if(selJobIdx!==null)prefillFromJob(selJobIdx);
   goTab('form');
 }
 
-function prefillFromJob(i) {
-  const j = S.jobs[i]; S.selJobIdx = i;
-  S.jobs[i].jobStatus = 'in-progress';
-  const match = S.customers.find(c =>
-    c.name.toLowerCase().includes(j.client.toLowerCase().split(',')[0].trim().toLowerCase())
-  );
-  if (match) selCust(S.customers.indexOf(match));
-  else {
-    S.cust = {name:j.client,address:j.address||'',email:j.email||'',phone:j.phone||'',
-      mowingHeight:'',grassType:'',mowingDirection:'',internalNote:'',lastVisitDuration:''};
-    showCustBanner();
-  }
-  const sl = (j.service||'').toLowerCase();
-  if      (sl.includes('commercial')||sl.includes('ground')) selSvc('commercial');
-  else if (sl.includes('mow')||sl.includes('bi-weekly')||sl.includes('weekly')) selSvc('residential');
-  renderDispatch(); updateStrip();
+function prefillFromJob(i){
+  var j=S.jobs[i]; selJobIdx=i;
+  S.jobs[i].jobStatus='in-progress';
+  var match=S.customers.find(function(c){return c.name.toLowerCase().includes(j.client.toLowerCase().split(',')[0].trim().toLowerCase());});
+  if(match) selCust(S.customers.indexOf(match));
+  else{S.cust={name:j.client,address:j.address||'',email:j.email||'',phone:j.phone||'',mowingHeight:'',grassType:'',mowingDirection:'',internalNote:'',lastVisitDuration:''};showCustBanner();}
+  var sl=(j.service||'').toLowerCase();
+  if(sl.includes('commercial')||sl.includes('ground'))selSvc('commercial');
+  else if(sl.includes('mow')||sl.includes('bi-weekly')||sl.includes('weekly'))selSvc('residential');
+  renderDispatch();updateStrip();
 }
 
-function updateStrip() {
-  const t = S.jobs.length, d = S.jobs.filter(j=>j.jobStatus==='complete').length;
-  document.getElementById('strip-cnt').textContent = t||'—';
-  document.getElementById('strip-sub').textContent = t ? `${d} done · ${t-d} remaining` : 'Tap to view dispatch';
+function updateStrip(){
+  var t=S.jobs.length,d=S.jobs.filter(function(j){return j.jobStatus==='complete';}).length;
+  document.getElementById('strip-cnt').textContent=t||'—';
+  document.getElementById('strip-sub').textContent=t?(d+' done · '+(t-d)+' remaining'):'Tap to view dispatch';
 }
-function updateBadge() {
-  const r = S.jobs.filter(j=>j.jobStatus!=='complete').length;
-  document.getElementById('ni-dispatch').classList.toggle('has-dot', r>0);
+function updateBadge(){
+  var r=S.jobs.filter(function(j){return j.jobStatus!=='complete';}).length;
+  document.getElementById('ni-dispatch').classList.toggle('has-dot',r>0);
 }
 
 // ════════════════════════════════════════════════════════════════
-// JOB FORM
+// CUSTOMER SEARCH
 // ════════════════════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('f-srch').addEventListener('input', function() {
-    const q=this.value.toLowerCase().trim(), res=document.getElementById('f-results');
-    if (q.length<2) { res.classList.remove('open'); return; }
-    const m = S.customers.filter(c=>c.name.toLowerCase().includes(q)||c.address.toLowerCase().includes(q)).slice(0,8);
-    res.innerHTML = m.length
-      ? m.map(c=>`<div class="sri" data-action="sel-cust" data-idx="${S.customers.indexOf(c)}"><div class="sri-name">${c.name}</div><div class="sri-addr">${c.address}</div></div>`).join('')
-      : '<div class="sri"><div class="sri-name" style="color:var(--muted)">No customers found</div></div>';
-    res.classList.add('open');
-  });
-  document.getElementById('f-photos').addEventListener('change', function() {
-    Array.from(this.files).forEach(addPhoto); this.value='';
-  });
-});
-document.addEventListener('click', e => {
-  if (!e.target.closest('.srch-wrap')) document.getElementById('f-results').classList.remove('open');
-});
-
-// ════════════════════════════════════════════════════════════════
-// EVENT DELEGATION — replaces all inline onclick handlers
-// Cloudflare-safe: no onclick attributes anywhere in the HTML
-// Script is at end of body so DOM is already ready — no
-// DOMContentLoaded wrapper needed for pin pad wiring.
-// ════════════════════════════════════════════════════════════════
-
-// ── Global delegation — handles all data-action buttons ───────
-document.addEventListener('click', function(e) {
-  var el = e.target.closest('[data-action]');
-  if (!el) return;
-  var action = el.dataset.action;
-  switch(action) {
-
-    case 'clock':             toggleClock(); break;
-    case 'goto-home':         goTab('home'); break;
-    case 'goto-dispatch':     goTab('dispatch'); break;
-    case 'goto-form':         goTab('form'); break;
-    case 'open-paste':        openPasteModal(); break;
-    case 'parse-dispatch':    parseDispatch(); break;
-    case 'close-paste':       closeModal('paste-modal'); break;
-    case 'close-detail':      closeModal('detail-modal'); break;
-    case 'start-from-detail': startJobFromDetail(); break;
-    case 'time-start':        jobTime('start'); break;
-    case 'time-end':          jobTime('end'); break;
-    case 'clear-cust':        clearCust(); break;
-    case 'sel-cust':          selCust(parseInt(el.dataset.idx)); break;
-    case 'svc-residential':   selSvc('residential'); break;
-    case 'svc-commercial':    selSvc('commercial'); break;
-    case 'svc-other':         selSvc('other'); break;
-    case 'grass-res':         selGrass(el, el.dataset.val); break;
-    case 'grass-com':         selGrassCom(el, el.dataset.val); break;
-    case 'dir':               selDir(el, el.dataset.val); break;
-    case 'yn':                yntog(el, el.dataset.field, el.dataset.val); break;
-    case 'pet-clear':         setPet('clear'); break;
-    case 'pet-warn':          setPet('warn'); break;
-    case 'submit-job':        submitJob(); break;
-    case 'reset-form':        resetForm(); break;
-    case 'tog-tech':          togTech(parseInt(el.dataset.idx), el.dataset.name); break;
-    case 'open-detail':       openDetail(parseInt(el.dataset.idx)); break;
-    case 'quick-act':         e.stopPropagation(); quickAct(parseInt(el.dataset.idx)); break;
-  }
-});
-
-
-function selCust(i) {
-  const c = S.customers[i]; S.cust = c;
-  document.getElementById('f-results').classList.remove('open');
-  document.getElementById('f-srch').value = '';
-  showCustBanner();
-  if (c.mowingHeight) {
-    const h = parseFloat(c.mowingHeight).toFixed(2);
-    ['r-height','c-height'].forEach(id=>{
-      const el=document.getElementById(id);
-      if(el) for(let o of el.options) if(parseFloat(o.value||0).toFixed(2)===h){el.value=o.value;break;}
+function onCustSearch(){
+  var q=this.value.toLowerCase().trim();
+  var res=document.getElementById('f-results');
+  if(q.length<2){res.classList.remove('open');return;}
+  var m=S.customers.filter(function(c){return c.name.toLowerCase().includes(q)||c.address.toLowerCase().includes(q);}).slice(0,8);
+  res.innerHTML='';
+  if(m.length){
+    m.forEach(function(c){
+      var div=document.createElement('div');
+      div.className='sri';
+      div.innerHTML='<div class="sri-name">'+c.name+'</div><div class="sri-addr">'+c.address+'</div>';
+      div.addEventListener('click',function(){selCust(S.customers.indexOf(c));});
+      res.appendChild(div);
     });
+  } else {
+    res.innerHTML='<div class="sri"><div class="sri-name" style="color:var(--muted)">No customers found</div></div>';
   }
-  if (c.grassType) {
-    ['r-grass','c-grass'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=c.grassType;});
-  }
-  if (c.mowingDirection) { const el=document.getElementById('r-dir');if(el)el.value=c.mowingDirection; }
+  res.classList.add('open');
 }
 
-function showCustBanner() {
-  const c = S.cust;
+function selCust(i){
+  var c=S.customers[i]; S.cust=c;
+  document.getElementById('f-results').classList.remove('open');
+  document.getElementById('f-srch').value='';
+  showCustBanner();
+  if(c.mowingHeight){
+    var h=parseFloat(c.mowingHeight).toFixed(2);
+    ['r-height','c-height'].forEach(function(id){var el=document.getElementById(id);if(el)for(var o of el.options)if(parseFloat(o.value||0).toFixed(2)===h){el.value=o.value;break;}});
+  }
+  if(c.grassType){['r-grass','c-grass'].forEach(function(id){var el=document.getElementById(id);if(el)el.value=c.grassType;});}
+  if(c.mowingDirection){var el=document.getElementById('r-dir');if(el)el.value=c.mowingDirection;}
+}
+
+function showCustBanner(){
+  var c=S.cust;
   document.getElementById('f-srch-wrap').classList.add('hidden');
   document.getElementById('f-csel').classList.remove('hidden');
-  document.getElementById('f-cname').textContent = c.name;
-  const mapUrl = mapsLink(c.address);
-  document.getElementById('f-cdet').innerHTML =
-    (c.address ? `<a href="${mapUrl}" target="_blank" style="color:var(--blue);font-weight:600;text-decoration:none">📍 ${c.address} ↗</a><br>` : '') +
-    (c.email   ? `✉ ${c.email}<br>` : '') +
-    (c.phone   ? `📞 ${c.phone}` : '');
-  let chips = '';
-  if (c.mowingHeight)    chips+=`<div class="chip"><div><div class="chip-lbl">Last Height</div><div class="chip-val">${c.mowingHeight}"</div></div></div>`;
-  if (c.grassType)       chips+=`<div class="chip"><div><div class="chip-lbl">Grass</div><div class="chip-val">${c.grassType}</div></div></div>`;
-  if (c.mowingDirection) chips+=`<div class="chip"><div><div class="chip-lbl">Direction</div><div class="chip-val">${c.mowingDirection}</div></div></div>`;
-  if (c.lastVisitDuration) chips+=`<div class="chip blue"><div><div class="chip-lbl">Last Visit</div><div class="chip-val">${c.lastVisitDuration} hrs</div></div></div>`;
-  if (S.selJobIdx!==null && S.jobs[S.selJobIdx] && S.jobs[S.selJobIdx].budgetedHours)
-    chips+=`<div class="chip blue"><div><div class="chip-lbl">⏳ Budget</div><div class="chip-val">${S.jobs[S.selJobIdx].budgetedHours} hrs</div></div></div>`;
-  document.getElementById('f-chips').innerHTML = chips;
+  document.getElementById('f-cname').textContent=c.name;
+  var ml=mapsLink(c.address);
+  document.getElementById('f-cdet').innerHTML=
+    (c.address?'<a href="'+ml+'" target="_blank" style="color:var(--blue);font-weight:600;text-decoration:none">📍 '+c.address+' ↗</a><br>':'')
+    +(c.email?'✉ '+c.email+'<br>':'')
+    +(c.phone?'📞 '+c.phone:'');
+  var chips='';
+  if(c.mowingHeight)    chips+='<div class="chip"><div><div class="chip-lbl">Last Height</div><div class="chip-val">'+c.mowingHeight+'"</div></div></div>';
+  if(c.grassType)       chips+='<div class="chip"><div><div class="chip-lbl">Grass</div><div class="chip-val">'+c.grassType+'</div></div></div>';
+  if(c.mowingDirection) chips+='<div class="chip"><div><div class="chip-lbl">Direction</div><div class="chip-val">'+c.mowingDirection+'</div></div></div>';
+  if(c.lastVisitDuration) chips+='<div class="chip blue"><div><div class="chip-lbl">Last Visit</div><div class="chip-val">'+c.lastVisitDuration+' hrs</div></div></div>';
+  if(selJobIdx!==null&&S.jobs[selJobIdx]&&S.jobs[selJobIdx].budgetedHours)
+    chips+='<div class="chip blue"><div><div class="chip-lbl">⏳ Budget</div><div class="chip-val">'+S.jobs[selJobIdx].budgetedHours+' hrs</div></div></div>';
+  document.getElementById('f-chips').innerHTML=chips;
 }
 
-function clearCust() {
-  S.cust = null;
+function clearCust(){
+  S.cust=null;
   document.getElementById('f-srch-wrap').classList.remove('hidden');
   document.getElementById('f-csel').classList.add('hidden');
-  document.getElementById('f-srch').value = '';
-  document.getElementById('f-chips').innerHTML = '';
+  document.getElementById('f-srch').value='';
+  document.getElementById('f-chips').innerHTML='';
 }
 
-function selSvc(type) {
-  S.svc = type;
-  const map = {residential:'res',commercial:'com',other:'oth'};
-  Object.entries(map).forEach(([t,p]) => {
-    document.getElementById('svc-'+p).classList.toggle('on', t===type);
-    document.getElementById('f-'+p).classList.toggle('hidden', t!==type);
+// ════════════════════════════════════════════════════════════════
+// SERVICE / FORM HELPERS
+// ════════════════════════════════════════════════════════════════
+function selSvc(type){
+  S.svc=type;
+  var map={residential:'res',commercial:'com',other:'oth'};
+  Object.entries(map).forEach(function(kv){
+    document.getElementById('svc-'+kv[1]).classList.toggle('on',kv[0]===type);
+    document.getElementById('f-'+kv[1]).classList.toggle('hidden',kv[0]!==type);
   });
   document.getElementById('svc-none').classList.add('hidden');
 }
 
-function selGrass(el,v)    { el.closest('.gg').querySelectorAll('.gb').forEach(b=>{b.classList.remove('on');b.style.opacity='';});el.classList.add('on');document.getElementById('r-grass').value=v; }
-function selGrassCom(el,v) { el.closest('.gg').querySelectorAll('.gb').forEach(b=>{b.classList.remove('on');b.style.opacity='';});el.classList.add('on');document.getElementById('c-grass').value=v; }
-function selDir(el,v)      { el.closest('.gg').querySelectorAll('.gb').forEach(b=>b.classList.remove('on'));el.classList.add('on');document.getElementById('r-dir').value=v; }
-function yntog(el,id,val)  { el.closest('.yn').querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('on'));el.closest('.yn').classList.remove('invalid');el.classList.add('on');document.getElementById(id).value=val; }
-function setPet(v)         { S.pet=v;document.getElementById('f-pet').value=v;document.getElementById('pet-clr').className='pet-opt'+(v==='clear'?' clear':'');document.getElementById('pet-wrn').className='pet-opt'+(v==='warn'?' warn':''); }
-function togTech(i,name)   { const btn=document.getElementById('tp-'+i);const ai=S.selectedTechs.indexOf(name);if(ai>-1){S.selectedTechs.splice(ai,1);btn.classList.remove('on');}else{S.selectedTechs.push(name);btn.classList.add('on');}document.getElementById('f-techs').value=S.selectedTechs.join(', '); }
-
-// ── Job Time — drives form lock state ────────────────────────────
-function jobTime(type) {
-  const now=new Date(), ts=fmt(now);
-  if (type==='start') {
-    S.jStart = {d:ts, t:now};
-    document.getElementById('ts-disp').textContent = ts;
-    document.getElementById('ts-disp').classList.remove('empty');
-    document.getElementById('tb-start').classList.add('on');
-    const b = document.getElementById('ts-btn');
-    b.textContent='✓ STARTED'; b.classList.add('on'); b.disabled=true;
-    document.getElementById('te-btn').disabled = false;
-    toast('✅ Start: ' + ts);
-  } else {
-    S.jEnd = {d:ts, t:now};
-    document.getElementById('te-disp').textContent = ts;
-    document.getElementById('te-disp').classList.remove('empty');
-    document.getElementById('tb-end').classList.add('on');
-    const b = document.getElementById('te-btn');
-    b.textContent='✓ ENDED'; b.classList.add('on'); b.disabled=true;
-    if (S.jStart) {
-      const dur = ((now-S.jStart.t)/3600000).toFixed(2);
-      document.getElementById('dur-val').textContent = dur+' hrs';
-      document.getElementById('dur-row').classList.add('show');
-      toast('✅ ' + dur + ' hrs on job');
-    }
-  }
-  updateFormLock(); // re-evaluate lock state on every time tap
+function gridSel(el, gridId, hiddenId){
+  document.getElementById(gridId).querySelectorAll('.gb').forEach(function(b){b.classList.remove('on');});
+  el.classList.add('on');
+  document.getElementById(hiddenId).value=el.dataset.val;
 }
 
-function addPhoto(file) {
-  if (!file.type.startsWith('image/')) return;
-  const i=S.photos.length; S.photos.push(file);
-  const r=new FileReader();
-  r.onload=e=>{
-    const t=document.createElement('div');t.className='p-thumb';
-    t.innerHTML=`<img src="${e.target.result}"/><button class="p-rm">×</button>`;
+function yntog(btn, id){
+  btn.closest('.yn').querySelectorAll('.yn-btn').forEach(function(b){b.classList.remove('on');});
+  btn.closest('.yn').classList.remove('invalid');
+  btn.classList.add('on');
+  document.getElementById(id).value=btn.dataset.val;
+}
+
+function setPet(v){
+  S.pet=v;
+  document.getElementById('f-pet').value=v;
+  document.getElementById('pet-clr').className='pet-opt'+(v==='clear'?' clear':'');
+  document.getElementById('pet-wrn').className='pet-opt'+(v==='warn'?' warn':'');
+}
+
+function togTech(i,name){
+  var btn=document.getElementById('tp-'+i);
+  var ai=S.selectedTechs.indexOf(name);
+  if(ai>-1){S.selectedTechs.splice(ai,1);btn.classList.remove('on');}
+  else{S.selectedTechs.push(name);btn.classList.add('on');}
+  document.getElementById('f-techs').value=S.selectedTechs.join(', ');
+}
+
+function jobTime(type){
+  var now=new Date(),ts=fmt(now);
+  if(type==='start'){
+    S.jStart={d:ts,t:now};
+    document.getElementById('ts-disp').textContent=ts;
+    document.getElementById('ts-disp').classList.remove('empty');
+    document.getElementById('tb-start').classList.add('on');
+    document.getElementById('ts-btn').textContent='✓ STARTED';
+    document.getElementById('ts-btn').classList.add('on');
+    document.getElementById('ts-btn').disabled=true;
+    document.getElementById('te-btn').disabled=false;
+    toast('✅ Start: '+ts);
+  } else {
+    S.jEnd={d:ts,t:now};
+    document.getElementById('te-disp').textContent=ts;
+    document.getElementById('te-disp').classList.remove('empty');
+    document.getElementById('tb-end').classList.add('on');
+    document.getElementById('te-btn').textContent='✓ ENDED';
+    document.getElementById('te-btn').classList.add('on');
+    document.getElementById('te-btn').disabled=true;
+    if(S.jStart){
+      var dur=((now-S.jStart.t)/3600000).toFixed(2);
+      document.getElementById('dur-val').textContent=dur+' hrs';
+      document.getElementById('dur-row').classList.add('show');
+      toast('✅ '+dur+' hrs on job');
+    }
+  }
+  updateFormLock();
+}
+
+function addPhoto(file){
+  if(!file.type.startsWith('image/'))return;
+  var idx=S.photos.length; S.photos.push(file);
+  var r=new FileReader();
+  r.onload=function(e){
+    var t=document.createElement('div'); t.className='p-thumb';
+    t.innerHTML='<img src="'+e.target.result+'"/><button class="p-rm">×</button>';
+    t.querySelector('.p-rm').addEventListener('click',function(){S.photos[idx]=null;t.remove();});
     document.getElementById('photo-grid').appendChild(t);
   };
   r.readAsDataURL(file);
 }
-function rmPhoto(i,el) { S.photos[i]=null; el.remove(); }
 
-async function compressPhoto(file) {
-  return new Promise((res,rej) => {
-    const r=new FileReader();
-    r.onload=e=>{
-      const img=new Image();
-      img.onload=()=>{
-        const M=1200;let w=img.width,h=img.height;
+async function compressPhoto(file){
+  return new Promise(function(res,rej){
+    var r=new FileReader();
+    r.onload=function(e){
+      var img=new Image();
+      img.onload=function(){
+        var M=1200,w=img.width,h=img.height;
         if(w>M||h>M){if(w>h){h=Math.round(h*M/w);w=M;}else{w=Math.round(w*M/h);h=M;}}
-        const c=document.createElement('canvas');c.width=w;c.height=h;
+        var c=document.createElement('canvas');c.width=w;c.height=h;
         c.getContext('2d').drawImage(img,0,0,w,h);
         res({name:file.name.replace(/\.[^.]+$/,'')+'.jpg',data:c.toDataURL('image/jpeg',.7).replace(/^data:image\/jpeg;base64,/,'')});
       };
@@ -1363,171 +1241,121 @@ async function compressPhoto(file) {
   });
 }
 
-async function submitJob() {
-  if (!S.cust)  { toast('⚠ Please select a customer'); return; }
-  if (!S.svc)   { toast('⚠ Please select a service type'); return; }
-  if (!S.jStart){ toast('⚠ Please start the job first'); return; }
-  if (!S.jEnd)  { toast('⚠ Please end the job before submitting'); return; }
-
-  const p = S.svc==='residential'?'r':S.svc==='commercial'?'c':'o';
-  const checks = p==='c'
-    ? ['c-blow','c-weed','c-bugs','c-hedges','c-perim']
-    : p==='r'
-    ? ['r-weed','r-bugs','r-hedges','r-perim']
-    : ['o-weed','o-bugs','o-hedges','o-perim'];
-
-  let fail = false;
-  checks.forEach(id => {
-    const v=document.getElementById(id)?.value;
-    const g=document.getElementById('yn-'+id);
-    if (!v) { fail=true; if(g)g.classList.add('invalid'); }
-    else    { if(g)g.classList.remove('invalid'); }
+async function submitJob(){
+  if(!S.cust) {toast('⚠ Please select a customer');return;}
+  if(!S.svc)  {toast('⚠ Please select a service type');return;}
+  if(!S.jStart){toast('⚠ Please start the job first');return;}
+  if(!S.jEnd)  {toast('⚠ Please end the job before submitting');return;}
+  var p=S.svc==='residential'?'r':S.svc==='commercial'?'c':'o';
+  var checks=p==='c'?['c-blow','c-weed','c-bugs','c-hedges','c-perim']:p==='r'?['r-weed','r-bugs','r-hedges','r-perim']:['o-weed','o-bugs','o-hedges','o-perim'];
+  var fail=false;
+  checks.forEach(function(id){
+    var v=document.getElementById(id)&&document.getElementById(id).value;
+    var g=document.getElementById('yn-'+id);
+    if(!v){fail=true;if(g)g.classList.add('invalid');}
+    else{if(g)g.classList.remove('invalid');}
   });
-  if (fail) {
-    toast('⚠ Complete all checklist items');
-    document.querySelector('.yn.invalid')?.scrollIntoView({behavior:'smooth',block:'center'});
-    return;
-  }
-
-  const btn = document.getElementById('sub-btn');
-  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Submitting…';
-
-  try {
-    const c=S.cust, date=new Date().toLocaleDateString('en-US');
-    const photos = S.photos.filter(Boolean);
-    const pd = await Promise.all(photos.map(compressPhoto));
-    const urls = [];
-    for (let i=0;i<pd.length;i++) {
-      btn.innerHTML=`<span class="spinner"></span> Photo ${i+1}/${pd.length}…`;
-      try {
-        const r=await fetch(CFG.cfWorker,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({photo:pd[i].data,filename:`${c.name} - ${date} - ${i+1}.jpg`})});
-        const j=await r.json(); if(j.url) urls.push(j.url);
-      } catch(e){}
+  if(fail){toast('⚠ Complete all checklist items');document.querySelector('.yn.invalid')&&document.querySelector('.yn.invalid').scrollIntoView({behavior:'smooth',block:'center'});return;}
+  var btn=document.getElementById('sub-btn');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Submitting…';
+  try{
+    var c=S.cust,date=new Date().toLocaleDateString('en-US');
+    var photos=S.photos.filter(Boolean);
+    var pd=await Promise.all(photos.map(compressPhoto));
+    var urls=[];
+    for(var i=0;i<pd.length;i++){
+      btn.innerHTML='<span class="spinner"></span> Photo '+(i+1)+'/'+pd.length+'…';
+      try{var r2=await fetch(CFG.cfWorker,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({photo:pd[i].data,filename:c.name+' - '+date+' - '+(i+1)+'.jpg'})});var j2=await r2.json();if(j2.url)urls.push(j2.url);}catch(e){}
     }
     btn.innerHTML='<span class="spinner"></span> Sending…';
-
-    const dur  = ((S.jEnd.t - S.jStart.t)/3600000).toFixed(2);
-    const grass  = S.svc==='commercial'?document.getElementById('c-grass').value:(document.getElementById('r-grass')?.value||'');
-    const height = S.svc==='residential'?document.getElementById('r-height').value:S.svc==='commercial'?document.getElementById('c-height').value:'';
-    const dir    = document.getElementById('r-dir')?.value||'';
-    const techs  = document.getElementById('f-techs').value||S.user.name;
-    const notes  = document.getElementById(p+'-notes')?.value||document.getElementById('c-notes')?.value||'';
-    const onote  = document.getElementById('f-onote').value.trim();
-
-    const payload = {
-      type:'job_complete', date, submittedAt:new Date().toISOString(),
-      customerName:c.name, customerEmail:c.email, customerPhone:c.phone,
-      serviceAddress:c.address, serviceType:S.svc,
-      techNames:techs, grassType:grass, cutHeight:height, mowingDirection:dir,
-      weedControl:document.getElementById(p+'-weed')?.value||'',
-      bugSpray:   document.getElementById(p+'-bugs')?.value||'',
-      hedgeTrim:  document.getElementById(p+'-hedges')?.value||'',
-      perimeter:  document.getElementById(p+'-perim')?.value||'',
-      blowLot:    S.svc==='commercial'?document.getElementById('c-blow').value:'',
-      recommend:  document.getElementById('c-rec')?.value||'',
-      notes, startTime:S.jStart.d, endTime:S.jEnd.d, jobDuration:dur,
-      petStatus: S.pet,
+    var dur=((S.jEnd.t-S.jStart.t)/3600000).toFixed(2);
+    var grass=S.svc==='commercial'?document.getElementById('c-grass').value:(document.getElementById('r-grass')&&document.getElementById('r-grass').value||'');
+    var height=S.svc==='residential'?document.getElementById('r-height').value:S.svc==='commercial'?document.getElementById('c-height').value:'';
+    var dir=document.getElementById('r-dir')&&document.getElementById('r-dir').value||'';
+    var techs=document.getElementById('f-techs').value||S.user.name;
+    var notes=(document.getElementById(p+'-notes')&&document.getElementById(p+'-notes').value)||(document.getElementById('c-notes')&&document.getElementById('c-notes').value)||'';
+    var onote=document.getElementById('f-onote').value.trim();
+    var payload={
+      type:'job_complete',date:date,submittedAt:new Date().toISOString(),
+      customerName:c.name,customerEmail:c.email,customerPhone:c.phone,
+      serviceAddress:c.address,serviceType:S.svc,techNames:techs,
+      grassType:grass,cutHeight:height,mowingDirection:dir,
+      weedControl:(document.getElementById(p+'-weed')&&document.getElementById(p+'-weed').value)||'',
+      bugSpray:(document.getElementById(p+'-bugs')&&document.getElementById(p+'-bugs').value)||'',
+      hedgeTrim:(document.getElementById(p+'-hedges')&&document.getElementById(p+'-hedges').value)||'',
+      perimeter:(document.getElementById(p+'-perim')&&document.getElementById(p+'-perim').value)||'',
+      blowLot:S.svc==='commercial'?(document.getElementById('c-blow')&&document.getElementById('c-blow').value)||'':'',
+      recommend:(document.getElementById('c-rec')&&document.getElementById('c-rec').value)||'',
+      notes:notes,startTime:S.jStart.d,endTime:S.jEnd.d,jobDuration:dur,petStatus:S.pet,
       photoCount:urls.length,
-      photo1Url:urls[0]||'', photo2Url:urls[1]||'', photo3Url:urls[2]||'', photo4Url:urls[3]||'',
-      photosHtml: urls.length
-        ? urls.map((u,i)=>`<a href="${u}" style="display:inline-block;margin:4px 8px 4px 0;background:#1e6b2e;color:#fff;padding:10px 20px;border-radius:4px;text-decoration:none;font-size:13px;font-weight:bold;">📷 View Photo ${i+1}</a>`).join('')
-        : '<p style="color:#888;font-size:13px">No photos submitted.</p>',
-      servicePerformed: S.svc==='other'?document.getElementById('o-svc')?.value:'',
+      photo1Url:urls[0]||'',photo2Url:urls[1]||'',photo3Url:urls[2]||'',photo4Url:urls[3]||'',
+      photosHtml:urls.length?urls.map(function(u,i){return '<a href="'+u+'" style="display:inline-block;margin:4px 8px 4px 0;background:#1e6b2e;color:#fff;padding:10px 20px;border-radius:4px;text-decoration:none;font-size:13px;font-weight:bold;">📷 View Photo '+(i+1)+'</a>';}).join(''):'<p style="color:#888;font-size:13px">No photos submitted.</p>',
+      servicePerformed:S.svc==='other'?(document.getElementById('o-svc')&&document.getElementById('o-svc').value)||'':'',
     };
-
-    await zap(CFG.whJob, payload);
-
-    const hasPet=S.pet==='warn', hasNote=onote.length>0;
-    if (hasPet||hasNote) {
-      await zap(CFG.whAlert, {
-        type:'office_alert', customerName:c.name, serviceAddress:c.address, date,
-        petAlert: hasPet?'⚠️ PET WASTE REPORTED ON PROPERTY':'',
-        officeNote: onote,
-        toEmail: 'info' + '@' + 'wslawncareservicesllc.com',
-        subject: '[WS Lawn Care Alert] '+(hasPet?'🐾 Pet Waste':'')+(hasPet&&hasNote?' + ':'')+(hasNote?'📋 Office Note':'')+' — '+c.name,
-      });
+    await zap(CFG.whJob,payload);
+    var hasPet=S.pet==='warn',hasNote=onote.length>0;
+    if(hasPet||hasNote){
+      await zap(CFG.whAlert,{type:'office_alert',customerName:c.name,serviceAddress:c.address,date:date,
+        petAlert:hasPet?'⚠️ PET WASTE REPORTED':'',officeNote:onote,
+        toEmail:'info'+'@'+'wslawncareservicesllc.com',
+        subject:'[WS Alert] '+(hasPet?'🐾 Pet Waste':'')+(hasPet&&hasNote?' + ':'')+(hasNote?'📋 Office Note':'')+' — '+c.name});
     }
-    if (grass||height||dir||dur||techs) {
-      await zap(CFG.whSheet, {
-        type:'sheet_update', customerName:c.name, serviceAddress:c.address,
-        email:c.email, grassType:grass, mowingHeight:height, mowingDirection:dir,
-        lastVisitDuration:dur, lastVisitTechs:techs,
-        startTime:payload.startTime, endTime:payload.endTime, date,
-      });
+    if(grass||height||dir||dur||techs){
+      await zap(CFG.whSheet,{type:'sheet_update',customerName:c.name,serviceAddress:c.address,
+        email:c.email,grassType:grass,mowingHeight:height,mowingDirection:dir,
+        lastVisitDuration:dur,lastVisitTechs:techs,startTime:payload.startTime,endTime:payload.endTime,date:date});
     }
-
-    // Mark job complete in dispatch (#2)
-    if (S.selJobIdx !== null) {
-      S.jobs[S.selJobIdx].jobStatus = 'complete';
-      renderDispatch(); updateStrip(); S.selJobIdx = null;
-    }
-
+    if(selJobIdx!==null){S.jobs[selJobIdx].jobStatus='complete';renderDispatch();updateStrip();selJobIdx=null;}
     document.getElementById('form-body').classList.add('hidden');
     document.getElementById('form-success').classList.add('show');
-
-  } catch(err) {
-    if (err.name==='TypeError') {
-      document.getElementById('form-body').classList.add('hidden');
-      document.getElementById('form-success').classList.add('show');
-    } else {
-      toast('❌ Submission failed');
-      btn.disabled=false; btn.innerHTML='✓ SUBMIT JOB';
-    }
+  }catch(err){
+    if(err.name==='TypeError'){document.getElementById('form-body').classList.add('hidden');document.getElementById('form-success').classList.add('show');}
+    else{toast('❌ Submission failed');btn.disabled=false;btn.innerHTML='✓ SUBMIT JOB';}
   }
 }
 
-function resetForm() {
-  S.cust=null;S.svc=null;S.pet='';S.jStart=null;S.jEnd=null;S.photos=[];S.selectedTechs=[];S.selJobIdx=null;
+function resetForm(){
+  S.cust=null;S.svc=null;S.pet='';S.jStart=null;S.jEnd=null;S.photos=[];S.selectedTechs=[];selJobIdx=null;
   clearCust();
-  ['res','com','oth'].forEach(p=>{document.getElementById('svc-'+p).classList.remove('on');document.getElementById('f-'+p).classList.add('hidden');});
+  ['res','com','oth'].forEach(function(p){document.getElementById('svc-'+p).classList.remove('on');document.getElementById('f-'+p).classList.add('hidden');});
   document.getElementById('svc-none').classList.remove('hidden');
   document.getElementById('photo-grid').innerHTML='';
-  document.querySelectorAll('.yn-btn.on').forEach(b=>b.classList.remove('on'));
-  document.querySelectorAll('.yn.invalid').forEach(b=>b.classList.remove('invalid'));
-  document.querySelectorAll('.gb.on').forEach(b=>{b.classList.remove('on');b.style.opacity='';});
-  document.querySelectorAll('input[type=hidden]').forEach(el=>el.value='');
-  document.querySelectorAll('textarea').forEach(el=>el.value='');
-  document.querySelectorAll('select').forEach(el=>el.selectedIndex=0);
-  document.getElementById('f-techs').value='';
-  document.querySelectorAll('.tech-pill').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.yn-btn.on').forEach(function(b){b.classList.remove('on');});
+  document.querySelectorAll('.yn.invalid').forEach(function(b){b.classList.remove('invalid');});
+  document.querySelectorAll('.gb.on').forEach(function(b){b.classList.remove('on');});
+  document.querySelectorAll('input[type=hidden]').forEach(function(el){el.value='';});
+  document.querySelectorAll('textarea').forEach(function(el){el.value='';});
+  document.querySelectorAll('select').forEach(function(el){el.selectedIndex=0;});
   document.getElementById('pet-clr').className='pet-opt';
   document.getElementById('pet-wrn').className='pet-opt';
-  document.getElementById('ts-disp').textContent='Not set'; document.getElementById('ts-disp').classList.add('empty');
-  document.getElementById('te-disp').textContent='Not set'; document.getElementById('te-disp').classList.add('empty');
-  document.getElementById('tb-start').classList.remove('on'); document.getElementById('tb-end').classList.remove('on');
-  const sb=document.getElementById('ts-btn'); sb.textContent='TAP TO START'; sb.classList.remove('on'); sb.disabled=false;
-  const eb=document.getElementById('te-btn'); eb.textContent='TAP TO END';   eb.classList.remove('on'); eb.disabled=true;
+  document.getElementById('ts-disp').textContent='Not set';document.getElementById('ts-disp').classList.add('empty');
+  document.getElementById('te-disp').textContent='Not set';document.getElementById('te-disp').classList.add('empty');
+  document.getElementById('tb-start').classList.remove('on');document.getElementById('tb-end').classList.remove('on');
+  document.getElementById('ts-btn').textContent='TAP TO START';document.getElementById('ts-btn').classList.remove('on');document.getElementById('ts-btn').disabled=false;
+  document.getElementById('te-btn').textContent='TAP TO END';document.getElementById('te-btn').classList.remove('on');document.getElementById('te-btn').disabled=true;
   document.getElementById('dur-row').classList.remove('show');
   document.getElementById('sub-btn').innerHTML='✓ SUBMIT JOB';
   document.getElementById('form-body').classList.remove('hidden');
   document.getElementById('form-success').classList.remove('show');
   window.scrollTo(0,0);
-  updateFormLock(); // re-lock after reset
+  updateFormLock();
 }
 
 // ════════════════════════════════════════════════════════════════
-// BOARD (home preview only — tab removed)
+// BOARD
 // ════════════════════════════════════════════════════════════════
-function renderBoard() {
-  const posts = S.board;
-  const hEl   = document.getElementById('h-board');
-  if (!posts.length) {
-    hEl.innerHTML='<div class="empty-state">No messages from office</div>';
-    return;
-  }
-  hEl.innerHTML = posts.slice(0,2).map(p=>
-    `<div class="bp-msg"><div class="bp-text">${p.text}</div><div class="bp-meta">${p.time}</div></div>`
-  ).join('');
+function renderBoard(){
+  var hEl=document.getElementById('h-board');
+  if(!S.board.length){hEl.innerHTML='<div class="empty-state">No messages from office</div>';return;}
+  hEl.innerHTML=S.board.slice(0,2).map(function(p){return '<div class="bp-msg"><div class="bp-text">'+p.text+'</div><div class="bp-meta">'+p.time+'</div></div>';}).join('');
 }
 
 // ════════════════════════════════════════════════════════════════
-// NAV — 3 tabs only
+// NAV
 // ════════════════════════════════════════════════════════════════
-function goTab(tab) {
-  // Map any old 'board' references to 'home'
-  if (tab==='board') tab='home';
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+function goTab(tab){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('active');});
   document.getElementById('tab-'+tab).classList.add('active');
   document.getElementById('ni-'+tab).classList.add('active');
   document.getElementById('content').scrollTo(0,0);
@@ -1536,8 +1364,15 @@ function goTab(tab) {
 // ════════════════════════════════════════════════════════════════
 // UTILS
 // ════════════════════════════════════════════════════════════════
-function fmt(d) { return d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true}); }
-function toast(msg) { const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.overlay').forEach
+function fmt(d){return d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});}
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3000);}
+async function zap(url,data){try{await fetch(url,{method:'POST',body:new URLSearchParams(data),mode:'no-cors'});}catch(e){}}
+
+// ════════════════════════════════════════════════════════════════
+// BOOT — wire buttons then init
+// ════════════════════════════════════════════════════════════════
+wireButtons();
+init();
+</script>
+</body>
+</html>
