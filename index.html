@@ -899,7 +899,10 @@ function wireButtons() {
   document.getElementById('pet-wrn').addEventListener('click', function(){ setPet('warn'); });
   document.getElementById('f-photos').addEventListener('change', function(){ Array.from(this.files).forEach(addPhoto); this.value=''; });
   document.getElementById('sub-btn').addEventListener('click', submitJob);
-  document.getElementById('new-job-btn').addEventListener('click', resetForm);
+  document.getElementById('new-job-btn').addEventListener('click', function(){
+    resetForm();
+    goTab('dispatch');
+  });
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1207,6 +1210,18 @@ function showCustBanner(){
   if(c.lastVisitDuration) chips+='<div class="chip blue"><div><div class="chip-lbl">Last Visit</div><div class="chip-val">'+c.lastVisitDuration+' hrs</div></div></div>';
   if(selJobIdx!==null&&S.jobs[selJobIdx]&&S.jobs[selJobIdx].budgetedHours)
     chips+='<div class="chip blue"><div><div class="chip-lbl">⏳ Budget</div><div class="chip-val">'+S.jobs[selJobIdx].budgetedHours+' hrs</div></div></div>';
+  // Last efficiency rate chip — green if ≥100%, red if under
+  if(c.lastEfficiencyRate){
+    var effNum=parseInt(c.lastEfficiencyRate);
+    var effStyle=effNum>=100
+      ?'background:#e8f5eb;border-color:#c8e6cc'
+      :'background:#fde8e8;border-color:#f5c6c6';
+    var effColor=effNum>=100?'var(--g7)':'var(--red)';
+    chips+='<div class="chip" style="'+effStyle+'"><div>'
+      +'<div class="chip-lbl" style="color:'+effColor+'">Last Efficiency</div>'
+      +'<div class="chip-val" style="color:'+effColor+'">⚡ '+c.lastEfficiencyRate+'</div>'
+      +'</div></div>';
+  }
   document.getElementById('f-chips').innerHTML=chips;
 }
 
