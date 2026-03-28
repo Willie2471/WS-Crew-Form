@@ -353,16 +353,11 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
         <!-- Job Time -->
         <div class="card">
           <div class="card-title"><div class="ctn" style="background:var(--blue)">⏱</div> Job Time</div>
-          <div class="time-row">
+          <div class="time-row" style="grid-template-columns:1fr">
             <div class="tblock" id="tb-start">
               <div class="tblock-lbl">🟢 Start</div>
               <div class="tblock-val empty" id="ts-disp">Not set</div>
               <button class="tbtn" id="ts-btn">TAP TO START</button>
-            </div>
-            <div class="tblock" id="tb-end">
-              <div class="tblock-lbl">🔴 End</div>
-              <div class="tblock-val empty" id="te-disp">Not set</div>
-              <button class="tbtn" id="te-btn" disabled>TAP TO END</button>
             </div>
           </div>
           <div class="dur-row" id="dur-row">
@@ -614,11 +609,18 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
             <div class="photo-grid" id="photo-grid"></div>
           </div>
 
-          <div id="end-required-banner" class="hidden"
-            style="background:#fff8e1;border:2px solid var(--acc);border-radius:12px;padding:14px 16px;margin-bottom:12px;text-align:center;">
-            <div style="font-size:24px;margin-bottom:6px">🔴</div>
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:#7a5000;margin-bottom:4px">End the Job First</div>
-            <div style="font-size:13px;color:#996600">Tap <strong>TAP TO END</strong> above before submitting.</div>
+          <!-- End Job + Submit -->
+          <div class="card" style="border-color:var(--blue3)">
+            <div class="card-title" style="color:var(--blue)"><div class="ctn" style="background:var(--blue)">⏱</div> End Job</div>
+            <div class="tblock" id="tb-end" style="margin-bottom:10px">
+              <div class="tblock-lbl">🔴 End</div>
+              <div class="tblock-val empty" id="te-disp">Not set</div>
+              <button class="tbtn" id="te-btn" disabled>TAP TO END</button>
+            </div>
+            <div id="end-required-banner" class="hidden"
+              style="background:#fff8e1;border:2px solid var(--acc);border-radius:10px;padding:12px 14px;margin-bottom:10px;text-align:center;">
+              <div style="font-size:13px;color:#996600">⚠ Tap <strong>TAP TO END</strong> above before submitting.</div>
+            </div>
           </div>
           <button class="sub-btn" id="sub-btn">✓ SUBMIT JOB</button>
           <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:8px;padding-bottom:20px">Sends completion email to customer automatically.</p>
@@ -1189,8 +1191,28 @@ function selCust(i){
     var h=parseFloat(c.mowingHeight).toFixed(2);
     ['r-height','c-height'].forEach(function(id){var el=document.getElementById(id);if(el)for(var o of el.options)if(parseFloat(o.value||0).toFixed(2)===h){el.value=o.value;break;}});
   }
-  if(c.grassType){['r-grass','c-grass'].forEach(function(id){var el=document.getElementById(id);if(el)el.value=c.grassType;});}
-  if(c.mowingDirection){var el=document.getElementById('r-dir');if(el)el.value=c.mowingDirection;}
+  if(c.grassType){
+    // Set hidden inputs
+    ['r-grass','c-grass'].forEach(function(id){var el=document.getElementById(id);if(el)el.value=c.grassType;});
+    // Highlight the matching grid button for residential and commercial
+    ['grass-res-grid','grass-com-grid'].forEach(function(gridId){
+      var grid=document.getElementById(gridId);
+      if(!grid)return;
+      grid.querySelectorAll('.gb').forEach(function(btn){
+        btn.classList.toggle('on', btn.dataset.val===c.grassType);
+      });
+    });
+  }
+  if(c.mowingDirection){
+    var el=document.getElementById('r-dir');if(el)el.value=c.mowingDirection;
+    // Highlight the matching direction button
+    var dirGrid=document.getElementById('dir-grid');
+    if(dirGrid){
+      dirGrid.querySelectorAll('.gb').forEach(function(btn){
+        btn.classList.toggle('on', btn.dataset.val===c.mowingDirection);
+      });
+    }
+  }
 }
 
 function showCustBanner(){
