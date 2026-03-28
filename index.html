@@ -235,6 +235,9 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .jc-addr{font-size:12px;margin-top:5px}
 .jc-addr a{color:var(--blue);font-weight:600;text-decoration:none}
 .jc-contact{font-size:12px;color:var(--muted);margin-top:3px}
+.jc-eff{font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px;display:inline-block;margin-top:4px}
+.jc-eff.over{background:#fde8e8;color:#b71c1c}
+.jc-eff.on{background:var(--g1);color:var(--g7)}
 .jc-type{background:var(--g1);border:1px solid var(--g2);border-radius:8px;padding:4px 10px;
   font-size:11px;font-weight:700;color:var(--g7);white-space:nowrap;flex-shrink:0}
 .jc-bar{border-top:1px solid var(--g1);padding:8px 14px;display:flex;align-items:center;justify-content:space-between}
@@ -692,7 +695,7 @@ var S = {
 };
 
 // ════════════════════════════════════════════════════════════════
-// INIT — fetch sheet data, then boot UI
+// INIT
 // ════════════════════════════════════════════════════════════════
 async function init() {
   bootUI();
@@ -707,7 +710,6 @@ async function init() {
 }
 
 function bootUI() {
-  // Date/greeting
   var now = new Date(), h = now.getHours();
   var greet = h<12?'Good morning':h<17?'Good afternoon':h<21?'Good evening':'Working late';
   var emoji = h<12?'👋':h<17?'☀️':h<21?'🌅':'🌙';
@@ -742,10 +744,9 @@ function rebuildTechWrap() {
 }
 
 // ════════════════════════════════════════════════════════════════
-// WIRE ALL BUTTONS — called once DOM is ready
+// WIRE BUTTONS
 // ════════════════════════════════════════════════════════════════
 function wireButtons() {
-  // Topbar name
   document.getElementById('tb-name-sel').addEventListener('change', function() {
     var idx = parseInt(this.value);
     if (!isNaN(idx) && S.crew[idx]) {
@@ -757,81 +758,35 @@ function wireButtons() {
       document.querySelector('.hero-greet').innerHTML = greet+',<br><span style="color:var(--g4)">'+S.crew[idx].name.split(' ')[0]+' '+emoji+'</span>';
     }
   });
-
-  // Clock
   document.getElementById('clock-btn').addEventListener('click', toggleClock);
-
-  // Nav
   document.getElementById('ni-home').addEventListener('click',     function(){ goTab('home'); });
   document.getElementById('ni-dispatch').addEventListener('click', function(){ goTab('dispatch'); });
   document.getElementById('ni-form').addEventListener('click',     function(){ goTab('form'); });
-
-  // Jobs strip
   document.getElementById('jobs-strip').addEventListener('click', function(){ goTab('dispatch'); });
-
-  // Dispatch load btn
-  document.getElementById('load-btn').addEventListener('click', function(){
-    document.getElementById('paste-modal').classList.add('open');
-  });
-
-  // Paste modal
-  document.getElementById('paste-cancel-btn').addEventListener('click', function(){
-    document.getElementById('paste-modal').classList.remove('open');
-  });
+  document.getElementById('load-btn').addEventListener('click', function(){ document.getElementById('paste-modal').classList.add('open'); });
+  document.getElementById('paste-cancel-btn').addEventListener('click', function(){ document.getElementById('paste-modal').classList.remove('open'); });
   document.getElementById('paste-load-btn').addEventListener('click', parseDispatch);
-
-  // Detail modal
-  document.getElementById('detail-close-btn').addEventListener('click', function(){
-    document.getElementById('detail-modal').classList.remove('open');
-  });
+  document.getElementById('detail-close-btn').addEventListener('click', function(){ document.getElementById('detail-modal').classList.remove('open'); });
   document.getElementById('detail-start-btn').addEventListener('click', startJobFromDetail);
-
-  // Overlay close on backdrop tap
   document.getElementById('paste-modal').addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); });
   document.getElementById('detail-modal').addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); });
-
-  // Job time
   document.getElementById('ts-btn').addEventListener('click', function(){ jobTime('start'); });
   document.getElementById('te-btn').addEventListener('click', function(){ jobTime('end'); });
-
-  // Customer search
   document.getElementById('f-srch').addEventListener('input', onCustSearch);
   document.addEventListener('click', function(e){ if(!e.target.closest('.srch-wrap')) document.getElementById('f-results').classList.remove('open'); });
   document.getElementById('csel-chg-btn').addEventListener('click', clearCust);
-
-  // Service type
   document.getElementById('svc-res').addEventListener('click', function(){ selSvc('residential'); });
   document.getElementById('svc-com').addEventListener('click', function(){ selSvc('commercial'); });
   document.getElementById('svc-oth').addEventListener('click', function(){ selSvc('other'); });
-
-  // Grass grids
-  document.getElementById('grass-res-grid').querySelectorAll('.gb').forEach(function(el){
-    el.addEventListener('click', function(){ gridSel(el, 'grass-res-grid', 'r-grass'); });
-  });
-  document.getElementById('grass-com-grid').querySelectorAll('.gb').forEach(function(el){
-    el.addEventListener('click', function(){ gridSel(el, 'grass-com-grid', 'c-grass'); });
-  });
-  document.getElementById('dir-grid').querySelectorAll('.gb').forEach(function(el){
-    el.addEventListener('click', function(){ gridSel(el, 'dir-grid', 'r-dir'); });
-  });
-
-  // YN buttons
+  document.getElementById('grass-res-grid').querySelectorAll('.gb').forEach(function(el){ el.addEventListener('click', function(){ gridSel(el, 'grass-res-grid', 'r-grass'); }); });
+  document.getElementById('grass-com-grid').querySelectorAll('.gb').forEach(function(el){ el.addEventListener('click', function(){ gridSel(el, 'grass-com-grid', 'c-grass'); }); });
+  document.getElementById('dir-grid').querySelectorAll('.gb').forEach(function(el){ el.addEventListener('click', function(){ gridSel(el, 'dir-grid', 'r-dir'); }); });
   ['r-weed','r-bugs','r-hedges','r-perim','c-blow','c-weed','c-bugs','c-hedges','c-perim','o-weed','o-bugs','o-hedges','o-perim'].forEach(function(id){
-    document.getElementById('yn-'+id).querySelectorAll('.yn-btn').forEach(function(btn){
-      btn.addEventListener('click', function(){ yntog(btn, id); });
-    });
+    document.getElementById('yn-'+id).querySelectorAll('.yn-btn').forEach(function(btn){ btn.addEventListener('click', function(){ yntog(btn, id); }); });
   });
-
-  // Pet
   document.getElementById('pet-clr').addEventListener('click', function(){ setPet('clear'); });
   document.getElementById('pet-wrn').addEventListener('click', function(){ setPet('warn'); });
-
-  // Photos
-  document.getElementById('f-photos').addEventListener('change', function(){
-    Array.from(this.files).forEach(addPhoto); this.value='';
-  });
-
-  // Submit
+  document.getElementById('f-photos').addEventListener('change', function(){ Array.from(this.files).forEach(addPhoto); this.value=''; });
   document.getElementById('sub-btn').addEventListener('click', submitJob);
   document.getElementById('new-job-btn').addEventListener('click', resetForm);
 }
@@ -935,8 +890,7 @@ function parseDispatch() {
     var sd=(line+' '+dataLine).match(svRe);if(sd)svc=sd[1];
     var stm=(line+' '+dataLine).match(stRe),tym=(line+' '+dataLine).match(tyRe);
     var job={date:date,client:cl,startTime:st,endTime:et,status:stm?stm[1]:'Dispatched',
-      jobType:tym?tym[1]:'',service:svc,budgetedHours:'',jobStatus:'dispatched',address:'',email:'',phone:''};
-    // Enrich from customers
+      jobType:tym?tym[1]:'',service:svc,budgetedHours:'',jobStatus:'dispatched',address:'',email:'',phone:'',efficiency:''};
     var match=S.customers.find(function(c){return c.name.toLowerCase().includes(cl.toLowerCase().split(',')[0].trim().toLowerCase());});
     if(match){job.address=match.address||'';job.email=match.email||'';job.phone=match.phone||'';}
     add(job);
@@ -960,10 +914,7 @@ function toMins(t){
   return h*60+mn;
 }
 
-function mapsLink(addr){
-  if(!addr)return null;
-  return 'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(addr);
-}
+function mapsLink(addr){ if(!addr)return null; return 'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(addr); }
 
 function renderDispatch(){
   var el=document.getElementById('dispatch-list');
@@ -980,15 +931,22 @@ function renderDispatch(){
     var ml=mapsLink(j.address);
     var addrHtml=j.address?'<div class="jc-addr"><a href="'+ml+'" target="_blank">📍 '+j.address+' ↗</a></div>':'';
     var phoneHtml=j.phone?'<div class="jc-contact">📞 <a href="tel:'+j.phone+'" style="color:var(--muted);text-decoration:none">'+j.phone+'</a></div>':'';
+    // Efficiency badge
+    var effHtml='';
+    if(j.efficiency){
+      var effNum=parseInt(j.efficiency);
+      var effCls=effNum>=100?'on':'over';
+      effHtml='<div class="jc-eff '+effCls+'">⚡ '+j.efficiency+' efficiency</div>';
+    }
     html+='<div class="job-card'+(done?' done':'')+'" id="jcard-'+i+'">'
       +'<div class="jc-top">'
       +'<div class="stop-num'+(done?' done-num':'')+'">'+sn+'</div>'
       +'<div class="jc-left">'
       +'<div class="jc-client">'+j.client+'</div>'
       +(j.service?'<div class="jc-svc">'+j.service+'</div>':'')
-      +'<div class="jc-time">🕐 <span>'+( j.startTime||'—')+'</span>'+(j.endTime?' – <span>'+j.endTime+'</span>':'')+'</div>'
+      +'<div class="jc-time">🕐 <span>'+(j.startTime||'—')+'</span>'+(j.endTime?' – <span>'+j.endTime+'</span>':'')+'</div>'
       +(j.budgetedHours?'<div class="jc-time" style="margin-top:3px;color:var(--blue);font-weight:600">⏳ Budget: <span>'+j.budgetedHours+' hrs</span></div>':'')
-      +addrHtml+phoneHtml
+      +addrHtml+phoneHtml+effHtml
       +'</div>'
       +(j.jobType?'<div class="jc-type">'+j.jobType+'</div>':'')
       +'</div>'
@@ -998,7 +956,6 @@ function renderDispatch(){
       +'</div></div>';
   });
   el.innerHTML=html;
-  // Wire cards after render
   S.jobs.forEach(function(j,i){
     var card=document.getElementById('jcard-'+i);
     var act=document.getElementById('jact-'+i);
@@ -1031,6 +988,7 @@ function openDetail(i){
   var addrRow=j.address?'<div class="detail-row"><span class="dr-lbl">Address</span><span class="dr-val"><a href="'+ml+'" target="_blank">📍 '+j.address+' ↗</a></span></div>':'';
   var emailRow=j.email?'<div class="detail-row"><span class="dr-lbl">Email</span><span class="dr-val">'+j.email+'</span></div>':'';
   var phoneRow=j.phone?'<div class="detail-row"><span class="dr-lbl">Phone</span><span class="dr-val"><a href="tel:'+j.phone+'" style="color:var(--blue)">'+j.phone+'</a></span></div>':'';
+  var effRow=j.efficiency?'<div class="detail-row"><span class="dr-lbl">Efficiency</span><span class="dr-val" style="color:'+(parseInt(j.efficiency)>=100?'var(--g7)':'var(--red)')+'">⚡ '+j.efficiency+'</span></div>':'';
   document.getElementById('detail-content').innerHTML=
     '<div class="sheet-title">'+j.client+'</div>'
     +'<div class="sheet-sub" style="margin-bottom:12px">'+(j.service||j.jobType||'')+'</div>'
@@ -1040,7 +998,7 @@ function openDetail(i){
     +'<div class="detail-row"><span class="dr-lbl">Type</span><span class="dr-val">'+(j.jobType||'—')+'</span></div>'
     +'<div class="detail-row"><span class="dr-lbl">Status</span><span class="dr-val">'+(j.status||'—')+'</span></div>'
     +(j.budgetedHours?'<div class="detail-row"><span class="dr-lbl">Budget</span><span class="dr-val" style="color:var(--blue);font-weight:700">'+j.budgetedHours+' hrs</span></div>':'')
-    +addrRow+emailRow+phoneRow;
+    +addrRow+emailRow+phoneRow+effRow;
   var btn=document.getElementById('detail-start-btn');
   btn.disabled=j.jobStatus==='complete';
   btn.textContent=j.jobStatus==='complete'?'✓ Completed':'Start This Job →';
@@ -1151,27 +1109,23 @@ function selSvc(type){
   });
   document.getElementById('svc-none').classList.add('hidden');
 }
-
 function gridSel(el, gridId, hiddenId){
   document.getElementById(gridId).querySelectorAll('.gb').forEach(function(b){b.classList.remove('on');});
   el.classList.add('on');
   document.getElementById(hiddenId).value=el.dataset.val;
 }
-
 function yntog(btn, id){
   btn.closest('.yn').querySelectorAll('.yn-btn').forEach(function(b){b.classList.remove('on');});
   btn.closest('.yn').classList.remove('invalid');
   btn.classList.add('on');
   document.getElementById(id).value=btn.dataset.val;
 }
-
 function setPet(v){
   S.pet=v;
   document.getElementById('f-pet').value=v;
   document.getElementById('pet-clr').className='pet-opt'+(v==='clear'?' clear':'');
   document.getElementById('pet-wrn').className='pet-opt'+(v==='warn'?' warn':'');
 }
-
 function togTech(i,name){
   var btn=document.getElementById('tp-'+i);
   var ai=S.selectedTechs.indexOf(name);
@@ -1179,7 +1133,6 @@ function togTech(i,name){
   else{S.selectedTechs.push(name);btn.classList.add('on');}
   document.getElementById('f-techs').value=S.selectedTechs.join(', ');
 }
-
 function jobTime(type){
   var now=new Date(),ts=fmt(now);
   if(type==='start'){
@@ -1209,7 +1162,6 @@ function jobTime(type){
   }
   updateFormLock();
 }
-
 function addPhoto(file){
   if(!file.type.startsWith('image/'))return;
   var idx=S.photos.length; S.photos.push(file);
@@ -1222,7 +1174,6 @@ function addPhoto(file){
   };
   r.readAsDataURL(file);
 }
-
 async function compressPhoto(file){
   return new Promise(function(res,rej){
     var r=new FileReader();
@@ -1241,6 +1192,9 @@ async function compressPhoto(file){
   });
 }
 
+// ════════════════════════════════════════════════════════════════
+// SUBMIT JOB
+// ════════════════════════════════════════════════════════════════
 async function submitJob(){
   if(!S.cust) {toast('⚠ Please select a customer');return;}
   if(!S.svc)  {toast('⚠ Please select a service type');return;}
@@ -1269,6 +1223,12 @@ async function submitJob(){
     }
     btn.innerHTML='<span class="spinner"></span> Sending…';
     var dur=((S.jEnd.t-S.jStart.t)/3600000).toFixed(2);
+
+    // ── Pull budgeted hours from the matched dispatch job ──────
+    var budgetedHours='';
+    if(selJobIdx!==null&&S.jobs[selJobIdx]&&S.jobs[selJobIdx].budgetedHours)
+      budgetedHours=S.jobs[selJobIdx].budgetedHours;
+
     var grass=S.svc==='commercial'?document.getElementById('c-grass').value:(document.getElementById('r-grass')&&document.getElementById('r-grass').value||'');
     var height=S.svc==='residential'?document.getElementById('r-height').value:S.svc==='commercial'?document.getElementById('c-height').value:'';
     var dir=document.getElementById('r-dir')&&document.getElementById('r-dir').value||'';
@@ -1300,11 +1260,22 @@ async function submitJob(){
         toEmail:'info'+'@'+'wslawncareservicesllc.com',
         subject:'[WS Alert] '+(hasPet?'🐾 Pet Waste':'')+(hasPet&&hasNote?' + ':'')+(hasNote?'📋 Office Note':'')+' — '+c.name});
     }
-    if(grass||height||dir||dur||techs){
-      await zap(CFG.whSheet,{type:'sheet_update',customerName:c.name,serviceAddress:c.address,
-        email:c.email,grassType:grass,mowingHeight:height,mowingDirection:dir,
-        lastVisitDuration:dur,lastVisitTechs:techs,startTime:payload.startTime,endTime:payload.endTime,date:date});
-    }
+
+    // ── Sheet update → Apps Script (clients tab + efficiency) ──
+    var sheetPayload={
+      type:'sheet_update',
+      customerName:c.name,serviceAddress:c.address,
+      email:c.email,grassType:grass,mowingHeight:height,mowingDirection:dir,
+      lastVisitDuration:dur,lastVisitTechs:techs,
+      startTime:payload.startTime,endTime:payload.endTime,date:date,
+      jobDuration:dur,          // actual hours on job
+      budgetedHours:budgetedHours, // from dispatch, used for efficiency
+    };
+    // Send directly to Apps Script for efficiency write + client update
+    try{await fetch(CFG.appsScript,{method:'POST',body:new URLSearchParams(sheetPayload),mode:'no-cors'});}catch(e){}
+    // Also send to Zapier for any sheet Zap steps
+    await zap(CFG.whSheet, sheetPayload);
+
     if(selJobIdx!==null){S.jobs[selJobIdx].jobStatus='complete';renderDispatch();updateStrip();selJobIdx=null;}
     document.getElementById('form-body').classList.add('hidden');
     document.getElementById('form-success').classList.add('show');
@@ -1369,7 +1340,7 @@ function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.c
 async function zap(url,data){try{await fetch(url,{method:'POST',body:new URLSearchParams(data),mode:'no-cors'});}catch(e){}}
 
 // ════════════════════════════════════════════════════════════════
-// BOOT — wire buttons then init
+// BOOT
 // ════════════════════════════════════════════════════════════════
 wireButtons();
 init();
