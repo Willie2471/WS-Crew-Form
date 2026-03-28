@@ -993,7 +993,12 @@ function renderDispatch(){
     var addrHtml=j.address?'<div class="jc-addr"><a href="'+ml+'" target="_blank">📍 '+j.address+' ↗</a></div>':'';
     var phoneHtml=j.phone?'<div class="jc-contact">📞 <a href="tel:'+j.phone+'" style="color:var(--muted);text-decoration:none">'+j.phone+'</a></div>':'';
     var effHtml='';
-    if(j.efficiency){var effNum=parseInt(j.efficiency);effHtml='<div class="jc-eff '+(effNum>=100?'on':'over')+'">⚡ '+j.efficiency+' efficiency</div>';}
+    if(j.efficiency){
+      var effNum=parseInt(j.efficiency);
+      var effCls=effNum>=100?'on':'over';
+      var effLabel=effNum>=100?'⚡ '+j.efficiency+' — Under Budget':'⚠️ '+j.efficiency+' — Over Budget';
+      effHtml='<div class="jc-eff '+effCls+'">'+effLabel+'</div>';
+    }
     var skipReasonHtml=skipped&&j.skipReason?'<div class="skip-reason">⚠️ '+j.skipReason+'</div>':'';
     var skipNumCls='stop-num'+(done?' done-num':skipped?' skip-num':'');
     var cardCls='job-card'+(done?' done':skipped?' skipped':'');
@@ -1239,9 +1244,10 @@ function showCustBanner(){
       ?'background:#e8f5eb;border-color:#c8e6cc'
       :'background:#fde8e8;border-color:#f5c6c6';
     var effColor=effNum>=100?'var(--g7)':'var(--red)';
+    var effLabel=effNum>=100?'⚡ '+c.lastEfficiencyRate+' Under Budget':'⚠️ '+c.lastEfficiencyRate+' Over Budget';
     chips+='<div class="chip" style="'+effStyle+'"><div>'
       +'<div class="chip-lbl" style="color:'+effColor+'">Last Efficiency</div>'
-      +'<div class="chip-val" style="color:'+effColor+'">⚡ '+c.lastEfficiencyRate+'</div>'
+      +'<div class="chip-val" style="color:'+effColor+'">'+effLabel+'</div>'
       +'</div></div>';
   }
   document.getElementById('f-chips').innerHTML=chips;
