@@ -214,9 +214,6 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .disp-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .disp-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--g9)}
 .disp-date{background:var(--g1);border:1px solid var(--g2);border-radius:100px;padding:4px 12px;font-size:12px;font-weight:600;color:var(--g7)}
-.load-btn{background:var(--g7);color:#fff;border:none;border-radius:10px;padding:9px 16px;
-  font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;cursor:pointer;
-  display:flex;align-items:center;gap:6px;margin-bottom:12px}
 .route-banner{background:var(--blue2);border:1.5px solid var(--blue3);border-radius:10px;
   padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .rb-text{font-size:13px;color:var(--blue);font-weight:600}
@@ -346,9 +343,8 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
       <div class="disp-hdr">
         <div><div class="disp-title">Daily Dispatch</div><div class="disp-date" id="d-date"></div></div>
       </div>
-      <button class="load-btn" id="load-btn">📥 Load / Refresh Jobs</button>
       <div id="route-info"></div>
-      <div id="dispatch-list"><div class="empty-state">📋<br><br>No jobs loaded yet.<br>Tap "Load / Refresh Jobs" to paste the report.</div></div>
+      <div id="dispatch-list"><div class="empty-state">📋<br><br>Loading today's jobs…</div></div>
     </div>
 
     <!-- JOB FORM TAB -->
@@ -646,20 +642,6 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
   </div>
 </div>
 
-<!-- PASTE MODAL -->
-<div class="overlay" id="paste-modal">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-title">Load Today's Dispatch</div>
-    <div class="sheet-sub">Paste the dispatch table from the SA email below.</div>
-    <textarea class="sheet-textarea" id="paste-area" placeholder="Paste dispatch table here…"></textarea>
-    <div class="sheet-actions">
-      <button class="sh-btn secondary" id="paste-cancel-btn">Cancel</button>
-      <button class="sh-btn primary" id="paste-load-btn">📋 Load Jobs</button>
-    </div>
-  </div>
-</div>
-
 <!-- DETAIL MODAL -->
 <div class="overlay" id="detail-modal">
   <div class="sheet">
@@ -679,7 +661,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
     <div class="sheet-title">⚠️ Skip Job</div>
     <div class="sheet-sub" id="skip-modal-client">Customer name</div>
     <div style="display:flex;gap:8px;margin-bottom:12px">
-      <button class="sh-btn secondary" id="skip-quick-gate" style="flex:1;padding:10px 8px;font-size:13px">🔒 Pet Waste</button>
+      <button class="sh-btn secondary" id="skip-quick-gate" style="flex:1;padding:10px 8px;font-size:13px">🔒 Locked Gate</button>
       <button class="sh-btn secondary" id="skip-quick-mech" style="flex:1;padding:10px 8px;font-size:13px">🔧 Mechanical</button>
     </div>
     <textarea class="sheet-textarea" id="skip-reason-txt" placeholder="Describe reason for skipping…" style="min-height:120px"></textarea>
@@ -723,17 +705,92 @@ var S = {
 };
 
 // ════════════════════════════════════════════════════════════════
+// PERSIST — save/restore day state via localStorage
+// Persists: user selection, clock state, jobs (with statuses/skip reasons)
+// Resets automatically at midnight (new day key)
+// ════════════════════════════════════════════════════════════════
+var STORE_KEY = 'wscrew_' + new Date().toLocaleDateString('en-US').replace(/\//g,'-');
+
+function saveState() {
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify({
+      user:     S.user,
+      clocked:  S.clocked,
+      clockIn:  S.clockIn  ? S.clockIn.toISOString()  : null,
+      clockOut: S.clockOut ? S.clockOut.toISOString() : null,
+      jobs:     S.jobs,
+    }));
+  } catch(e) { console.warn('saveState failed:', e); }
+}
+
+function loadState() {
+  try {
+    var raw = localStorage.getItem(STORE_KEY);
+    if (!raw) return false;
+    var saved = JSON.parse(raw);
+    if (saved.user)    S.user    = saved.user;
+    if (saved.clocked) S.clocked = saved.clocked;
+    if (saved.clockIn)  S.clockIn  = new Date(saved.clockIn);
+    if (saved.clockOut) S.clockOut = new Date(saved.clockOut);
+    if (saved.jobs && saved.jobs.length) S.jobs = saved.jobs;
+    return true;
+  } catch(e) { return false; }
+}
+
+// ════════════════════════════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════════════════════════════
 async function init() {
+  // Restore persisted day state before booting UI
+  var hadSavedState = loadState();
   bootUI();
+
   try {
     var res = await fetch(CFG.appsScript + '?token=' + CFG.token);
     var d   = await res.json();
     if (d.techs     && d.techs.length)    { S.crew = d.techs; rebuildTechWrap(); updateTbSel(); }
     if (d.customers && d.customers.length) S.customers = d.customers;
     if (d.board     && d.board.length)    { S.board = d.board; renderBoard(); }
-    if (d.dispatch  && d.dispatch.length) { S.jobs = d.dispatch; renderDispatch(); updateStrip(); }
+
+    // Dispatch: enrich fresh server jobs with Clients data by name match,
+    // then merge with saved job statuses so in-progress/complete/skipped survive refresh
+    if (d.dispatch && d.dispatch.length) {
+      var freshJobs = d.dispatch.map(function(j) {
+        // Match dispatch client name against Clients tab col A (name only)
+        var clientName = j.client.toLowerCase().split(',')[0].trim();
+        var match = S.customers.find(function(c) {
+          return c.name.toLowerCase().trim() === clientName ||
+                 c.name.toLowerCase().trim().includes(clientName);
+        });
+        if (match) {
+          j.address = match.address || j.address || '';
+          j.email   = match.email   || j.email   || '';
+          j.phone   = match.phone   || j.phone   || '';
+        }
+        return j;
+      });
+
+      // Preserve job statuses from saved state so refresh doesn't reset progress
+      if (hadSavedState && S.jobs.length) {
+        freshJobs = freshJobs.map(function(fj) {
+          var saved = S.jobs.find(function(sj) {
+            return sj.client.toLowerCase().trim() === fj.client.toLowerCase().trim();
+          });
+          if (saved) {
+            fj.jobStatus  = saved.jobStatus  || fj.jobStatus;
+            fj.skipReason = saved.skipReason || '';
+            fj.formSubmitted = saved.formSubmitted || false;
+          }
+          return fj;
+        });
+      }
+
+      S.jobs = freshJobs;
+      renderDispatch();
+      updateStrip();
+    }
+
+    saveState();
   } catch(e) { console.warn('Sheet fetch failed:', e.message); }
 }
 
@@ -745,16 +802,37 @@ function bootUI() {
   document.getElementById('d-date').textContent = now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
   document.querySelector('.hero-greet').innerHTML = greet+',<br><span style="color:var(--g4)">'+S.user.name.split(' ')[0]+' '+emoji+'</span>';
   document.getElementById('tb-role').textContent = S.user.position;
+
+  // Restore clock UI if state was loaded
+  var btn   = document.getElementById('clock-btn');
+  var badge = document.getElementById('ci-badge');
+  if (S.clocked) {
+    btn.className = 'clock-btn stop'; btn.textContent = '🔴 END YOUR DAY';
+    badge.textContent = 'IN'; badge.classList.add('in');
+  }
+  if (S.clockIn) {
+    document.getElementById('s-in').textContent = fmt(S.clockIn);
+    document.getElementById('s-in').classList.remove('mt');
+  }
+  if (S.clockOut) {
+    document.getElementById('s-out').textContent = fmt(S.clockOut);
+    document.getElementById('s-out').classList.remove('mt');
+  }
+
   renderBoard();
   rebuildTechWrap();
   updateFormLock();
   startDurTimer();
+  if (S.jobs.length) { renderDispatch(); updateStrip(); }
 }
 
 function updateTbSel() {
   var sel = document.getElementById('tb-name-sel');
   sel.innerHTML = S.crew.map(function(c,i){ return '<option value="'+i+'">'+c.name+'</option>'; }).join('');
-  sel.value = '0';
+  // Restore saved user selection
+  var savedIdx = S.crew.findIndex(function(c){ return c.name === S.user.name; });
+  sel.value = savedIdx >= 0 ? String(savedIdx) : '0';
+  document.getElementById('tb-role').textContent = S.user.position;
 }
 
 function rebuildTechWrap() {
@@ -784,6 +862,7 @@ function wireButtons() {
       var greet = h<12?'Good morning':h<17?'Good afternoon':h<21?'Good evening':'Working late';
       var emoji = h<12?'👋':h<17?'☀️':h<21?'🌅':'🌙';
       document.querySelector('.hero-greet').innerHTML = greet+',<br><span style="color:var(--g4)">'+S.crew[idx].name.split(' ')[0]+' '+emoji+'</span>';
+      saveState();
     }
   });
   document.getElementById('clock-btn').addEventListener('click', toggleClock);
@@ -794,12 +873,8 @@ function wireButtons() {
     goTab('form');
   });
   document.getElementById('jobs-strip').addEventListener('click', function(){ goTab('dispatch'); });
-  document.getElementById('load-btn').addEventListener('click', function(){ document.getElementById('paste-modal').classList.add('open'); });
-  document.getElementById('paste-cancel-btn').addEventListener('click', function(){ document.getElementById('paste-modal').classList.remove('open'); });
-  document.getElementById('paste-load-btn').addEventListener('click', parseDispatch);
   document.getElementById('detail-close-btn').addEventListener('click', function(){ document.getElementById('detail-modal').classList.remove('open'); });
   document.getElementById('detail-start-btn').addEventListener('click', startJobFromDetail);
-  document.getElementById('paste-modal').addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); });
   document.getElementById('detail-modal').addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); });
   document.getElementById('skip-modal').addEventListener('click',  function(e){ if(e.target===this) this.classList.remove('open'); });
   document.getElementById('skip-cancel-btn').addEventListener('click', function(){ document.getElementById('skip-modal').classList.remove('open'); skipJobIdx=null; });
@@ -844,6 +919,7 @@ function toggleClock() {
     toast('✅ Day started — '+fmt(S.clockIn));
     startDurTimer();
     updateBadge();
+    saveState();
   } else {
     S.clockOut = new Date(); S.clocked = false;
     btn.className = 'clock-btn start'; btn.textContent = '🟢 START YOUR DAY';
@@ -854,6 +930,7 @@ function toggleClock() {
     sendClockEvent('Clock Out');
     toast('👋 Day ended — '+fmt(S.clockOut));
     updateBadge();
+    saveState();
   }
 }
 function startDurTimer() {
@@ -886,63 +963,6 @@ function updateFormLock() {
 // ════════════════════════════════════════════════════════════════
 // DISPATCH
 // ════════════════════════════════════════════════════════════════
-function parseDispatch() {
-  var raw = document.getElementById('paste-area').value.trim();
-  if (!raw) { toast('⚠ Nothing to paste'); return; }
-  var lines = raw.split('\n').map(function(l){return l.trim();}).filter(function(l){return l.length>0;});
-  var jobs=[], seen=new Set();
-  var mRe=/\$[\d,]+\.\d{2}/,stRe=/\b(Dispatched|Completed|Scheduled|Cancelled)\b/i;
-  var tyRe=/\b(Custom\s+Recurring|One\s+Time|Recurring|Custom)\b/i;
-  var svRe=/(Ground\s+Cover\s+Maintenance|Commercial\s+Grounds\s+Maintenance|General\s+Clean\s+Up|Bi-Weekly\s+Mowing|Weekly\s+Mowing|Mowing\s+Service|Mulch\s+Installation|Shrub\s+Trimming|Hedge\s+Trim|Power\s+Wash|Fertiliz\w*|Aerat\w*|Sod\s+Install\w*)/i;
-  var skip=/^(Daily\s+Dispatch|Job\s+Date|Client\s+Name|Appointment\s+Start|Appointment\s+End|Job\s+Amount|Job\s+Status|Job\s+Type|^Service$|^Source$|^Amount$)/i;
-  function times(s){var a=[],m,p=/(1[0-2]|0?[1-9]):[0-5]\d\s?[AP]M/gi;while((m=p.exec(s))!==null)a.push(m[0].replace(/\s/,' ').toUpperCase());return a;}
-  function strip(s){return s.replace(/(1[0-2]|0?[1-9]):[0-5]\d\s?[AP]M/gi,'').replace(mRe,'').replace(stRe,'').replace(tyRe,'').replace(svRe,'').replace(/\d{1,2}\/\d{1,2}\/\d{2,4}/g,'').replace(/\s{2,}/g,' ').trim();}
-  function add(j){if(!j.client||j.client.length<2)return;var k=(j.date+'|'+j.client.toLowerCase()+'|'+j.startTime).replace(/\s/g,'');if(seen.has(k))return;seen.add(k);jobs.push(j);}
-  var i=0;
-  while(i<lines.length){
-    var line=lines[i];
-    if(skip.test(line)||/^\$[\d,]+\.?\d*$/.test(line)||line.length<3){i++;continue;}
-    var dm=line.match(/^(\d{1,2}\/\d{1,2}\/\d{2,4})\s+(.*)/);
-    if(!dm){i++;continue;}
-    var date=dm[1],after=dm[2].trim(),ts=times(after),dataLine=after,dataIdx=i,pre='';
-    if(!ts.length){
-      var buf=after,pk=i+1,found=false;
-      while(pk<lines.length&&pk<=i+10){
-        var pl=lines[pk];
-        if(skip.test(pl)||/^\$[\d,]+\.?\d*$/.test(pl)){pk++;continue;}
-        if(/^\d{1,2}\/\d{1,2}\/\d{2,4}/.test(pl))break;
-        var pt=times(pl);
-        if(pt.length&&mRe.test(pl)){
-          for(var k2=i+1;k2<pk;k2++){var kl=lines[k2];if(!skip.test(kl)&&/^[A-Za-z\s]+$/.test(kl)&&kl.length<30&&!svRe.test(kl))buf+=' '+kl.trim();}
-          pre=buf.trim();dataLine=pl;dataIdx=pk;ts=pt;i=pk;found=true;break;
-        }
-        pk++;
-      }
-      if(!found){i++;continue;}
-    }
-    var st=ts[0]||'',et=ts[1]||'';
-    var cl=strip(dataLine);
-    if(pre){var p2=pre.replace(/^\s+|\s+$/g,'');cl=p2.endsWith(',')?p2+' '+cl:p2+(cl?' '+cl:'');}
-    cl=cl.replace(/\s+,\s*/g,', ').replace(/,([^\s])/g,', ').replace(/\s{2,}/g,' ').trim();
-    var svc='';
-    var sd=(line+' '+dataLine).match(svRe);if(sd)svc=sd[1];
-    var stm=(line+' '+dataLine).match(stRe),tym=(line+' '+dataLine).match(tyRe);
-    var job={date:date,client:cl,startTime:st,endTime:et,status:stm?stm[1]:'Dispatched',
-      jobType:tym?tym[1]:'',service:svc,budgetedHours:'',jobStatus:'dispatched',address:'',email:'',phone:'',efficiency:''};
-    var match=S.customers.find(function(c){return c.name.toLowerCase().includes(cl.toLowerCase().split(',')[0].trim().toLowerCase());});
-    if(match){job.address=match.address||'';job.email=match.email||'';job.phone=match.phone||'';}
-    add(job);
-    i++;
-  }
-  if(!jobs.length){toast('⚠ No jobs found');return;}
-  jobs.sort(function(a,b){return toMins(a.startTime)-toMins(b.startTime);});
-  S.jobs=jobs;
-  document.getElementById('paste-modal').classList.remove('open');
-  document.getElementById('paste-area').value='';
-  renderDispatch(); updateStrip();
-  toast('✅ '+jobs.length+' job'+(jobs.length>1?'s':'')+' loaded');
-}
-
 function toMins(t){
   if(!t)return 9999;
   var m=t.match(/(\d+):(\d+)\s?(AM|PM)/i);if(!m)return 9999;
@@ -1024,8 +1044,16 @@ function quickAct(i){
   var j=S.jobs[i];
   if(j.jobStatus==='complete'||j.jobStatus==='skipped')return;
   if(!S.clocked){toast('⚠ Clock in first before starting a job');return;}
-  if(j.jobStatus==='dispatched'){S.jobs[i].jobStatus='in-progress';prefillFromJob(i);goTab('form');}
-  else{S.jobs[i].jobStatus='complete';}
+  if(j.jobStatus==='dispatched'){
+    S.jobs[i].jobStatus='in-progress';
+    prefillFromJob(i);
+    goTab('form');
+    saveState();
+  } else if(j.jobStatus==='in-progress') {
+    if(!j.formSubmitted){toast('⚠ Complete and submit the job form first');goTab('form');return;}
+    S.jobs[i].jobStatus='complete';
+    saveState();
+  }
   renderDispatch();updateStrip();
 }
 
@@ -1045,6 +1073,7 @@ async function confirmSkip(){
   S.jobs[skipJobIdx].skipReason=reason;
   document.getElementById('skip-modal').classList.remove('open');
   renderDispatch(); updateStrip();
+  saveState();
   toast('⚠️ '+j.client+' skipped');
   // Alert office
   var date=new Date().toLocaleDateString('en-US');
@@ -1368,11 +1397,28 @@ async function submitJob(){
     // Also send to Zapier for any sheet Zap steps
     await zap(CFG.whSheet, sheetPayload);
 
-    if(selJobIdx!==null){S.jobs[selJobIdx].jobStatus='complete';renderDispatch();updateStrip();selJobIdx=null;}
+    if(selJobIdx!==null){
+      S.jobs[selJobIdx].formSubmitted=true;
+      S.jobs[selJobIdx].jobStatus='complete';
+      renderDispatch();updateStrip();
+      saveState();
+      selJobIdx=null;
+    }
     document.getElementById('form-body').classList.add('hidden');
     document.getElementById('form-success').classList.add('show');
   }catch(err){
-    if(err.name==='TypeError'){document.getElementById('form-body').classList.add('hidden');document.getElementById('form-success').classList.add('show');}
+    if(err.name==='TypeError'){
+      // Network error (no-cors) — treat as success
+      if(selJobIdx!==null){
+        S.jobs[selJobIdx].formSubmitted=true;
+        S.jobs[selJobIdx].jobStatus='complete';
+        renderDispatch();updateStrip();
+        saveState();
+        selJobIdx=null;
+      }
+      document.getElementById('form-body').classList.add('hidden');
+      document.getElementById('form-success').classList.add('show');
+    }
     else{toast('❌ Submission failed');btn.disabled=false;btn.innerHTML='✓ SUBMIT JOB';}
   }
 }
