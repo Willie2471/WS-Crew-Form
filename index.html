@@ -1426,8 +1426,9 @@ async function submitJob(){
       email:c.email,grassType:grass,mowingHeight:height,mowingDirection:dir,
       lastVisitDuration:dur,lastVisitTechs:techs,
       startTime:payload.startTime,endTime:payload.endTime,date:date,
-      jobDuration:dur,          // actual hours on job
-      budgetedHours:budgetedHours, // from dispatch, used for efficiency
+      jobDuration:dur,
+      budgetedHours:budgetedHours,
+      techName:S.user.name,  // needed for windshield/utilization calc
     };
     // Send directly to Apps Script for efficiency write + client update
     try{await fetch(CFG.appsScript,{method:'POST',body:new URLSearchParams(sheetPayload),mode:'no-cors'});}catch(e){}
