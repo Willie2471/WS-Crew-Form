@@ -226,6 +226,16 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .tg-hdr::after{content:'';flex:1;height:1px;background:var(--border)}
 .job-card{background:#fff;border-radius:12px;border:1.5px solid var(--border);margin-bottom:10px;overflow:hidden;cursor:pointer}
 .job-card.done{opacity:.55}
+.job-card.skipped{opacity:.6;border-color:#e0c8c8}
+.sp-disp{background:var(--blue2);color:var(--blue)}
+.sp-prog{background:var(--acc2);color:#b37800}
+.sp-done{background:var(--g1);color:var(--g7)}
+.sp-skip{background:#fde8e8;color:var(--red)}
+.stop-num.skip-num{background:#e0c8c8;color:var(--red)}
+.jc-skip{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.5px;
+  padding:6px 10px;border-radius:8px;border:none;cursor:pointer;background:#fde8e8;color:var(--red)}
+.jc-skip:disabled{opacity:.4;cursor:default}
+.skip-reason{font-size:11px;color:var(--red);margin-top:4px;font-style:italic}
 .jc-top{padding:14px 14px 10px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
 .jc-left{flex:1;margin-left:10px}
 .jc-client{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:700;color:var(--g9);line-height:1.1;margin-bottom:3px}
@@ -662,6 +672,24 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
   </div>
 </div>
 
+<!-- SKIP MODAL -->
+<div class="overlay" id="skip-modal">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">⚠️ Skip Job</div>
+    <div class="sheet-sub" id="skip-modal-client">Customer name</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button class="sh-btn secondary" id="skip-quick-gate" style="flex:1;padding:10px 8px;font-size:13px">🔒 Locked Gate</button>
+      <button class="sh-btn secondary" id="skip-quick-mech" style="flex:1;padding:10px 8px;font-size:13px">🔧 Mechanical</button>
+    </div>
+    <textarea class="sheet-textarea" id="skip-reason-txt" placeholder="Describe reason for skipping…" style="min-height:120px"></textarea>
+    <div class="sheet-actions">
+      <button class="sh-btn secondary" id="skip-cancel-btn">Cancel</button>
+      <button class="sh-btn" id="skip-confirm-btn" style="background:var(--red);color:#fff">⚠️ Skip Job</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -761,7 +789,10 @@ function wireButtons() {
   document.getElementById('clock-btn').addEventListener('click', toggleClock);
   document.getElementById('ni-home').addEventListener('click',     function(){ goTab('home'); });
   document.getElementById('ni-dispatch').addEventListener('click', function(){ goTab('dispatch'); });
-  document.getElementById('ni-form').addEventListener('click',     function(){ goTab('form'); });
+  document.getElementById('ni-form').addEventListener('click',     function(){
+    if(!S.clocked){toast('⚠ Clock in before starting a job');return;}
+    goTab('form');
+  });
   document.getElementById('jobs-strip').addEventListener('click', function(){ goTab('dispatch'); });
   document.getElementById('load-btn').addEventListener('click', function(){ document.getElementById('paste-modal').classList.add('open'); });
   document.getElementById('paste-cancel-btn').addEventListener('click', function(){ document.getElementById('paste-modal').classList.remove('open'); });
@@ -770,6 +801,11 @@ function wireButtons() {
   document.getElementById('detail-start-btn').addEventListener('click', startJobFromDetail);
   document.getElementById('paste-modal').addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); });
   document.getElementById('detail-modal').addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); });
+  document.getElementById('skip-modal').addEventListener('click',  function(e){ if(e.target===this) this.classList.remove('open'); });
+  document.getElementById('skip-cancel-btn').addEventListener('click', function(){ document.getElementById('skip-modal').classList.remove('open'); skipJobIdx=null; });
+  document.getElementById('skip-confirm-btn').addEventListener('click', confirmSkip);
+  document.getElementById('skip-quick-gate').addEventListener('click', function(){ document.getElementById('skip-reason-txt').value='Locked Gate'; });
+  document.getElementById('skip-quick-mech').addEventListener('click', function(){ document.getElementById('skip-reason-txt').value='Mechanical Breakdown'; });
   document.getElementById('ts-btn').addEventListener('click', function(){ jobTime('start'); });
   document.getElementById('te-btn').addEventListener('click', function(){ jobTime('end'); });
   document.getElementById('f-srch').addEventListener('input', onCustSearch);
@@ -807,6 +843,7 @@ function toggleClock() {
     sendClockEvent('Clock In');
     toast('✅ Day started — '+fmt(S.clockIn));
     startDurTimer();
+    updateBadge();
   } else {
     S.clockOut = new Date(); S.clocked = false;
     btn.className = 'clock-btn start'; btn.textContent = '🟢 START YOUR DAY';
@@ -816,6 +853,7 @@ function toggleClock() {
     if (durTimer) { clearInterval(durTimer); durTimer = null; }
     sendClockEvent('Clock Out');
     toast('👋 Day ended — '+fmt(S.clockOut));
+    updateBadge();
   }
 }
 function startDurTimer() {
@@ -921,46 +959,56 @@ function renderDispatch(){
   if(!S.jobs.length){el.innerHTML='<div class="empty-state">📋<br><br>No jobs loaded.</div>';updateBadge();renderRouteInfo();return;}
   var html='',stop=0;
   S.jobs.forEach(function(j,i){
-    var done=j.jobStatus==='complete',active=j.jobStatus==='in-progress';
-    if(!done)stop++;
-    var sn=done?'✓':stop;
-    var sc=done?'sp-done':active?'sp-prog':'sp-disp';
-    var sl=done?'Complete':active?'In Progress':'Dispatched';
-    var ac=done?'done':active?'complete':'begin';
-    var al=done?'✓ Done':active?'Complete →':'Start →';
+    var done=j.jobStatus==='complete',active=j.jobStatus==='in-progress',skipped=j.jobStatus==='skipped';
+    if(!done&&!skipped)stop++;
+    var sn=done?'✓':skipped?'✕':stop;
+    var sc=done?'sp-done':active?'sp-prog':skipped?'sp-skip':'sp-disp';
+    var sl=done?'Complete':active?'In Progress':skipped?'Skipped':'Dispatched';
     var ml=mapsLink(j.address);
     var addrHtml=j.address?'<div class="jc-addr"><a href="'+ml+'" target="_blank">📍 '+j.address+' ↗</a></div>':'';
     var phoneHtml=j.phone?'<div class="jc-contact">📞 <a href="tel:'+j.phone+'" style="color:var(--muted);text-decoration:none">'+j.phone+'</a></div>':'';
-    // Efficiency badge
     var effHtml='';
-    if(j.efficiency){
-      var effNum=parseInt(j.efficiency);
-      var effCls=effNum>=100?'on':'over';
-      effHtml='<div class="jc-eff '+effCls+'">⚡ '+j.efficiency+' efficiency</div>';
+    if(j.efficiency){var effNum=parseInt(j.efficiency);effHtml='<div class="jc-eff '+(effNum>=100?'on':'over')+'">⚡ '+j.efficiency+' efficiency</div>';}
+    var skipReasonHtml=skipped&&j.skipReason?'<div class="skip-reason">⚠️ '+j.skipReason+'</div>':'';
+    var skipNumCls='stop-num'+(done?' done-num':skipped?' skip-num':'');
+    var cardCls='job-card'+(done?' done':skipped?' skipped':'');
+    // Action button area
+    var actionBtns='';
+    if(done){
+      actionBtns='<button class="jc-act done" disabled>✓ Done</button>';
+    } else if(skipped){
+      actionBtns='<button class="jc-act done" disabled style="color:var(--red)">✕ Skipped</button>';
+    } else if(active){
+      actionBtns='<button class="jc-act complete" id="jact-'+i+'">Complete →</button>';
+    } else {
+      actionBtns='<button class="jc-act begin" id="jact-'+i+'">Start →</button>'
+               +'<button class="jc-skip" id="jskip-'+i+'">⚠ Skip</button>';
     }
-    html+='<div class="job-card'+(done?' done':'')+'" id="jcard-'+i+'">'
+    html+='<div class="'+cardCls+'" id="jcard-'+i+'">'
       +'<div class="jc-top">'
-      +'<div class="stop-num'+(done?' done-num':'')+'">'+sn+'</div>'
+      +'<div class="'+skipNumCls+'">'+sn+'</div>'
       +'<div class="jc-left">'
       +'<div class="jc-client">'+j.client+'</div>'
       +(j.service?'<div class="jc-svc">'+j.service+'</div>':'')
       +'<div class="jc-time">🕐 <span>'+(j.startTime||'—')+'</span>'+(j.endTime?' – <span>'+j.endTime+'</span>':'')+'</div>'
       +(j.budgetedHours?'<div class="jc-time" style="margin-top:3px;color:var(--blue);font-weight:600">⏳ Budget: <span>'+j.budgetedHours+' hrs</span></div>':'')
-      +addrHtml+phoneHtml+effHtml
+      +addrHtml+phoneHtml+effHtml+skipReasonHtml
       +'</div>'
       +(j.jobType?'<div class="jc-type">'+j.jobType+'</div>':'')
       +'</div>'
       +'<div class="jc-bar">'
       +'<span class="status-pill '+sc+'">'+sl+'</span>'
-      +'<button class="jc-act '+ac+'" id="jact-'+i+'">'+al+'</button>'
+      +'<div style="display:flex;gap:6px">'+actionBtns+'</div>'
       +'</div></div>';
   });
   el.innerHTML=html;
   S.jobs.forEach(function(j,i){
     var card=document.getElementById('jcard-'+i);
-    var act=document.getElementById('jact-'+i);
+    var act =document.getElementById('jact-'+i);
+    var skip=document.getElementById('jskip-'+i);
     if(card) card.addEventListener('click', function(){ openDetail(i); });
     if(act)  act.addEventListener('click',  function(e){ e.stopPropagation(); quickAct(i); });
+    if(skip) skip.addEventListener('click', function(e){ e.stopPropagation(); openSkipModal(i); });
   });
   renderRouteInfo(); updateBadge();
 }
@@ -968,16 +1016,57 @@ function renderDispatch(){
 function renderRouteInfo(){
   var el=document.getElementById('route-info');
   if(!S.jobs.length){el.innerHTML='';return;}
-  var rem=S.jobs.filter(function(j){return j.jobStatus!=='complete';}).length;
+  var rem=S.jobs.filter(function(j){return j.jobStatus!=='complete'&&j.jobStatus!=='skipped';}).length;
   el.innerHTML='<div class="route-banner"><span style="font-size:18px">🗺️</span><span class="rb-text">Route sorted by scheduled time</span><span class="rb-badge">'+rem+' stop'+(rem!==1?'s':'')+' left</span></div>';
 }
 
 function quickAct(i){
   var j=S.jobs[i];
-  if(j.jobStatus==='complete')return;
+  if(j.jobStatus==='complete'||j.jobStatus==='skipped')return;
+  if(!S.clocked){toast('⚠ Clock in first before starting a job');return;}
   if(j.jobStatus==='dispatched'){S.jobs[i].jobStatus='in-progress';prefillFromJob(i);goTab('form');}
   else{S.jobs[i].jobStatus='complete';}
   renderDispatch();updateStrip();
+}
+
+var skipJobIdx=null;
+function openSkipModal(i){
+  skipJobIdx=i;
+  document.getElementById('skip-modal-client').textContent=S.jobs[i].client;
+  document.getElementById('skip-reason-txt').value='';
+  document.getElementById('skip-modal').classList.add('open');
+}
+async function confirmSkip(){
+  if(skipJobIdx===null)return;
+  var reason=document.getElementById('skip-reason-txt').value.trim();
+  if(!reason){toast('⚠ Please enter a reason');return;}
+  var j=S.jobs[skipJobIdx];
+  S.jobs[skipJobIdx].jobStatus='skipped';
+  S.jobs[skipJobIdx].skipReason=reason;
+  document.getElementById('skip-modal').classList.remove('open');
+  renderDispatch(); updateStrip();
+  toast('⚠️ '+j.client+' skipped');
+  // Alert office
+  var date=new Date().toLocaleDateString('en-US');
+  await zap(CFG.whAlert,{
+    type:'office_alert',
+    customerName:j.client,
+    serviceAddress:j.address||'',
+    date:date,
+    petAlert:'',
+    officeNote:'⚠️ JOB SKIPPED — '+reason,
+    toEmail:'info'+'@'+'wslawncareservicesllc.com',
+    subject:'[WS Skip] ⚠️ Job Skipped — '+j.client
+  });
+  // Log to Dispatch tab via Apps Script
+  try{await fetch(CFG.appsScript,{method:'POST',body:new URLSearchParams({
+    type:'skip_event',
+    customerName:j.client,
+    date:date,
+    skipReason:reason,
+    techName:S.user.name,
+  }),mode:'no-cors'});}catch(e){}
+  skipJobIdx=null;
 }
 
 var selJobIdx=null;
@@ -1007,6 +1096,7 @@ function openDetail(i){
 
 function startJobFromDetail(){
   document.getElementById('detail-modal').classList.remove('open');
+  if(!S.clocked){toast('⚠ Clock in first before starting a job');return;}
   if(selJobIdx!==null)prefillFromJob(selJobIdx);
   goTab('form');
 }
@@ -1024,13 +1114,15 @@ function prefillFromJob(i){
 }
 
 function updateStrip(){
-  var t=S.jobs.length,d=S.jobs.filter(function(j){return j.jobStatus==='complete';}).length;
+  var t=S.jobs.length;
+  var d=S.jobs.filter(function(j){return j.jobStatus==='complete';}).length;
+  var sk=S.jobs.filter(function(j){return j.jobStatus==='skipped';}).length;
   document.getElementById('strip-cnt').textContent=t||'—';
-  document.getElementById('strip-sub').textContent=t?(d+' done · '+(t-d)+' remaining'):'Tap to view dispatch';
+  document.getElementById('strip-sub').textContent=t?(d+' done'+(sk?' · '+sk+' skipped':'')+' · '+(t-d-sk)+' remaining'):'Tap to view dispatch';
 }
 function updateBadge(){
-  var r=S.jobs.filter(function(j){return j.jobStatus!=='complete';}).length;
-  document.getElementById('ni-dispatch').classList.toggle('has-dot',r>0);
+  var r=S.jobs.filter(function(j){return j.jobStatus!=='complete'&&j.jobStatus!=='skipped';}).length;
+  document.getElementById('ni-dispatch').classList.toggle('has-dot', r>0 && S.clocked);
 }
 
 // ════════════════════════════════════════════════════════════════
