@@ -1,1525 +1,907 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>WS Crew</title>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="theme-color" content="#0d2410"/>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
-<style>
-:root {
-  --g9:#0d2410; --g8:#1a3d20; --g7:#1e6b2e; --g6:#2e8b42;
-  --g4:#4caf63; --g2:#c8e6cc; --g1:#e8f5eb; --g0:#f0f7f1;
-  --acc:#f4a100; --acc2:#fff8e6;
-  --red:#c0392b; --red2:#fdf0ee;
-  --blue:#1565c0; --blue2:#e3f2fd; --blue3:#90caf9;
-  --text:#1c2b1f; --muted:#5a7060; --border:#c2d9c6;
-  --white:#fff; --card-r:14px;
-}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color:var(--text);overflow-x:hidden}
-
-/* APP */
-#scr-app{display:flex;flex-direction:column;min-height:100vh;background:var(--g0)}
-.topbar{background:var(--g9);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.3)}
-.tb-left{display:flex;align-items:center;gap:10px}
-.tb-icon{width:34px;height:34px;background:var(--g7);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px}
-.tb-sel{background:transparent;border:none;color:#fff;font-family:'Barlow Condensed',sans-serif;
-  font-size:17px;font-weight:700;outline:none;cursor:pointer;max-width:160px}
-.tb-sel option{background:var(--g9);color:#fff}
-.tb-role{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
-.ci-badge{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;
-  padding:5px 10px;font-size:12px;font-weight:700;color:rgba(255,255,255,.6);font-family:'Barlow Condensed',sans-serif}
-.ci-badge.in{background:rgba(76,175,99,.2);border-color:var(--g4);color:var(--g4)}
-
-.content{flex:1;overflow-y:auto;padding:16px 14px 100px;max-width:680px;width:100%;margin:0 auto}
-.tab{display:none}.tab.active{display:block}
-
-/* BNAV */
-.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--g9);border-top:1px solid rgba(255,255,255,.08);
-  display:flex;padding:8px 0 env(safe-area-inset-bottom,8px);z-index:100}
-.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;cursor:pointer;position:relative}
-.ni-icon{font-size:22px;line-height:1}
-.ni-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.3)}
-.ni.active .ni-lbl{color:var(--g4)}
-.ni-dot{position:absolute;top:4px;right:20%;width:8px;height:8px;background:var(--acc);border-radius:50%;display:none}
-.ni.has-dot .ni-dot{display:block}
-
-/* CARDS */
-.card{background:var(--white);border-radius:var(--card-r);padding:18px;margin-bottom:14px;
-  border:1.5px solid var(--border);box-shadow:0 2px 10px rgba(30,107,46,.06)}
-.card-title{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:var(--g7);
-  margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.ctn{background:var(--g7);color:#fff;width:26px;height:26px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
-.divider{height:1px;background:var(--g2);margin:14px 0}
-.sec-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px}
-.hidden{display:none!important}
-.field{margin-bottom:14px}
-.field label{display:block;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.field input,.field select,.field textarea{width:100%;padding:12px 14px;border:1.5px solid var(--border);
-  border-radius:10px;font-family:'Barlow',sans-serif;font-size:15px;color:var(--text);
-  background:#f9fcf9;outline:none;-webkit-appearance:none}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--g7)}
-.field textarea{min-height:80px;resize:vertical}
-
-/* YN BUTTONS */
-.yn{display:flex;gap:8px}
-.yn-btn{flex:1;padding:11px 6px;border:2px solid var(--border);border-radius:10px;text-align:center;
-  cursor:pointer;font-size:12px;font-weight:700;color:var(--muted);background:#f9fcf9;user-select:none}
-.yn-btn.y.on{border-color:var(--g7);background:var(--g1);color:var(--g7)}
-.yn-btn.n.on{border-color:var(--red);background:var(--red2);color:var(--red)}
-.yn-btn.nx.on{border-color:var(--acc);background:var(--acc2);color:#b37800}
-.yn.invalid .yn-btn{border-color:var(--red)!important;background:var(--red2)!important}
-
-/* GRID SELECTORS */
-.gg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.gb{border:2px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;background:#f9fcf9}
-.gb .gi{font-size:20px;display:block;margin-bottom:4px}
-.gb .gl{font-size:11px;font-weight:700;color:var(--muted);line-height:1.3}
-.gb.on{border-color:var(--g7);background:var(--g1)}.gb.on .gl{color:var(--g7)}
-
-/* SERVICE GRID */
-.svc-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:4px}
-.svc-btn{border:2px solid var(--border);border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer;background:#f9fcf9}
-.svc-btn .si{font-size:26px;display:block;margin-bottom:5px}
-.svc-btn .sl{font-size:11px;font-weight:700;color:var(--muted);line-height:1.3}
-.svc-btn.on{border-color:var(--g7);background:var(--g1)}.svc-btn.on .sl{color:var(--g7)}
-
-/* TECH PILLS */
-.tech-wrap{display:flex;flex-wrap:wrap;gap:8px;padding:4px 0}
-.tech-pill{display:flex;align-items:center;gap:6px;padding:8px 14px;border:2px solid var(--border);
-  border-radius:100px;background:#f9fcf9;cursor:pointer;user-select:none}
-.tech-av{width:22px;height:22px;border-radius:50%;background:var(--g2);color:var(--g7);
-  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
-.tech-name{font-size:13px;font-weight:600;color:var(--muted)}
-.tech-pill.on{border-color:var(--g7);background:var(--g1)}
-.tech-pill.on .tech-av{background:var(--g7);color:#fff}
-.tech-pill.on .tech-name{color:var(--g7)}
-
-/* TIME BLOCKS */
-.time-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.tblock{border:2px solid var(--blue3);border-radius:12px;padding:12px 10px;text-align:center;background:#fff}
-.tblock.on{border-color:var(--blue);background:var(--blue2)}
-.tblock-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--blue);margin-bottom:6px}
-.tblock-val{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--blue);min-height:28px;line-height:1;margin-bottom:8px}
-.tblock-val.empty{font-size:13px;color:var(--blue3);font-family:'Barlow',sans-serif;font-weight:500}
-.tbtn{width:100%;padding:8px;background:var(--blue);color:#fff;border:none;border-radius:8px;
-  font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;cursor:pointer}
-.tbtn.on{background:#388e3c}.tbtn:disabled{background:#aaa;cursor:not-allowed}
-.dur-row{display:none;background:#fff;border:2px solid var(--blue);border-radius:10px;
-  padding:10px 14px;margin-bottom:14px;align-items:center;gap:8px;justify-content:center}
-.dur-row.show{display:flex}
-.dur-val{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--blue)}
-
-/* FORM LOCK */
-.form-lock-banner{background:linear-gradient(135deg,#fff8e1,#fff3cd);border:2px solid var(--acc);
-  border-radius:12px;padding:18px 16px;margin-bottom:16px;text-align:center}
-.flb-icon{font-size:36px;margin-bottom:8px}
-.flb-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:#7a5000;margin-bottom:4px}
-.flb-sub{font-size:13px;color:#996600;line-height:1.5}
-.form-section-lock{position:relative;pointer-events:none;opacity:.45;user-select:none}
-
-/* PHOTO */
-.photo-area{border:2.5px dashed var(--g2);border-radius:12px;padding:22px 16px;text-align:center;
-  cursor:pointer;background:#f9fcf9;position:relative}
-.photo-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
-.p-thumb{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;border:1.5px solid var(--border)}
-.p-thumb img{width:100%;height:100%;object-fit:cover}
-.p-rm{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.55);color:#fff;border:none;
-  border-radius:50%;width:20px;height:20px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-
-/* SUBMIT */
-.sub-btn{width:100%;padding:16px;background:var(--g7);color:#fff;border:none;border-radius:12px;
-  font-family:'Barlow Condensed',sans-serif;font-size:20px;letter-spacing:1px;cursor:pointer;
-  box-shadow:0 4px 16px rgba(30,107,46,.3);margin-top:6px}
-.sub-btn:disabled{background:var(--muted);cursor:not-allowed;box-shadow:none}
-.success{display:none;text-align:center;padding:48px 20px}
-.success.show{display:block}
-.success .si{font-size:64px;margin-bottom:14px}
-.success h2{font-family:'Barlow Condensed',sans-serif;font-size:26px;color:var(--g7);margin-bottom:6px}
-.success p{font-size:14px;color:var(--muted);margin-bottom:20px}
-.nj-btn{padding:12px 28px;background:var(--g7);color:#fff;border:none;border-radius:10px;
-  font-family:'Barlow Condensed',sans-serif;font-size:16px;cursor:pointer}
-
-/* ALERT CARD */
-.alert-card{background:#fef5ec;border:1.5px solid #f5cba7;border-radius:var(--card-r);padding:18px;margin-bottom:14px}
-.alert-card .card-title{color:var(--acc)}
-.pet-toggle{display:flex;gap:10px}
-.pet-opt{flex:1;border:2px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;background:#f9fcf9}
-.pet-opt .poi{font-size:24px;display:block;margin-bottom:5px}
-.pet-opt .pol{font-size:11px;font-weight:700;color:var(--muted);line-height:1.3}
-.pet-opt.clear{border-color:var(--g7);background:var(--g1)}
-.pet-opt.warn{border-color:var(--red);background:var(--red2)}
-
-/* CUSTOMER SEARCH */
-.srch-wrap{position:relative}
-.srch-wrap input{padding-left:40px}
-.srch-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:16px;pointer-events:none}
-.srch-results{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;
-  border:1.5px solid var(--g7);border-radius:10px;max-height:200px;overflow-y:auto;
-  z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.12);display:none}
-.srch-results.open{display:block}
-.sri{padding:10px 12px;cursor:pointer;border-bottom:1px solid var(--g1)}
-.sri:last-child{border-bottom:none}.sri:hover{background:var(--g1)}
-.sri-name{font-weight:700;font-size:14px}.sri-addr{font-size:12px;color:var(--muted);margin-top:2px}
-.csel-banner{background:var(--g1);border:1.5px solid var(--g2);border-radius:10px;padding:12px 14px;margin-bottom:14px}
-.csel-name{font-weight:700;font-size:16px;color:var(--g7)}
-.csel-det{font-size:13px;color:var(--muted);margin-top:3px;line-height:1.5}
-.csel-chg{font-size:13px;color:var(--g7);font-weight:600;cursor:pointer;text-decoration:underline;background:none;border:none;padding:0;margin-top:6px}
-.info-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.chip{display:flex;align-items:center;gap:5px;background:var(--g1);border:1px solid var(--g2);border-radius:8px;padding:5px 10px}
-.chip-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
-.chip-val{font-size:13px;font-weight:700;color:var(--g7)}
-.chip.blue{background:var(--blue2);border-color:var(--blue3)}
-.chip.blue .chip-lbl,.chip.blue .chip-val{color:var(--blue)}
-
-/* HOME */
-.hero{background:linear-gradient(135deg,var(--g9),var(--g8));border-radius:var(--card-r);
-  padding:22px 20px;margin-bottom:14px;position:relative;overflow:hidden}
-.hero::after{content:'🌿';position:absolute;right:14px;bottom:-12px;font-size:80px;opacity:.07;transform:rotate(-15deg)}
-.hero-date{font-size:12px;font-weight:600;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
-.hero-greet{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:#fff;line-height:1.1;margin-bottom:16px}
-.hero-greet span{color:var(--g4)}
-.clock-btn{width:100%;padding:17px;border-radius:14px;border:none;font-family:'Barlow Condensed',sans-serif;
-  font-size:22px;font-weight:700;letter-spacing:1.5px;cursor:pointer;display:flex;align-items:center;
-  justify-content:center;gap:10px;margin-bottom:14px}
-.clock-btn.start{background:linear-gradient(135deg,var(--g7),var(--g6));color:#fff;box-shadow:0 6px 22px rgba(30,107,46,.35)}
-.clock-btn.stop{background:linear-gradient(135deg,#b71c1c,var(--red));color:#fff;box-shadow:0 6px 22px rgba(192,57,43,.35)}
-.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
-.stat{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:12px 10px;text-align:center}
-.stat-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px}
-.stat-val{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--g7);line-height:1}
-.stat-val.mt{font-size:14px;color:var(--g2)}
-.stat.live{border-color:var(--g4);background:var(--g1)}
-.jobs-strip{background:var(--acc2);border:1.5px solid var(--acc);border-radius:12px;padding:12px 16px;
-  display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;cursor:pointer}
-.js-left{display:flex;align-items:center;gap:10px}
-.js-title{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:var(--g9)}
-.js-sub{font-size:12px;color:var(--muted)}
-.js-count{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:800;color:var(--g7);line-height:1}
-.board-preview{background:#fff;border-radius:var(--card-r);padding:14px 16px;margin-bottom:14px;border:1.5px solid var(--border)}
-.bp-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px}
-.bp-msg{background:var(--g1);border-left:3px solid var(--g7);border-radius:0 8px 8px 0;padding:10px 12px;margin-bottom:8px}
-.bp-text{font-size:14px;color:var(--text);line-height:1.5}
-.bp-meta{font-size:11px;color:var(--muted);margin-top:4px}
-.empty-state{text-align:center;padding:32px 20px;color:var(--muted);font-size:14px}
-
-/* DISPATCH */
-.disp-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.disp-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--g9)}
-.disp-date{background:var(--g1);border:1px solid var(--g2);border-radius:100px;padding:4px 12px;font-size:12px;font-weight:600;color:var(--g7)}
-.route-banner{background:var(--blue2);border:1.5px solid var(--blue3);border-radius:10px;
-  padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.rb-text{font-size:13px;color:var(--blue);font-weight:600}
-.rb-badge{background:var(--blue);color:#fff;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;font-family:'Barlow Condensed',sans-serif}
-.tg-hdr{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--muted);
-  text-transform:uppercase;letter-spacing:1px;padding:8px 4px 6px;display:flex;align-items:center;gap:8px}
-.tg-hdr::after{content:'';flex:1;height:1px;background:var(--border)}
-.job-card{background:#fff;border-radius:12px;border:1.5px solid var(--border);margin-bottom:10px;overflow:hidden;cursor:pointer}
-.job-card.done{opacity:.55}
-.job-card.skipped{opacity:.6;border-color:#e0c8c8}
-.sp-disp{background:var(--blue2);color:var(--blue)}
-.sp-prog{background:var(--acc2);color:#b37800}
-.sp-done{background:var(--g1);color:var(--g7)}
-.sp-skip{background:#fde8e8;color:var(--red)}
-.stop-num.skip-num{background:#e0c8c8;color:var(--red)}
-.jc-skip{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.5px;
-  padding:6px 10px;border-radius:8px;border:none;cursor:pointer;background:#fde8e8;color:var(--red)}
-.jc-skip:disabled{opacity:.4;cursor:default}
-.skip-reason{font-size:11px;color:var(--red);margin-top:4px;font-style:italic}
-.jc-top{padding:14px 14px 10px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
-.jc-left{flex:1;margin-left:10px}
-.jc-client{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:700;color:var(--g9);line-height:1.1;margin-bottom:3px}
-.jc-svc{font-size:13px;font-weight:600;color:var(--g7);margin-bottom:4px}
-.jc-time{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
-.jc-time span{font-weight:600}
-.jc-addr{font-size:12px;margin-top:5px}
-.jc-addr a{color:var(--blue);font-weight:600;text-decoration:none}
-.jc-contact{font-size:12px;color:var(--muted);margin-top:3px}
-.jc-eff{font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px;display:inline-block;margin-top:4px}
-.jc-eff.over{background:#fde8e8;color:#b71c1c}
-.jc-eff.on{background:var(--g1);color:var(--g7)}
-.jc-type{background:var(--g1);border:1px solid var(--g2);border-radius:8px;padding:4px 10px;
-  font-size:11px;font-weight:700;color:var(--g7);white-space:nowrap;flex-shrink:0}
-.jc-bar{border-top:1px solid var(--g1);padding:8px 14px;display:flex;align-items:center;justify-content:space-between}
-.status-pill{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 10px;border-radius:100px}
-.sp-disp{background:var(--blue2);color:var(--blue)}
-.sp-prog{background:var(--acc2);color:#b37800}
-.sp-done{background:var(--g1);color:var(--g7)}
-.jc-act{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;
-  padding:6px 14px;border-radius:8px;border:none;cursor:pointer}
-.jc-act.begin{background:var(--g7);color:#fff}
-.jc-act.complete{background:var(--g4);color:var(--g9)}
-.jc-act.done{background:transparent;color:var(--muted);cursor:default;font-size:12px}
-.stop-num{width:26px;height:26px;background:var(--g7);color:#fff;border-radius:50%;
-  font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
-.stop-num.done-num{background:var(--g2);color:var(--g7)}
-
-/* MODALS */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:flex-end;justify-content:center}
-.overlay.open{display:flex}
-.sheet{background:#fff;border-radius:20px 20px 0 0;padding:22px 18px 40px;width:100%;max-width:680px;max-height:88vh;overflow-y:auto}
-.sheet-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px}
-.sheet-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--g9);margin-bottom:6px}
-.sheet-sub{font-size:13px;color:var(--muted);margin-bottom:14px}
-.sheet-textarea{width:100%;min-height:180px;padding:12px 14px;border:1.5px solid var(--border);
-  border-radius:10px;font-family:'Barlow',sans-serif;font-size:13px;color:var(--text);resize:vertical;outline:none;margin-bottom:12px}
-.sheet-actions{display:flex;gap:10px}
-.sh-btn{flex:1;padding:14px;border-radius:12px;border:none;font-family:'Barlow Condensed',sans-serif;
-  font-size:17px;font-weight:700;letter-spacing:.5px;cursor:pointer}
-.sh-btn.primary{background:var(--g7);color:#fff}
-.sh-btn.secondary{background:var(--g1);color:var(--g7)}
-.detail-row{display:flex;gap:8px;padding:9px 0;border-bottom:1px solid var(--g1)}
-.detail-row:last-child{border-bottom:none}
-.dr-lbl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);min-width:100px;flex-shrink:0}
-.dr-val{font-size:14px;color:var(--text);font-weight:500}
-.dr-val a{color:var(--blue);font-weight:600;text-decoration:none}
-
-/* SPINNER / TOAST */
-.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.35);
-  border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%) translateY(60px);
-  background:var(--g9);color:#fff;padding:10px 22px;border-radius:100px;font-size:14px;font-weight:500;
-  transition:transform .3s;z-index:9999;white-space:nowrap;pointer-events:none}
-.toast.show{transform:translateX(-50%) translateY(0)}
-</style>
-</head>
-<body>
-
-<div id="scr-app">
-  <div class="topbar">
-    <div class="tb-left">
-      <div class="tb-icon">🌿</div>
-      <div>
-        <select id="tb-name-sel" class="tb-sel">
-          <option value="0">Willie Arreola</option>
-          <option value="1">William Arreola</option>
-          <option value="2">Sandra Arreola</option>
-        </select>
-        <div class="tb-role" id="tb-role">Crew Lead</div>
-      </div>
-    </div>
-    <div class="tb-right">
-      <div class="ci-badge" id="ci-badge">NOT IN</div>
-    </div>
-  </div>
-
-  <div class="content" id="content">
-
-    <!-- HOME TAB -->
-    <div class="tab active" id="tab-home">
-      <div class="hero">
-        <div class="hero-date" id="h-date"></div>
-        <div class="hero-greet">Good morning,<br><span id="h-name">Willie</span> 👋</div>
-      </div>
-      <button class="clock-btn start" id="clock-btn">🟢 START YOUR DAY</button>
-      <div class="stats-row">
-        <div class="stat"><div class="stat-lbl">Clocked In</div><div class="stat-val mt" id="s-in">—</div></div>
-        <div class="stat live"><div class="stat-lbl">On Clock</div><div class="stat-val" id="s-dur">—</div></div>
-        <div class="stat"><div class="stat-lbl">Clocked Out</div><div class="stat-val mt" id="s-out">—</div></div>
-      </div>
-      <div class="jobs-strip" id="jobs-strip">
-        <div class="js-left"><span style="font-size:24px">📋</span>
-          <div><div class="js-title">Today's Jobs</div><div class="js-sub" id="strip-sub">Tap to view dispatch</div></div>
-        </div>
-        <div class="js-count" id="strip-cnt">—</div>
-      </div>
-      <div class="board-preview">
-        <div class="bp-lbl">📌 Office Board</div>
-        <div id="h-board"><div class="empty-state">No messages from office</div></div>
-      </div>
-    </div>
-
-    <!-- DISPATCH TAB -->
-    <div class="tab" id="tab-dispatch">
-      <div class="disp-hdr">
-        <div><div class="disp-title">Daily Dispatch</div><div class="disp-date" id="d-date"></div></div>
-      </div>
-      <div id="route-info"></div>
-      <div id="dispatch-list"><div class="empty-state">📋<br><br>Loading today's jobs…</div></div>
-    </div>
-
-    <!-- JOB FORM TAB -->
-    <div class="tab" id="tab-form">
-      <div id="form-body">
-        <!-- Job Time -->
-        <div class="card">
-          <div class="card-title"><div class="ctn" style="background:var(--blue)">⏱</div> Job Time</div>
-          <div class="time-row" style="grid-template-columns:1fr">
-            <div class="tblock" id="tb-start">
-              <div class="tblock-lbl">🟢 Start</div>
-              <div class="tblock-val empty" id="ts-disp">Not set</div>
-              <button class="tbtn" id="ts-btn">TAP TO START</button>
-            </div>
-          </div>
-          <div class="dur-row" id="dur-row">
-            <span>⏳</span><span style="font-size:13px;font-weight:600;color:var(--blue)">Time on Job:</span>
-            <span class="dur-val" id="dur-val">—</span>
-          </div>
-        </div>
-
-        <!-- Lock banner -->
-        <div class="form-lock-banner" id="form-lock-banner">
-          <div class="flb-icon">⏱</div>
-          <div class="flb-title">Start the Job First</div>
-          <div class="flb-sub">Tap <strong>TAP TO START</strong> above to unlock the form.</div>
-        </div>
-
-        <div id="form-fields-wrap">
-          <!-- Customer -->
-          <div class="card">
-            <div class="card-title"><div class="ctn">1</div> Customer</div>
-            <div id="f-srch-wrap">
-              <div class="field">
-                <label>Search by name or address</label>
-                <div class="srch-wrap">
-                  <span class="srch-icon">🔍</span>
-                  <input type="text" id="f-srch" placeholder="Type to search…" autocomplete="off"/>
-                  <div class="srch-results" id="f-results"></div>
-                </div>
-              </div>
-            </div>
-            <div id="f-csel" class="hidden">
-              <div class="csel-banner">
-                <div class="csel-name" id="f-cname"></div>
-                <div class="csel-det" id="f-cdet"></div>
-                <button class="csel-chg" id="csel-chg-btn">✕ Change customer</button>
-              </div>
-              <div class="info-chips" id="f-chips"></div>
-            </div>
-          </div>
-
-          <!-- Crew -->
-          <div class="card">
-            <div class="card-title"><div class="ctn">2</div> Crew on Job</div>
-            <div class="tech-wrap" id="tech-wrap"></div>
-            <input type="hidden" id="f-techs"/>
-          </div>
-
-          <!-- Service -->
-          <div class="card">
-            <div class="card-title"><div class="ctn">3</div> Service Type</div>
-            <div class="svc-grid">
-              <div class="svc-btn" id="svc-res"><span class="si">🏠</span><span class="sl">Residential Mowing</span></div>
-              <div class="svc-btn" id="svc-com"><span class="si">🏢</span><span class="sl">Commercial Mowing</span></div>
-              <div class="svc-btn" id="svc-oth"><span class="si">🔧</span><span class="sl">All Other Services</span></div>
-            </div>
-          </div>
-
-          <!-- Job Details -->
-          <div class="card">
-            <div class="card-title"><div class="ctn">4</div> Job Details</div>
-            <div id="svc-none" style="color:var(--muted);font-size:13px;text-align:center;padding:16px 0">← Select a service type above</div>
-
-            <!-- RESIDENTIAL -->
-            <div id="f-res" class="hidden">
-              <div class="field"><label>Cut Height (inches)</label>
-                <select id="r-height"><option value="">Select…</option>
-                  <option>2.50</option><option>2.75</option><option>3.00</option><option>3.25</option><option>3.50</option>
-                  <option>3.75</option><option>4.00</option><option>4.25</option><option>4.50</option><option>4.75</option><option>5.00</option>
-                </select>
-              </div>
-              <div class="field"><label>Grass Type</label>
-                <div class="gg" id="grass-res-grid">
-                  <div class="gb" data-val="Bahia"><span class="gi">🌾</span><span class="gl">Bahia</span></div>
-                  <div class="gb" data-val="Bermuda"><span class="gi">☀️</span><span class="gl">Bermuda</span></div>
-                  <div class="gb" data-val="St. Augustine"><span class="gi">🌿</span><span class="gl">St. Augustine</span></div>
-                  <div class="gb" data-val="Zoysia"><span class="gi">🍃</span><span class="gl">Zoysia</span></div>
-                  <div class="gb" data-val="Centipede"><span class="gi">🐛</span><span class="gl">Centipede</span></div>
-                  <div class="gb" data-val="Unknown"><span class="gi">❓</span><span class="gl">Unable To ID</span></div>
-                </div><input type="hidden" id="r-grass"/>
-              </div>
-              <div class="field"><label>Mowing Direction</label>
-                <div class="gg" id="dir-grid">
-                  <div class="gb" data-val="12 to 6"><span class="gi">🕛</span><span class="gl">12 to 6</span></div>
-                  <div class="gb" data-val="3 to 9"><span class="gi">🕒</span><span class="gl">3 to 9</span></div>
-                  <div class="gb" data-val="2 to 8"><span class="gi">🕑</span><span class="gl">2 to 8</span></div>
-                  <div class="gb" data-val="11 to 5"><span class="gi">🕚</span><span class="gl">11 to 5</span></div>
-                  <div class="gb" data-val="1 to 7"><span class="gi">🕐</span><span class="gl">1 to 7</span></div>
-                  <div class="gb" data-val="Circular"><span class="gi">🔄</span><span class="gl">Circular</span></div>
-                </div><input type="hidden" id="r-dir"/>
-              </div>
-              <div class="divider"></div>
-              <div class="sec-lbl">Service Checklist</div>
-              <div class="field"><label>Applied Weed Control?</label>
-                <div class="yn" id="yn-r-weed">
-                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
-                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
-                </div><input type="hidden" id="r-weed"/>
-              </div>
-              <div class="field"><label>Sprayed for Bugs?</label>
-                <div class="yn" id="yn-r-bugs">
-                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
-                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
-                </div><input type="hidden" id="r-bugs"/>
-              </div>
-              <div class="field"><label>Trimmed Hedges / Limbs?</label>
-                <div class="yn" id="yn-r-hedges">
-                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
-                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
-                </div><input type="hidden" id="r-hedges"/>
-              </div>
-              <div class="field"><label>Walked Perimeter?</label>
-                <div class="yn" id="yn-r-perim">
-                  <div class="yn-btn y" data-val="✅ Clear">✅ Clear</div>
-                  <div class="yn-btn n" data-val="⚠️ Issue Found">⚠️ Issue</div>
-                </div><input type="hidden" id="r-perim"/>
-              </div>
-              <div class="divider"></div>
-              <div class="field"><label>Notes / Recommend</label><textarea id="r-notes" placeholder="Notes for office or customer…"></textarea></div>
-            </div>
-
-            <!-- COMMERCIAL -->
-            <div id="f-com" class="hidden">
-              <div class="field"><label>Cut Height (inches)</label>
-                <select id="c-height"><option value="">Select…</option>
-                  <option>2.50</option><option>2.75</option><option>3.00</option><option>3.25</option><option>3.50</option>
-                  <option>3.75</option><option>4.00</option><option>4.25</option><option>4.50</option><option>4.75</option><option>5.00</option>
-                </select>
-              </div>
-              <div class="field"><label>Grass Type</label>
-                <div class="gg" id="grass-com-grid">
-                  <div class="gb" data-val="Bahia"><span class="gi">🌾</span><span class="gl">Bahia</span></div>
-                  <div class="gb" data-val="Bermuda"><span class="gi">☀️</span><span class="gl">Bermuda</span></div>
-                  <div class="gb" data-val="St. Augustine"><span class="gi">🌿</span><span class="gl">St. Augustine</span></div>
-                  <div class="gb" data-val="Zoysia"><span class="gi">🍃</span><span class="gl">Zoysia</span></div>
-                  <div class="gb" data-val="Centipede"><span class="gi">🐛</span><span class="gl">Centipede</span></div>
-                  <div class="gb" data-val="Unknown"><span class="gi">❓</span><span class="gl">Unable To ID</span></div>
-                </div><input type="hidden" id="c-grass"/>
-              </div>
-              <div class="divider"></div>
-              <div class="sec-lbl">Service Checklist</div>
-              <div class="field"><label>Blew Parking Lot &amp; Common Areas?</label>
-                <div class="yn" id="yn-c-blow">
-                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
-                </div><input type="hidden" id="c-blow"/>
-              </div>
-              <div class="field"><label>Applied Weed Control?</label>
-                <div class="yn" id="yn-c-weed">
-                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
-                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
-                </div><input type="hidden" id="c-weed"/>
-              </div>
-              <div class="field"><label>Sprayed for Bugs?</label>
-                <div class="yn" id="yn-c-bugs">
-                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
-                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
-                </div><input type="hidden" id="c-bugs"/>
-              </div>
-              <div class="field"><label>Trimmed Hedges / Limbs?</label>
-                <div class="yn" id="yn-c-hedges">
-                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
-                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
-                </div><input type="hidden" id="c-hedges"/>
-              </div>
-              <div class="field"><label>Walked Perimeter?</label>
-                <div class="yn" id="yn-c-perim">
-                  <div class="yn-btn y" data-val="✅ Clear">✅ Clear</div>
-                  <div class="yn-btn n" data-val="⚠️ Issue Found">⚠️ Issue</div>
-                </div><input type="hidden" id="c-perim"/>
-              </div>
-              <div class="divider"></div>
-              <div class="field"><label>We Recommend</label><textarea id="c-rec" placeholder="Recommended services…"></textarea></div>
-              <div class="field"><label>Notes</label><textarea id="c-notes" placeholder="Notes for office or customer…"></textarea></div>
-            </div>
-
-            <!-- OTHER -->
-            <div id="f-oth" class="hidden">
-              <div class="field"><label>Service Performed</label><input type="text" id="o-svc" placeholder="e.g. Hedge Trim, Power Wash…"/></div>
-              <div class="divider"></div>
-              <div class="sec-lbl">Service Checklist</div>
-              <div class="field"><label>Applied Weed Control?</label>
-                <div class="yn" id="yn-o-weed">
-                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
-                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
-                </div><input type="hidden" id="o-weed"/>
-              </div>
-              <div class="field"><label>Sprayed for Bugs?</label>
-                <div class="yn" id="yn-o-bugs">
-                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
-                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
-                </div><input type="hidden" id="o-bugs"/>
-              </div>
-              <div class="field"><label>Trimmed Hedges / Limbs?</label>
-                <div class="yn" id="yn-o-hedges">
-                  <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-                  <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
-                  <div class="yn-btn n" data-val="❌ No">❌ No</div>
-                </div><input type="hidden" id="o-hedges"/>
-              </div>
-              <div class="field"><label>Walked Perimeter?</label>
-                <div class="yn" id="yn-o-perim">
-                  <div class="yn-btn y" data-val="✅ Clear">✅ Clear</div>
-                  <div class="yn-btn n" data-val="⚠️ Issue Found">⚠️ Issue</div>
-                </div><input type="hidden" id="o-perim"/>
-              </div>
-              <div class="divider"></div>
-              <div class="field"><label>Notes / Recommend</label><textarea id="o-notes" placeholder="Notes…"></textarea></div>
-            </div>
-          </div>
-
-          <!-- Pet Waste -->
-          <div class="alert-card">
-            <div class="card-title"><span style="font-size:20px">🐾</span> Pet Waste on Property?</div>
-            <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Tap <strong>Alert Office</strong> if pet waste caused issues.</p>
-            <div class="pet-toggle">
-              <div class="pet-opt" id="pet-clr"><span class="poi">✅</span><span class="pol">All Clear</span></div>
-              <div class="pet-opt" id="pet-wrn"><span class="poi">⚠️</span><span class="pol">Alert Office</span></div>
-            </div>
-            <input type="hidden" id="f-pet"/>
-          </div>
-
-          <!-- Office Note -->
-          <div class="alert-card">
-            <div class="card-title"><span style="font-size:20px">📋</span> Internal Note to Office</div>
-            <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Gate code, property issue. <strong>Not sent to customer.</strong></p>
-            <div class="field">
-              <label>Office Note (Optional)</label>
-              <textarea id="f-onote" rows="3" placeholder="e.g. Gate code changed, dog left in yard…"></textarea>
-            </div>
-            <p style="font-size:11px;color:var(--muted);font-style:italic">📧 Alert sent to office if filled in.</p>
-          </div>
-
-          <!-- Photos -->
-          <div class="card">
-            <div class="card-title"><div class="ctn">5</div> Job Photos</div>
-            <div class="photo-area">
-              <input type="file" id="f-photos" multiple accept="image/*" capture="environment"/>
-              <div style="font-size:30px;margin-bottom:6px">📷</div>
-              <div style="font-size:14px;font-weight:600;color:var(--g7)">Tap to add photos</div>
-              <div style="font-size:12px;color:var(--muted);margin-top:3px">Before &amp; after</div>
-            </div>
-            <div class="photo-grid" id="photo-grid"></div>
-          </div>
-
-          <!-- End Job + Submit -->
-          <div class="card" style="border-color:var(--blue3)">
-            <div class="card-title" style="color:var(--blue)"><div class="ctn" style="background:var(--blue)">⏱</div> End Job</div>
-            <div class="tblock" id="tb-end" style="margin-bottom:10px">
-              <div class="tblock-lbl">🔴 End</div>
-              <div class="tblock-val empty" id="te-disp">Not set</div>
-              <button class="tbtn" id="te-btn" disabled>TAP TO END</button>
-            </div>
-            <div id="end-required-banner" class="hidden"
-              style="background:#fff8e1;border:2px solid var(--acc);border-radius:10px;padding:12px 14px;margin-bottom:10px;text-align:center;">
-              <div style="font-size:13px;color:#996600">⚠ Tap <strong>TAP TO END</strong> above before submitting.</div>
-            </div>
-          </div>
-          <button class="sub-btn" id="sub-btn">✓ SUBMIT JOB</button>
-          <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:8px;padding-bottom:20px">Sends completion email to customer automatically.</p>
-        </div>
-      </div>
-
-      <div class="success" id="form-success">
-        <div class="si">✅</div>
-        <h2>Job Submitted!</h2>
-        <p>Completion email sent to your customer.</p>
-        <button class="nj-btn" id="new-job-btn">+ Start Next Job</button>
-      </div>
-    </div>
-
-  </div><!-- /content -->
-
-  <div class="bnav">
-    <div class="ni active" id="ni-home"><span class="ni-icon">🏠</span><span class="ni-lbl">Home</span></div>
-    <div class="ni" id="ni-dispatch"><span class="ni-icon">📋</span><span class="ni-lbl">Dispatch</span><span class="ni-dot"></span></div>
-    <div class="ni" id="ni-form"><span class="ni-icon">✅</span><span class="ni-lbl">Job Form</span></div>
-  </div>
-</div>
-
-<!-- DETAIL MODAL -->
-<div class="overlay" id="detail-modal">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <div id="detail-content"></div>
-    <div class="sheet-actions">
-      <button class="sh-btn secondary" id="detail-close-btn">Close</button>
-      <button class="sh-btn primary" id="detail-start-btn">Start This Job →</button>
-    </div>
-  </div>
-</div>
-
-<!-- SKIP MODAL -->
-<div class="overlay" id="skip-modal">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-title">⚠️ Skip Job</div>
-    <div class="sheet-sub" id="skip-modal-client">Customer name</div>
-    <div style="display:flex;gap:8px;margin-bottom:12px">
-      <button class="sh-btn secondary" id="skip-quick-gate" style="flex:1;padding:10px 8px;font-size:13px">🔒 Locked Gate</button>
-      <button class="sh-btn secondary" id="skip-quick-mech" style="flex:1;padding:10px 8px;font-size:13px">🔧 Mechanical</button>
-    </div>
-    <textarea class="sheet-textarea" id="skip-reason-txt" placeholder="Describe reason for skipping…" style="min-height:120px"></textarea>
-    <div class="sheet-actions">
-      <button class="sh-btn secondary" id="skip-cancel-btn">Cancel</button>
-      <button class="sh-btn" id="skip-confirm-btn" style="background:var(--red);color:#fff">⚠️ Skip Job</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
 // ════════════════════════════════════════════════════════════════
-// CONFIG
+// WS LAWN CARE — APPS SCRIPT  (March 2026)
+//
+// Dispatch tab columns:
+//   A=Date  B=Client  C=Start  D=End  E=Status  F=JobType  G=Service
+//   H=ParsedAt  I=BudgetedHours  J=Email  K=Phone  L=Address
+//   M=Efficiency%  N=Actual Duration (hrs)
+//   Summary row: O=Windshield Time  P=Utilization %
+//
+// Payroll tab columns:
+//   A=Tech Name  B=Position  C=Rate
+//   D=Mon Start  E=Mon End   F=Tue Start  G=Tue End
+//   H=Wed Start  I=Wed End   J=Thu Start  K=Thu End
+//   L=Fri Start  M=Fri End   N=Sat Start  O=Sat End
+//   P=Sun Start  Q=Sun End   R=Total Hours  S=Total $
 // ════════════════════════════════════════════════════════════════
-var CFG = {
-  appsScript: 'https://script.google.com/macros/s/AKfycbxuGa7IjVnaZdYrzECByJX3cVyShnNceMfmKOYN36-3iHa0xKKVUdLqcLXlYmn37W_s/exec',
-  token:      'wslawn-data-2026',
-  whJob:      'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/',
-  whAlert:    'https://hooks.zapier.com/hooks/catch/20549459/uxw6ope/',
-  whSheet:    'https://hooks.zapier.com/hooks/catch/20549459/uxwh463/',
-  whClock:    'https://hooks.zapier.com/hooks/catch/20549459/upavpzb/',
-  cfWorker:   'https://wsphotoupload.will-671.workers.dev/',
-};
+const SHEET_ID     = '1hCpA8PMmMNcUaU3WAREvTI8lE7TkhvfubInfFXg1QjU';
+const TOKEN        = 'wslawn-data-2026';
+const ARCHIVE_EMAIL = 'will@wslawncareservicesllc.com';
+
 
 // ════════════════════════════════════════════════════════════════
-// STATE
+// doGet — serves JSON to crew app
 // ════════════════════════════════════════════════════════════════
-var S = {
-  crew: [
-    {name:'Willie Arreola',  position:'Crew Lead'},
-    {name:'William Arreola', position:'Field Tech'},
-    {name:'Sandra Arreola',  position:'Field Tech'},
-  ],
-  customers: [], board: [], jobs: [],
-  user: {name:'Willie Arreola', position:'Crew Lead'},
-  clockIn: null, clockOut: null, clocked: false,
-  selJobIdx: null, cust: null, svc: null, pet: '',
-  jStart: null, jEnd: null, photos: [], selectedTechs: [],
-};
+function doGet(e) {
+  if (!e || !e.parameter || e.parameter.token !== TOKEN) {
+    return ContentService.createTextOutput(JSON.stringify({error:'Unauthorized'}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 
-// ════════════════════════════════════════════════════════════════
-// PERSIST — save/restore day state via localStorage
-// Persists: user selection, clock state, jobs (with statuses/skip reasons)
-// Resets automatically at midnight (new day key)
-// ════════════════════════════════════════════════════════════════
-var STORE_KEY = 'wscrew_' + new Date().toLocaleDateString('en-US').replace(/\//g,'-');
+  const ss = SpreadsheetApp.openById(SHEET_ID);
 
-function saveState() {
+  // ── Clients tab ──────────────────────────────────────────────
+  const clientRows = ss.getSheetByName('Clients').getDataRange().getValues();
+  const customers  = clientRows.slice(1).filter(r => r[0]).map(r => ({
+    name:               r[0]  || '',
+    address:            r[1]  || '',
+    email:              r[2]  || '',
+    phone:              r[3]  || '',
+    mowingHeight:       String(r[4] || ''),
+    mowingDirection:    r[5]  || '',
+    grassType:          r[6]  || '',
+    lastEfficiencyRate: r[7]  ? String(r[7]) : '',  // col H
+    lastVisitDuration:  String(r[8] || ''),           // col I
+    lastVisitTechs:     r[9]  || '',                  // col J
+  }));
+
+  // ── Tech Names tab ───────────────────────────────────────────
+  const techRows = ss.getSheetByName('Tech Names').getDataRange().getValues();
+  const techs    = techRows.slice(1).filter(r => r[0]).map(r => ({
+    name:     r[0] || '',
+    position: r[1] || '',
+    pin:      String(r[3] || '0000'),
+  }));
+
+  // ── Board tab ────────────────────────────────────────────────
+  let board = [];
   try {
-    localStorage.setItem(STORE_KEY, JSON.stringify({
-      user:     S.user,
-      clocked:  S.clocked,
-      clockIn:  S.clockIn  ? S.clockIn.toISOString()  : null,
-      clockOut: S.clockOut ? S.clockOut.toISOString() : null,
-      jobs:     S.jobs,
-    }));
-  } catch(e) { console.warn('saveState failed:', e); }
-}
+    const bSheet = ss.getSheetByName('Board');
+    if (bSheet) {
+      board = bSheet.getDataRange().getValues().slice(1)
+        .filter(r => r[1])
+        .map(r => ({ tag:(r[0]||'general').toLowerCase(), text:r[1]||'', time:r[2]||'' }))
+        .reverse();
+    }
+  } catch(err) { Logger.log('Board error: ' + err); }
 
-function loadState() {
+  // ── Dispatch tab ─────────────────────────────────────────────
+  let dispatch = [];
   try {
-    var raw = localStorage.getItem(STORE_KEY);
-    if (!raw) return false;
-    var saved = JSON.parse(raw);
-    if (saved.user)    S.user    = saved.user;
-    if (saved.clocked) S.clocked = saved.clocked;
-    if (saved.clockIn)  S.clockIn  = new Date(saved.clockIn);
-    if (saved.clockOut) S.clockOut = new Date(saved.clockOut);
-    if (saved.jobs && saved.jobs.length) S.jobs = saved.jobs;
-    return true;
-  } catch(e) { return false; }
-}
+    const dSheet = ss.getSheetByName('Dispatch');
+    if (dSheet) {
+      const tz    = Session.getScriptTimeZone();
+      const today = Utilities.formatDate(new Date(), tz, 'M/d/yy');
 
-// ════════════════════════════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════════════════════════════
-async function init() {
-  // Restore persisted day state before booting UI
-  var hadSavedState = loadState();
-  bootUI();
-
-  try {
-    var res = await fetch(CFG.appsScript + '?token=' + CFG.token);
-    var d   = await res.json();
-    if (d.techs     && d.techs.length)    { S.crew = d.techs; rebuildTechWrap(); updateTbSel(); }
-    if (d.customers && d.customers.length) S.customers = d.customers;
-    if (d.board     && d.board.length)    { S.board = d.board; renderBoard(); }
-
-    // Dispatch: enrich fresh server jobs with Clients data by name match,
-    // then merge with saved job statuses so in-progress/complete/skipped survive refresh
-    if (d.dispatch && d.dispatch.length) {
-      var freshJobs = d.dispatch.map(function(j) {
-        // Match dispatch client name against Clients tab col A (name only)
-        var clientName = j.client.toLowerCase().split(',')[0].trim();
-        var match = S.customers.find(function(c) {
-          return c.name.toLowerCase().trim() === clientName ||
-                 c.name.toLowerCase().trim().includes(clientName);
-        });
-        if (match) {
-          j.address = match.address || j.address || '';
-          j.email   = match.email   || j.email   || '';
-          j.phone   = match.phone   || j.phone   || '';
-        }
-        return j;
-      });
-
-      // Preserve job statuses from saved state so refresh doesn't reset progress
-      if (hadSavedState && S.jobs.length) {
-        freshJobs = freshJobs.map(function(fj) {
-          var saved = S.jobs.find(function(sj) {
-            return sj.client.toLowerCase().trim() === fj.client.toLowerCase().trim();
-          });
-          if (saved) {
-            fj.jobStatus  = saved.jobStatus  || fj.jobStatus;
-            fj.skipReason = saved.skipReason || '';
-            fj.formSubmitted = saved.formSubmitted || false;
+      dispatch = dSheet.getDataRange().getValues().slice(1)
+        .filter(r => {
+          if (!r[1]) return false;
+          if (String(r[0]).toUpperCase() === 'SUMMARY') return false; // skip summary row
+          const dv = r[0]; if (!dv) return false;
+          let ds = '';
+          if (dv instanceof Date) {
+            ds = Utilities.formatDate(dv, tz, 'M/d/yy');
+          } else {
+            const s = String(dv).trim();
+            const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+            if (m) ds = m[1]+'/'+m[2]+'/'+(m[3].length===4?m[3].slice(2):m[3]);
+            else   ds = s;
           }
-          return fj;
+          return ds === today;
+        })
+        .map(r => {
+          function fmtT(v) {
+            if (!v) return '';
+            if (v instanceof Date) {
+              let h = v.getHours(), m = v.getMinutes();
+              if (h===0 && m===0) return '';
+              const ap = h>=12?'PM':'AM'; h = h%12||12;
+              return h+':'+(m<10?'0'+m:m)+' '+ap;
+            }
+            return String(v).trim();
+          }
+          return {
+            date:           String(r[0])  || '',
+            client:         String(r[1])  || '',
+            startTime:      fmtT(r[2]),
+            endTime:        fmtT(r[3]),
+            status:         String(r[4]  || 'Dispatched'),
+            jobType:        String(r[5]  || ''),
+            service:        String(r[6]  || ''),
+            budgetedHours:  r[8]  ? String(r[8])  : '',
+            email:          String(r[9]  || ''),
+            phone:          String(r[10] || ''),
+            address:        String(r[11] || ''),
+            efficiency:     r[12] ? String(r[12]) : '',
+            actualDuration: r[13] ? String(r[13]) : '',
+            jobStatus:      'dispatched',
+          };
+        });
+    }
+  } catch(err) { Logger.log('Dispatch error: ' + err); }
+
+  return ContentService
+    .createTextOutput(JSON.stringify({customers, techs, board, dispatch}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+
+// ════════════════════════════════════════════════════════════════
+// doPost — routes clock events and job completion updates
+// ════════════════════════════════════════════════════════════════
+function doPost(e) {
+  try {
+    let params = {};
+    if (e && e.parameter && Object.keys(e.parameter).length > 0) {
+      params = e.parameter;
+    } else if (e && e.postData && e.postData.contents) {
+      try { params = JSON.parse(e.postData.contents); }
+      catch(ex) {
+        e.postData.contents.split('&').forEach(pair => {
+          const [k, v] = pair.split('=');
+          if (k) params[decodeURIComponent(k)] = decodeURIComponent(v || '');
         });
       }
-
-      S.jobs = freshJobs;
-      renderDispatch();
-      updateStrip();
     }
 
-    saveState();
-  } catch(e) { console.warn('Sheet fetch failed:', e.message); }
-}
+    const type = params.type || '';
+    Logger.log('doPost type: ' + type + ' | params: ' + JSON.stringify(params));
 
-function bootUI() {
-  var now = new Date(), h = now.getHours();
-  var greet = h<12?'Good morning':h<17?'Good afternoon':h<21?'Good evening':'Working late';
-  var emoji = h<12?'👋':h<17?'☀️':h<21?'🌅':'🌙';
-  document.getElementById('h-date').textContent = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
-  document.getElementById('d-date').textContent = now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  document.querySelector('.hero-greet').innerHTML = greet+',<br><span style="color:var(--g4)">'+S.user.name.split(' ')[0]+' '+emoji+'</span>';
-  document.getElementById('tb-role').textContent = S.user.position;
+    if (type === 'clock_event')  writeClockEvent(params);
+    if (type === 'sheet_update') writeSheetUpdate(params);
+    if (type === 'skip_event')   writeSkipEvent(params);
 
-  // Restore clock UI if state was loaded
-  var btn   = document.getElementById('clock-btn');
-  var badge = document.getElementById('ci-badge');
-  if (S.clocked) {
-    btn.className = 'clock-btn stop'; btn.textContent = '🔴 END YOUR DAY';
-    badge.textContent = 'IN'; badge.classList.add('in');
-  }
-  if (S.clockIn) {
-    document.getElementById('s-in').textContent = fmt(S.clockIn);
-    document.getElementById('s-in').classList.remove('mt');
-  }
-  if (S.clockOut) {
-    document.getElementById('s-out').textContent = fmt(S.clockOut);
-    document.getElementById('s-out').classList.remove('mt');
-  }
+    return ContentService.createTextOutput(JSON.stringify({ok:true}))
+      .setMimeType(ContentService.MimeType.JSON);
 
-  renderBoard();
-  rebuildTechWrap();
-  updateFormLock();
-  startDurTimer();
-  if (S.jobs.length) { renderDispatch(); updateStrip(); }
-}
-
-function updateTbSel() {
-  var sel = document.getElementById('tb-name-sel');
-  sel.innerHTML = S.crew.map(function(c,i){ return '<option value="'+i+'">'+c.name+'</option>'; }).join('');
-  // Restore saved user selection
-  var savedIdx = S.crew.findIndex(function(c){ return c.name === S.user.name; });
-  sel.value = savedIdx >= 0 ? String(savedIdx) : '0';
-  document.getElementById('tb-role').textContent = S.user.position;
-}
-
-function rebuildTechWrap() {
-  var wrap = document.getElementById('tech-wrap');
-  wrap.innerHTML = '';
-  S.crew.forEach(function(c,i) {
-    var av  = c.name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
-    var div = document.createElement('div');
-    div.className = 'tech-pill';
-    div.id = 'tp-'+i;
-    div.innerHTML = '<div class="tech-av">'+av+'</div><span class="tech-name">'+c.name+'</span>';
-    div.addEventListener('click', function(){ togTech(i, c.name); });
-    wrap.appendChild(div);
-  });
-}
-
-// ════════════════════════════════════════════════════════════════
-// WIRE BUTTONS
-// ════════════════════════════════════════════════════════════════
-function wireButtons() {
-  document.getElementById('tb-name-sel').addEventListener('change', function() {
-    var idx = parseInt(this.value);
-    if (!isNaN(idx) && S.crew[idx]) {
-      S.user = {name: S.crew[idx].name, position: S.crew[idx].position};
-      document.getElementById('tb-role').textContent = S.crew[idx].position;
-      var now = new Date(), h = now.getHours();
-      var greet = h<12?'Good morning':h<17?'Good afternoon':h<21?'Good evening':'Working late';
-      var emoji = h<12?'👋':h<17?'☀️':h<21?'🌅':'🌙';
-      document.querySelector('.hero-greet').innerHTML = greet+',<br><span style="color:var(--g4)">'+S.crew[idx].name.split(' ')[0]+' '+emoji+'</span>';
-      saveState();
-    }
-  });
-  document.getElementById('clock-btn').addEventListener('click', toggleClock);
-  document.getElementById('ni-home').addEventListener('click',     function(){ goTab('home'); });
-  document.getElementById('ni-dispatch').addEventListener('click', function(){ goTab('dispatch'); });
-  document.getElementById('ni-form').addEventListener('click',     function(){
-    if(!S.clocked){toast('⚠ Clock in before starting a job');return;}
-    goTab('form');
-  });
-  document.getElementById('jobs-strip').addEventListener('click', function(){ goTab('dispatch'); });
-  document.getElementById('detail-close-btn').addEventListener('click', function(){ document.getElementById('detail-modal').classList.remove('open'); });
-  document.getElementById('detail-start-btn').addEventListener('click', startJobFromDetail);
-  document.getElementById('detail-modal').addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); });
-  document.getElementById('skip-modal').addEventListener('click',  function(e){ if(e.target===this) this.classList.remove('open'); });
-  document.getElementById('skip-cancel-btn').addEventListener('click', function(){ document.getElementById('skip-modal').classList.remove('open'); skipJobIdx=null; });
-  document.getElementById('skip-confirm-btn').addEventListener('click', confirmSkip);
-  document.getElementById('skip-quick-gate').addEventListener('click', function(){ document.getElementById('skip-reason-txt').value='Locked Gate'; });
-  document.getElementById('skip-quick-mech').addEventListener('click', function(){ document.getElementById('skip-reason-txt').value='Mechanical Breakdown'; });
-  document.getElementById('ts-btn').addEventListener('click', function(){ jobTime('start'); });
-  document.getElementById('te-btn').addEventListener('click', function(){ jobTime('end'); });
-  document.getElementById('f-srch').addEventListener('input', onCustSearch);
-  document.addEventListener('click', function(e){ if(!e.target.closest('.srch-wrap')) document.getElementById('f-results').classList.remove('open'); });
-  document.getElementById('csel-chg-btn').addEventListener('click', clearCust);
-  document.getElementById('svc-res').addEventListener('click', function(){ selSvc('residential'); });
-  document.getElementById('svc-com').addEventListener('click', function(){ selSvc('commercial'); });
-  document.getElementById('svc-oth').addEventListener('click', function(){ selSvc('other'); });
-  document.getElementById('grass-res-grid').querySelectorAll('.gb').forEach(function(el){ el.addEventListener('click', function(){ gridSel(el, 'grass-res-grid', 'r-grass'); }); });
-  document.getElementById('grass-com-grid').querySelectorAll('.gb').forEach(function(el){ el.addEventListener('click', function(){ gridSel(el, 'grass-com-grid', 'c-grass'); }); });
-  document.getElementById('dir-grid').querySelectorAll('.gb').forEach(function(el){ el.addEventListener('click', function(){ gridSel(el, 'dir-grid', 'r-dir'); }); });
-  ['r-weed','r-bugs','r-hedges','r-perim','c-blow','c-weed','c-bugs','c-hedges','c-perim','o-weed','o-bugs','o-hedges','o-perim'].forEach(function(id){
-    document.getElementById('yn-'+id).querySelectorAll('.yn-btn').forEach(function(btn){ btn.addEventListener('click', function(){ yntog(btn, id); }); });
-  });
-  document.getElementById('pet-clr').addEventListener('click', function(){ setPet('clear'); });
-  document.getElementById('pet-wrn').addEventListener('click', function(){ setPet('warn'); });
-  document.getElementById('f-photos').addEventListener('change', function(){ Array.from(this.files).forEach(addPhoto); this.value=''; });
-  document.getElementById('sub-btn').addEventListener('click', submitJob);
-  document.getElementById('new-job-btn').addEventListener('click', function(){
-    resetForm();
-    goTab('dispatch');
-  });
-}
-
-// ════════════════════════════════════════════════════════════════
-// CLOCK
-// ════════════════════════════════════════════════════════════════
-var durTimer = null;
-function toggleClock() {
-  var btn = document.getElementById('clock-btn');
-  var badge = document.getElementById('ci-badge');
-  if (!S.clocked) {
-    S.clockIn = new Date(); S.clocked = true;
-    btn.className = 'clock-btn stop'; btn.textContent = '🔴 END YOUR DAY';
-    badge.textContent = 'IN'; badge.classList.add('in');
-    document.getElementById('s-in').textContent = fmt(S.clockIn);
-    document.getElementById('s-in').classList.remove('mt');
-    sendClockEvent('Clock In');
-    toast('✅ Day started — '+fmt(S.clockIn));
-    startDurTimer();
-    updateBadge();
-    saveState();
-  } else {
-    S.clockOut = new Date(); S.clocked = false;
-    btn.className = 'clock-btn start'; btn.textContent = '🟢 START YOUR DAY';
-    badge.textContent = 'NOT IN'; badge.classList.remove('in');
-    document.getElementById('s-out').textContent = fmt(S.clockOut);
-    document.getElementById('s-out').classList.remove('mt');
-    if (durTimer) { clearInterval(durTimer); durTimer = null; }
-    sendClockEvent('Clock Out');
-    toast('👋 Day ended — '+fmt(S.clockOut));
-    updateBadge();
-    saveState();
+  } catch(err) {
+    Logger.log('doPost error: ' + err.toString());
+    return ContentService.createTextOutput(JSON.stringify({error:err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
   }
 }
-function startDurTimer() {
-  if (durTimer || !S.clocked) return;
-  durTimer = setInterval(function(){
-    if (!S.clocked || !S.clockIn) return;
-    document.getElementById('s-dur').textContent = ((Date.now()-S.clockIn)/3600000).toFixed(2)+'h';
-  }, 15000);
-}
-async function sendClockEvent(type) {
-  var now = new Date();
-  var hrs = (type==='Clock Out' && S.clockIn) ? ((now-S.clockIn)/3600000).toFixed(2) : '';
-  var p = {type:'clock_event',eventType:type,techName:S.user.name,position:S.user.position,
-    date:now.toLocaleDateString('en-US'),time:fmt(now),hoursWorked:hrs};
-  try { await fetch(CFG.appsScript,{method:'POST',body:new URLSearchParams(p),mode:'no-cors'}); } catch(e){}
-  await zap(CFG.whClock, p);
-}
+
 
 // ════════════════════════════════════════════════════════════════
-// FORM LOCK
+// CLOCK IN / OUT → Payroll tab
 // ════════════════════════════════════════════════════════════════
-function updateFormLock() {
-  var started = !!S.jStart, ended = !!S.jEnd;
-  document.getElementById('form-lock-banner').classList.toggle('hidden', started);
-  document.getElementById('form-fields-wrap').classList.toggle('form-section-lock', !started);
-  document.getElementById('end-required-banner').classList.toggle('hidden', !started || ended);
-  document.getElementById('sub-btn').disabled = !started || !ended;
-}
+function writeClockEvent(p) {
+  const ss    = SpreadsheetApp.openById(SHEET_ID);
+  const sheet = ss.getSheetByName('Payroll');
+  if (!sheet) { Logger.log('Payroll tab not found'); return; }
 
-// ════════════════════════════════════════════════════════════════
-// DISPATCH
-// ════════════════════════════════════════════════════════════════
-function toMins(t){
-  if(!t)return 9999;
-  var m=t.match(/(\d+):(\d+)\s?(AM|PM)/i);if(!m)return 9999;
-  var h=parseInt(m[1]),mn=parseInt(m[2]);
-  if(m[3].toUpperCase()==='PM'&&h!==12)h+=12;
-  if(m[3].toUpperCase()==='AM'&&h===12)h=0;
-  return h*60+mn;
-}
+  const techName  = p.techName  || '';
+  const eventType = p.eventType || '';
+  const timeStr   = p.time      || '';
+  const dow       = new Date().getDay();
 
-function mapsLink(addr){ if(!addr)return null; return 'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(addr); }
+  const startCols = {1:4, 2:6, 3:8, 4:10, 5:12, 6:14, 0:16};
+  const endCols   = {1:5, 2:7, 3:9, 4:11, 5:13, 6:15, 0:17};
+  const col = eventType === 'Clock In' ? startCols[dow] : endCols[dow];
+  if (!col) { Logger.log('Cannot determine column for day: ' + dow); return; }
 
-function renderDispatch(){
-  var el=document.getElementById('dispatch-list');
-  if(!S.jobs.length){el.innerHTML='<div class="empty-state">📋<br><br>No jobs loaded.</div>';updateBadge();renderRouteInfo();return;}
-  var html='',stop=0;
-  S.jobs.forEach(function(j,i){
-    var done=j.jobStatus==='complete',active=j.jobStatus==='in-progress',skipped=j.jobStatus==='skipped';
-    if(!done&&!skipped)stop++;
-    var sn=done?'✓':skipped?'✕':stop;
-    var sc=done?'sp-done':active?'sp-prog':skipped?'sp-skip':'sp-disp';
-    var sl=done?'Complete':active?'In Progress':skipped?'Skipped':'Dispatched';
-    var ml=mapsLink(j.address);
-    var addrHtml=j.address?'<div class="jc-addr"><a href="'+ml+'" target="_blank">📍 '+j.address+' ↗</a></div>':'';
-    var phoneHtml=j.phone?'<div class="jc-contact">📞 <a href="tel:'+j.phone+'" style="color:var(--muted);text-decoration:none">'+j.phone+'</a></div>':'';
-    var effHtml='';
-    if(j.efficiency){var effNum=parseInt(j.efficiency);effHtml='<div class="jc-eff '+(effNum>=100?'on':'over')+'">⚡ '+j.efficiency+' efficiency</div>';}
-    var skipReasonHtml=skipped&&j.skipReason?'<div class="skip-reason">⚠️ '+j.skipReason+'</div>':'';
-    var skipNumCls='stop-num'+(done?' done-num':skipped?' skip-num':'');
-    var cardCls='job-card'+(done?' done':skipped?' skipped':'');
-    // Action button area
-    var actionBtns='';
-    if(done){
-      actionBtns='<button class="jc-act done" disabled>✓ Done</button>';
-    } else if(skipped){
-      actionBtns='<button class="jc-act done" disabled style="color:var(--red)">✕ Skipped</button>';
-    } else if(active){
-      actionBtns='<button class="jc-act complete" id="jact-'+i+'">Complete →</button>';
-    } else {
-      actionBtns='<button class="jc-act begin" id="jact-'+i+'">Start →</button>'
-               +'<button class="jc-skip" id="jskip-'+i+'">⚠ Skip</button>';
-    }
-    html+='<div class="'+cardCls+'" id="jcard-'+i+'">'
-      +'<div class="jc-top">'
-      +'<div class="'+skipNumCls+'">'+sn+'</div>'
-      +'<div class="jc-left">'
-      +'<div class="jc-client">'+j.client+'</div>'
-      +(j.service?'<div class="jc-svc">'+j.service+'</div>':'')
-      +'<div class="jc-time">🕐 <span>'+(j.startTime||'—')+'</span>'+(j.endTime?' – <span>'+j.endTime+'</span>':'')+'</div>'
-      +(j.budgetedHours?'<div class="jc-time" style="margin-top:3px;color:var(--blue);font-weight:600">⏳ Budget: <span>'+j.budgetedHours+' hrs</span></div>':'')
-      +addrHtml+phoneHtml+effHtml+skipReasonHtml
-      +'</div>'
-      +(j.jobType?'<div class="jc-type">'+j.jobType+'</div>':'')
-      +'</div>'
-      +'<div class="jc-bar">'
-      +'<span class="status-pill '+sc+'">'+sl+'</span>'
-      +'<div style="display:flex;gap:6px">'+actionBtns+'</div>'
-      +'</div></div>';
-  });
-  el.innerHTML=html;
-  S.jobs.forEach(function(j,i){
-    var card=document.getElementById('jcard-'+i);
-    var act =document.getElementById('jact-'+i);
-    var skip=document.getElementById('jskip-'+i);
-    if(card) card.addEventListener('click', function(){ openDetail(i); });
-    if(act)  act.addEventListener('click',  function(e){ e.stopPropagation(); quickAct(i); });
-    if(skip) skip.addEventListener('click', function(e){ e.stopPropagation(); openSkipModal(i); });
-  });
-  renderRouteInfo(); updateBadge();
-}
-
-function renderRouteInfo(){
-  var el=document.getElementById('route-info');
-  if(!S.jobs.length){el.innerHTML='';return;}
-  var rem=S.jobs.filter(function(j){return j.jobStatus!=='complete'&&j.jobStatus!=='skipped';}).length;
-  el.innerHTML='<div class="route-banner"><span style="font-size:18px">🗺️</span><span class="rb-text">Route sorted by scheduled time</span><span class="rb-badge">'+rem+' stop'+(rem!==1?'s':'')+' left</span></div>';
-}
-
-function quickAct(i){
-  var j=S.jobs[i];
-  if(j.jobStatus==='complete'||j.jobStatus==='skipped')return;
-  if(!S.clocked){toast('⚠ Clock in first before starting a job');return;}
-  if(j.jobStatus==='dispatched'){
-    S.jobs[i].jobStatus='in-progress';
-    prefillFromJob(i);
-    goTab('form');
-    saveState();
-  } else if(j.jobStatus==='in-progress') {
-    if(!j.formSubmitted){toast('⚠ Complete and submit the job form first');goTab('form');return;}
-    S.jobs[i].jobStatus='complete';
-    saveState();
-  }
-  renderDispatch();updateStrip();
-}
-
-var skipJobIdx=null;
-function openSkipModal(i){
-  skipJobIdx=i;
-  document.getElementById('skip-modal-client').textContent=S.jobs[i].client;
-  document.getElementById('skip-reason-txt').value='';
-  document.getElementById('skip-modal').classList.add('open');
-}
-async function confirmSkip(){
-  if(skipJobIdx===null)return;
-  var reason=document.getElementById('skip-reason-txt').value.trim();
-  if(!reason){toast('⚠ Please enter a reason');return;}
-  var j=S.jobs[skipJobIdx];
-  S.jobs[skipJobIdx].jobStatus='skipped';
-  S.jobs[skipJobIdx].skipReason=reason;
-  document.getElementById('skip-modal').classList.remove('open');
-  renderDispatch(); updateStrip();
-  saveState();
-  toast('⚠️ '+j.client+' skipped');
-  // Alert office
-  var date=new Date().toLocaleDateString('en-US');
-  await zap(CFG.whAlert,{
-    type:'office_alert',
-    customerName:j.client,
-    serviceAddress:j.address||'',
-    date:date,
-    petAlert:'',
-    officeNote:'⚠️ JOB SKIPPED — '+reason,
-    toEmail:'info'+'@'+'wslawncareservicesllc.com',
-    subject:'[WS Skip] ⚠️ Job Skipped — '+j.client
-  });
-  // Log to Dispatch tab via Apps Script
-  try{await fetch(CFG.appsScript,{method:'POST',body:new URLSearchParams({
-    type:'skip_event',
-    customerName:j.client,
-    date:date,
-    skipReason:reason,
-    techName:S.user.name,
-  }),mode:'no-cors'});}catch(e){}
-  skipJobIdx=null;
-}
-
-var selJobIdx=null;
-function openDetail(i){
-  selJobIdx=i;
-  var j=S.jobs[i];
-  var ml=mapsLink(j.address);
-  var addrRow=j.address?'<div class="detail-row"><span class="dr-lbl">Address</span><span class="dr-val"><a href="'+ml+'" target="_blank">📍 '+j.address+' ↗</a></span></div>':'';
-  var emailRow=j.email?'<div class="detail-row"><span class="dr-lbl">Email</span><span class="dr-val">'+j.email+'</span></div>':'';
-  var phoneRow=j.phone?'<div class="detail-row"><span class="dr-lbl">Phone</span><span class="dr-val"><a href="tel:'+j.phone+'" style="color:var(--blue)">'+j.phone+'</a></span></div>':'';
-  var effRow=j.efficiency?'<div class="detail-row"><span class="dr-lbl">Efficiency</span><span class="dr-val" style="color:'+(parseInt(j.efficiency)>=100?'var(--g7)':'var(--red)')+'">⚡ '+j.efficiency+'</span></div>':'';
-  document.getElementById('detail-content').innerHTML=
-    '<div class="sheet-title">'+j.client+'</div>'
-    +'<div class="sheet-sub" style="margin-bottom:12px">'+(j.service||j.jobType||'')+'</div>'
-    +'<div class="detail-row"><span class="dr-lbl">Date</span><span class="dr-val">'+j.date+'</span></div>'
-    +'<div class="detail-row"><span class="dr-lbl">Start</span><span class="dr-val">'+(j.startTime||'—')+'</span></div>'
-    +'<div class="detail-row"><span class="dr-lbl">End</span><span class="dr-val">'+(j.endTime||'—')+'</span></div>'
-    +'<div class="detail-row"><span class="dr-lbl">Type</span><span class="dr-val">'+(j.jobType||'—')+'</span></div>'
-    +'<div class="detail-row"><span class="dr-lbl">Status</span><span class="dr-val">'+(j.status||'—')+'</span></div>'
-    +(j.budgetedHours?'<div class="detail-row"><span class="dr-lbl">Budget</span><span class="dr-val" style="color:var(--blue);font-weight:700">'+j.budgetedHours+' hrs</span></div>':'')
-    +addrRow+emailRow+phoneRow+effRow;
-  var btn=document.getElementById('detail-start-btn');
-  btn.disabled=j.jobStatus==='complete';
-  btn.textContent=j.jobStatus==='complete'?'✓ Completed':'Start This Job →';
-  document.getElementById('detail-modal').classList.add('open');
-}
-
-function startJobFromDetail(){
-  document.getElementById('detail-modal').classList.remove('open');
-  if(!S.clocked){toast('⚠ Clock in first before starting a job');return;}
-  if(selJobIdx!==null)prefillFromJob(selJobIdx);
-  goTab('form');
-}
-
-function prefillFromJob(i){
-  var j=S.jobs[i]; selJobIdx=i;
-  S.jobs[i].jobStatus='in-progress';
-  var match=S.customers.find(function(c){return c.name.toLowerCase().includes(j.client.toLowerCase().split(',')[0].trim().toLowerCase());});
-  if(match) selCust(S.customers.indexOf(match));
-  else{S.cust={name:j.client,address:j.address||'',email:j.email||'',phone:j.phone||'',mowingHeight:'',grassType:'',mowingDirection:'',internalNote:'',lastVisitDuration:''};showCustBanner();}
-  var sl=(j.service||'').toLowerCase();
-  if(sl.includes('commercial')||sl.includes('ground'))selSvc('commercial');
-  else if(sl.includes('mow')||sl.includes('bi-weekly')||sl.includes('weekly'))selSvc('residential');
-  renderDispatch();updateStrip();
-}
-
-function updateStrip(){
-  var t=S.jobs.length;
-  var d=S.jobs.filter(function(j){return j.jobStatus==='complete';}).length;
-  var sk=S.jobs.filter(function(j){return j.jobStatus==='skipped';}).length;
-  document.getElementById('strip-cnt').textContent=t||'—';
-  document.getElementById('strip-sub').textContent=t?(d+' done'+(sk?' · '+sk+' skipped':'')+' · '+(t-d-sk)+' remaining'):'Tap to view dispatch';
-}
-function updateBadge(){
-  var r=S.jobs.filter(function(j){return j.jobStatus!=='complete'&&j.jobStatus!=='skipped';}).length;
-  document.getElementById('ni-dispatch').classList.toggle('has-dot', r>0 && S.clocked);
-}
-
-// ════════════════════════════════════════════════════════════════
-// CUSTOMER SEARCH
-// ════════════════════════════════════════════════════════════════
-function onCustSearch(){
-  var q=this.value.toLowerCase().trim();
-  var res=document.getElementById('f-results');
-  if(q.length<2){res.classList.remove('open');return;}
-  var m=S.customers.filter(function(c){return c.name.toLowerCase().includes(q)||c.address.toLowerCase().includes(q);}).slice(0,8);
-  res.innerHTML='';
-  if(m.length){
-    m.forEach(function(c){
-      var div=document.createElement('div');
-      div.className='sri';
-      div.innerHTML='<div class="sri-name">'+c.name+'</div><div class="sri-addr">'+c.address+'</div>';
-      div.addEventListener('click',function(){selCust(S.customers.indexOf(c));});
-      res.appendChild(div);
-    });
-  } else {
-    res.innerHTML='<div class="sri"><div class="sri-name" style="color:var(--muted)">No customers found</div></div>';
-  }
-  res.classList.add('open');
-}
-
-function selCust(i){
-  var c=S.customers[i]; S.cust=c;
-  document.getElementById('f-results').classList.remove('open');
-  document.getElementById('f-srch').value='';
-  showCustBanner();
-  if(c.mowingHeight){
-    var h=parseFloat(c.mowingHeight).toFixed(2);
-    ['r-height','c-height'].forEach(function(id){var el=document.getElementById(id);if(el)for(var o of el.options)if(parseFloat(o.value||0).toFixed(2)===h){el.value=o.value;break;}});
-  }
-  if(c.grassType){
-    // Set hidden inputs
-    ['r-grass','c-grass'].forEach(function(id){var el=document.getElementById(id);if(el)el.value=c.grassType;});
-    // Highlight the matching grid button for residential and commercial
-    ['grass-res-grid','grass-com-grid'].forEach(function(gridId){
-      var grid=document.getElementById(gridId);
-      if(!grid)return;
-      grid.querySelectorAll('.gb').forEach(function(btn){
-        btn.classList.toggle('on', btn.dataset.val===c.grassType);
-      });
-    });
-  }
-  if(c.mowingDirection){
-    var el=document.getElementById('r-dir');if(el)el.value=c.mowingDirection;
-    // Highlight the matching direction button
-    var dirGrid=document.getElementById('dir-grid');
-    if(dirGrid){
-      dirGrid.querySelectorAll('.gb').forEach(function(btn){
-        btn.classList.toggle('on', btn.dataset.val===c.mowingDirection);
-      });
+  const data = sheet.getDataRange().getValues();
+  let techRow = -1;
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][0]).toLowerCase().trim() === techName.toLowerCase().trim()) {
+      techRow = i + 1; break;
     }
   }
-}
+  if (techRow === -1) { Logger.log('Tech not found in Payroll: ' + techName); return; }
 
-function showCustBanner(){
-  var c=S.cust;
-  document.getElementById('f-srch-wrap').classList.add('hidden');
-  document.getElementById('f-csel').classList.remove('hidden');
-  document.getElementById('f-cname').textContent=c.name;
-  var ml=mapsLink(c.address);
-  document.getElementById('f-cdet').innerHTML=
-    (c.address?'<a href="'+ml+'" target="_blank" style="color:var(--blue);font-weight:600;text-decoration:none">📍 '+c.address+' ↗</a><br>':'')
-    +(c.email?'✉ '+c.email+'<br>':'')
-    +(c.phone?'📞 '+c.phone:'');
-  var chips='';
-  if(c.mowingHeight)    chips+='<div class="chip"><div><div class="chip-lbl">Last Height</div><div class="chip-val">'+c.mowingHeight+'"</div></div></div>';
-  if(c.grassType)       chips+='<div class="chip"><div><div class="chip-lbl">Grass</div><div class="chip-val">'+c.grassType+'</div></div></div>';
-  if(c.mowingDirection) chips+='<div class="chip"><div><div class="chip-lbl">Direction</div><div class="chip-val">'+c.mowingDirection+'</div></div></div>';
-  if(c.lastVisitDuration) chips+='<div class="chip blue"><div><div class="chip-lbl">Last Visit</div><div class="chip-val">'+c.lastVisitDuration+' hrs</div></div></div>';
-  if(selJobIdx!==null&&S.jobs[selJobIdx]&&S.jobs[selJobIdx].budgetedHours)
-    chips+='<div class="chip blue"><div><div class="chip-lbl">⏳ Budget</div><div class="chip-val">'+S.jobs[selJobIdx].budgetedHours+' hrs</div></div></div>';
-  // Last efficiency rate chip — green if ≥100%, red if under
-  if(c.lastEfficiencyRate){
-    var effNum=parseInt(c.lastEfficiencyRate);
-    var effStyle=effNum>=100
-      ?'background:#e8f5eb;border-color:#c8e6cc'
-      :'background:#fde8e8;border-color:#f5c6c6';
-    var effColor=effNum>=100?'var(--g7)':'var(--red)';
-    chips+='<div class="chip" style="'+effStyle+'"><div>'
-      +'<div class="chip-lbl" style="color:'+effColor+'">Last Efficiency</div>'
-      +'<div class="chip-val" style="color:'+effColor+'">⚡ '+c.lastEfficiencyRate+'</div>'
-      +'</div></div>';
+  sheet.getRange(techRow, col).setValue(timeStr);
+  Logger.log('Payroll: ' + techName + ' ' + eventType + ' → col ' + col + ' row ' + techRow);
+
+  if (eventType === 'Clock Out') {
+    const updatedRow = sheet.getRange(techRow, 1, 1, 19).getValues()[0];
+    recalcTotalHours(sheet, techRow, updatedRow);
+    // Recalc windshield time now that shift end is known
+    recalcDispatchSummary(SpreadsheetApp.openById(SHEET_ID), {techName: techName});
   }
-  document.getElementById('f-chips').innerHTML=chips;
 }
 
-function clearCust(){
-  S.cust=null;
-  document.getElementById('f-srch-wrap').classList.remove('hidden');
-  document.getElementById('f-csel').classList.add('hidden');
-  document.getElementById('f-srch').value='';
-  document.getElementById('f-chips').innerHTML='';
-}
 
 // ════════════════════════════════════════════════════════════════
-// SERVICE / FORM HELPERS
+// RECALC TOTAL HOURS + TOTAL PAY  (R=col18, S=col19)
 // ════════════════════════════════════════════════════════════════
-function selSvc(type){
-  S.svc=type;
-  var map={residential:'res',commercial:'com',other:'oth'};
-  Object.entries(map).forEach(function(kv){
-    document.getElementById('svc-'+kv[1]).classList.toggle('on',kv[0]===type);
-    document.getElementById('f-'+kv[1]).classList.toggle('hidden',kv[0]!==type);
+function recalcTotalHours(sheet, row, rowData) {
+  const pairs = [[3,4],[5,6],[7,8],[9,10],[11,12],[13,14],[15,16]];
+  let total = 0;
+
+  function parseT(s) {
+    if (!s) return null;
+    // Google Sheets returns time cells as Date objects
+    if (s instanceof Date) {
+      return s.getHours() * 60 + s.getMinutes();
+    }
+    const m = String(s).match(/(\d+):(\d+)\s?(AM|PM)/i);
+    if (!m) return null;
+    let h = parseInt(m[1]), mn = parseInt(m[2]);
+    if (m[3].toUpperCase()==='PM' && h!==12) h += 12;
+    if (m[3].toUpperCase()==='AM' && h===12) h = 0;
+    return h*60+mn;
+  }
+
+  pairs.forEach(([sc,ec]) => {
+    const sm = parseT(rowData[sc]), em = parseT(rowData[ec]);
+    if (sm!==null && em!==null && em>sm) total += (em-sm)/60;
   });
-  document.getElementById('svc-none').classList.add('hidden');
+
+  const totalHrs = total>0 ? Math.round(total*100)/100 : 0;
+  const rate     = parseFloat(rowData[2]) || 0;
+  const totalPay = rate>0 ? Math.round(totalHrs*rate*100)/100 : 0;
+
+  sheet.getRange(row, 18).setValue(totalHrs>0 ? totalHrs : '');
+  sheet.getRange(row, 19).setValue(totalPay>0 ? totalPay : '');
+  // Ensure cells are formatted as numbers, not time
+  sheet.getRange(row, 18).setNumberFormat('0.00');
+  sheet.getRange(row, 19).setNumberFormat('"$"#,##0.00');
+  Logger.log('Payroll recalc: '+totalHrs+' hrs × $'+rate+'/hr = $'+totalPay);
 }
-function gridSel(el, gridId, hiddenId){
-  document.getElementById(gridId).querySelectorAll('.gb').forEach(function(b){b.classList.remove('on');});
-  el.classList.add('on');
-  document.getElementById(hiddenId).value=el.dataset.val;
+
+
+// ════════════════════════════════════════════════════════════════
+// FIX PAYROLL FORMAT — run once manually to correct time-formatted
+// cells in cols R (Total Hours) and S (Total $) for all rows
+// ════════════════════════════════════════════════════════════════
+function fixPayrollFormat() {
+  const ss    = SpreadsheetApp.openById(SHEET_ID);
+  const sheet = ss.getSheetByName('Payroll');
+  if (!sheet) { Logger.log('Payroll tab not found'); return; }
+
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) { Logger.log('No data rows'); return; }
+
+  // Set column-level number formats for R and S across all data rows
+  sheet.getRange(2, 18, lastRow - 1, 1).setNumberFormat('0.00');        // Total Hours
+  sheet.getRange(2, 19, lastRow - 1, 1).setNumberFormat('"$"#,##0.00'); // Total $
+
+  // Re-read and re-write values to force format to apply
+  // (cells showing 0:00:00 have the numeric value 0, so clear them)
+  const data = sheet.getRange(2, 1, lastRow - 1, 19).getValues();
+  data.forEach((row, i) => {
+    const rVal = row[17]; // col R
+    const sVal = row[18]; // col S
+    // If value looks like a time serial (small decimal < 1) or is 0, clear it
+    if (rVal === 0 || rVal === '') sheet.getRange(i+2, 18).clearContent();
+    if (sVal === 0 || sVal === '') sheet.getRange(i+2, 19).clearContent();
+  });
+
+  Logger.log('Payroll format fixed for ' + (lastRow-1) + ' rows');
 }
-function yntog(btn, id){
-  btn.closest('.yn').querySelectorAll('.yn-btn').forEach(function(b){b.classList.remove('on');});
-  btn.closest('.yn').classList.remove('invalid');
-  btn.classList.add('on');
-  document.getElementById(id).value=btn.dataset.val;
-}
-function setPet(v){
-  S.pet=v;
-  document.getElementById('f-pet').value=v;
-  document.getElementById('pet-clr').className='pet-opt'+(v==='clear'?' clear':'');
-  document.getElementById('pet-wrn').className='pet-opt'+(v==='warn'?' warn':'');
-}
-function togTech(i,name){
-  var btn=document.getElementById('tp-'+i);
-  var ai=S.selectedTechs.indexOf(name);
-  if(ai>-1){S.selectedTechs.splice(ai,1);btn.classList.remove('on');}
-  else{S.selectedTechs.push(name);btn.classList.add('on');}
-  document.getElementById('f-techs').value=S.selectedTechs.join(', ');
-}
-function jobTime(type){
-  var now=new Date(),ts=fmt(now);
-  if(type==='start'){
-    S.jStart={d:ts,t:now};
-    document.getElementById('ts-disp').textContent=ts;
-    document.getElementById('ts-disp').classList.remove('empty');
-    document.getElementById('tb-start').classList.add('on');
-    document.getElementById('ts-btn').textContent='✓ STARTED';
-    document.getElementById('ts-btn').classList.add('on');
-    document.getElementById('ts-btn').disabled=true;
-    document.getElementById('te-btn').disabled=false;
-    toast('✅ Start: '+ts);
-  } else {
-    S.jEnd={d:ts,t:now};
-    document.getElementById('te-disp').textContent=ts;
-    document.getElementById('te-disp').classList.remove('empty');
-    document.getElementById('tb-end').classList.add('on');
-    document.getElementById('te-btn').textContent='✓ ENDED';
-    document.getElementById('te-btn').classList.add('on');
-    document.getElementById('te-btn').disabled=true;
-    if(S.jStart){
-      var dur=((now-S.jStart.t)/3600000).toFixed(2);
-      document.getElementById('dur-val').textContent=dur+' hrs';
-      document.getElementById('dur-row').classList.add('show');
-      toast('✅ '+dur+' hrs on job');
+// ════════════════════════════════════════════════════════════════
+function writeSkipEvent(p) {
+  const ss    = SpreadsheetApp.openById(SHEET_ID);
+  const sheet = ss.getSheetByName('Dispatch');
+  if (!sheet) { Logger.log('Dispatch tab not found'); return; }
+
+  const data       = sheet.getDataRange().getValues();
+  const name       = (p.customerName || '').toLowerCase().trim();
+  const today      = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'M/d/yy');
+  const skipReason = p.skipReason || '';
+  const techName   = p.techName   || '';
+
+  function normDate(v) {
+    if (!v) return '';
+    if (v instanceof Date) return Utilities.formatDate(v, Session.getScriptTimeZone(), 'M/d/yy');
+    const s = String(v).trim();
+    const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+    if (m) return m[1]+'/'+m[2]+'/'+(m[3].length===4?m[3].slice(2):m[3]);
+    return s;
+  }
+
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][0]).toUpperCase()==='SUMMARY') continue;
+    const rowDate   = normDate(data[i][0]);
+    const rowClient = String(data[i][1]||'').toLowerCase().trim();
+    if (rowDate===today && rowClient.includes(name.split(',')[0])) {
+      // Col E = Status (5), Col Q = Skip Reason (17)
+      sheet.getRange(i+1, 5).setValue('Skipped');
+      sheet.getRange(i+1, 17).setValue('⚠️ SKIPPED by '+techName+': '+skipReason);
+      // Highlight the row red-ish
+      sheet.getRange(i+1, 1, 1, 17).setBackground('#fde8e8');
+      Logger.log('Skip logged: row '+(i+1)+' — '+skipReason);
+      return;
     }
   }
-  updateFormLock();
+  Logger.log('Dispatch row not found for skip: ' + p.customerName);
 }
-function addPhoto(file){
-  if(!file.type.startsWith('image/'))return;
-  var idx=S.photos.length; S.photos.push(file);
-  var r=new FileReader();
-  r.onload=function(e){
-    var t=document.createElement('div'); t.className='p-thumb';
-    t.innerHTML='<img src="'+e.target.result+'"/><button class="p-rm">×</button>';
-    t.querySelector('.p-rm').addEventListener('click',function(){S.photos[idx]=null;t.remove();});
-    document.getElementById('photo-grid').appendChild(t);
-  };
-  r.readAsDataURL(file);
-}
-async function compressPhoto(file){
-  return new Promise(function(res,rej){
-    var r=new FileReader();
-    r.onload=function(e){
-      var img=new Image();
-      img.onload=function(){
-        var M=1200,w=img.width,h=img.height;
-        if(w>M||h>M){if(w>h){h=Math.round(h*M/w);w=M;}else{w=Math.round(w*M/h);h=M;}}
-        var c=document.createElement('canvas');c.width=w;c.height=h;
-        c.getContext('2d').drawImage(img,0,0,w,h);
-        res({name:file.name.replace(/\.[^.]+$/,'')+'.jpg',data:c.toDataURL('image/jpeg',.7).replace(/^data:image\/jpeg;base64,/,'')});
-      };
-      img.onerror=rej; img.src=e.target.result;
-    };
-    r.onerror=rej; r.readAsDataURL(file);
-  });
-}
+
 
 // ════════════════════════════════════════════════════════════════
-// SUBMIT JOB
+// SHEET UPDATE — on job completion
 // ════════════════════════════════════════════════════════════════
-async function submitJob(){
-  if(!S.cust) {toast('⚠ Please select a customer');return;}
-  if(!S.svc)  {toast('⚠ Please select a service type');return;}
-  if(!S.jStart){toast('⚠ Please start the job first');return;}
-  if(!S.jEnd)  {toast('⚠ Please end the job before submitting');return;}
-  var p=S.svc==='residential'?'r':S.svc==='commercial'?'c':'o';
-  var checks=p==='c'?['c-blow','c-weed','c-bugs','c-hedges','c-perim']:p==='r'?['r-weed','r-bugs','r-hedges','r-perim']:['o-weed','o-bugs','o-hedges','o-perim'];
-  var fail=false;
-  checks.forEach(function(id){
-    var v=document.getElementById(id)&&document.getElementById(id).value;
-    var g=document.getElementById('yn-'+id);
-    if(!v){fail=true;if(g)g.classList.add('invalid');}
-    else{if(g)g.classList.remove('invalid');}
-  });
-  if(fail){toast('⚠ Complete all checklist items');document.querySelector('.yn.invalid')&&document.querySelector('.yn.invalid').scrollIntoView({behavior:'smooth',block:'center'});return;}
-  var btn=document.getElementById('sub-btn');
-  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Submitting…';
-  try{
-    var c=S.cust,date=new Date().toLocaleDateString('en-US');
-    var photos=S.photos.filter(Boolean);
-    var pd=await Promise.all(photos.map(compressPhoto));
-    var urls=[];
-    for(var i=0;i<pd.length;i++){
-      btn.innerHTML='<span class="spinner"></span> Photo '+(i+1)+'/'+pd.length+'…';
-      try{var r2=await fetch(CFG.cfWorker,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({photo:pd[i].data,filename:c.name+' - '+date+' - '+(i+1)+'.jpg'})});var j2=await r2.json();if(j2.url)urls.push(j2.url);}catch(e){}
+function writeSheetUpdate(p) {
+  if (!p || typeof p !== 'object') { Logger.log('writeSheetUpdate: invalid params'); return; }
+  const ss       = SpreadsheetApp.openById(SHEET_ID);
+  const budgeted = parseFloat(p.budgetedHours || '0');
+  const actual   = parseFloat(p.jobDuration   || '0');
+
+  let efficiency = '';
+  if (!isNaN(budgeted) && budgeted>0 && !isNaN(actual) && actual>0) {
+    efficiency = Math.round((budgeted/actual)*100) + '%';
+    Logger.log('Efficiency: budgeted='+budgeted+' actual='+actual+' → '+efficiency);
+  }
+
+  writeDispatchJobMetrics(ss, p.customerName||'', p.date||'', efficiency, isNaN(actual)?'':actual);
+  recalcDispatchSummary(ss, p);
+  // Pass efficiency into p so updateClientsTab can write it to col H
+  updateClientsTab(ss, Object.assign({}, p, {efficiency: efficiency}));
+}
+
+
+// ════════════════════════════════════════════════════════════════
+// WRITE EFFICIENCY (col M) + ACTUAL DURATION (col N) to Dispatch row
+// ════════════════════════════════════════════════════════════════
+function writeDispatchJobMetrics(ss, customerName, dateStr, efficiency, actualDuration) {
+  const sheet = ss.getSheetByName('Dispatch');
+  if (!sheet) { Logger.log('Dispatch tab not found'); return; }
+
+  const data  = sheet.getDataRange().getValues();
+  const name  = customerName.toLowerCase().trim();
+  const today = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'M/d/yy');
+
+  function normDate(v) {
+    if (!v) return '';
+    if (v instanceof Date) return Utilities.formatDate(v, Session.getScriptTimeZone(), 'M/d/yy');
+    const s = String(v).trim();
+    const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+    if (m) return m[1]+'/'+m[2]+'/'+(m[3].length===4?m[3].slice(2):m[3]);
+    return s;
+  }
+
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][0]).toUpperCase()==='SUMMARY') continue;
+    const rowDate   = normDate(data[i][0]);
+    const rowClient = String(data[i][1]||'').toLowerCase().trim();
+    const nameFirst = name.split(',')[0].trim();
+    Logger.log('Matching: rowDate='+rowDate+' today='+today+' rowClient='+rowClient+' name='+nameFirst);
+    // Match if date matches AND (exact match OR either contains the other)
+    const dateMatch   = rowDate === today;
+    const clientMatch = rowClient === nameFirst ||
+                        rowClient.includes(nameFirst) ||
+                        nameFirst.includes(rowClient);
+    if (dateMatch && clientMatch) {
+      if (efficiency)            sheet.getRange(i+1, 13).setValue(efficiency);
+      if (actualDuration !== '') sheet.getRange(i+1, 14).setValue(actualDuration);
+      Logger.log('Dispatch metrics written: row '+(i+1)+' eff='+efficiency+' dur='+actualDuration);
+      return;
     }
-    btn.innerHTML='<span class="spinner"></span> Sending…';
-    var dur=((S.jEnd.t-S.jStart.t)/3600000).toFixed(2);
+  }
+  Logger.log('Dispatch row not found for: ' + customerName + ' | today=' + today);
+}
 
-    // ── Pull budgeted hours from the matched dispatch job ──────
-    var budgetedHours='';
-    if(selJobIdx!==null&&S.jobs[selJobIdx]&&S.jobs[selJobIdx].budgetedHours)
-      budgetedHours=S.jobs[selJobIdx].budgetedHours;
 
-    var grass=S.svc==='commercial'?document.getElementById('c-grass').value:(document.getElementById('r-grass')&&document.getElementById('r-grass').value||'');
-    var height=S.svc==='residential'?document.getElementById('r-height').value:S.svc==='commercial'?document.getElementById('c-height').value:'';
-    var dir=document.getElementById('r-dir')&&document.getElementById('r-dir').value||'';
-    var techs=document.getElementById('f-techs').value||S.user.name;
-    var notes=(document.getElementById(p+'-notes')&&document.getElementById(p+'-notes').value)||(document.getElementById('c-notes')&&document.getElementById('c-notes').value)||'';
-    var onote=document.getElementById('f-onote').value.trim();
-    var payload={
-      type:'job_complete',date:date,submittedAt:new Date().toISOString(),
-      customerName:c.name,customerEmail:c.email,customerPhone:c.phone,
-      serviceAddress:c.address,serviceType:S.svc,techNames:techs,
-      grassType:grass,cutHeight:height,mowingDirection:dir,
-      weedControl:(document.getElementById(p+'-weed')&&document.getElementById(p+'-weed').value)||'',
-      bugSpray:(document.getElementById(p+'-bugs')&&document.getElementById(p+'-bugs').value)||'',
-      hedgeTrim:(document.getElementById(p+'-hedges')&&document.getElementById(p+'-hedges').value)||'',
-      perimeter:(document.getElementById(p+'-perim')&&document.getElementById(p+'-perim').value)||'',
-      blowLot:S.svc==='commercial'?(document.getElementById('c-blow')&&document.getElementById('c-blow').value)||'':'',
-      recommend:(document.getElementById('c-rec')&&document.getElementById('c-rec').value)||'',
-      notes:notes,startTime:S.jStart.d,endTime:S.jEnd.d,jobDuration:dur,petStatus:S.pet,
-      photoCount:urls.length,
-      photo1Url:urls[0]||'',photo2Url:urls[1]||'',photo3Url:urls[2]||'',photo4Url:urls[3]||'',
-      photosHtml:urls.length?urls.map(function(u,i){return '<a href="'+u+'" style="display:inline-block;margin:4px 8px 4px 0;background:#1e6b2e;color:#fff;padding:10px 20px;border-radius:4px;text-decoration:none;font-size:13px;font-weight:bold;">📷 View Photo '+(i+1)+'</a>';}).join(''):'<p style="color:#888;font-size:13px">No photos submitted.</p>',
-      servicePerformed:S.svc==='other'?(document.getElementById('o-svc')&&document.getElementById('o-svc').value)||'':'',
-    };
-    await zap(CFG.whJob,payload);
-    var hasPet=S.pet==='warn',hasNote=onote.length>0;
-    if(hasPet||hasNote){
-      await zap(CFG.whAlert,{type:'office_alert',customerName:c.name,serviceAddress:c.address,date:date,
-        petAlert:hasPet?'⚠️ PET WASTE REPORTED':'',officeNote:onote,
-        toEmail:'info'+'@'+'wslawncareservicesllc.com',
-        subject:'[WS Alert] '+(hasPet?'🐾 Pet Waste':'')+(hasPet&&hasNote?' + ':'')+(hasNote?'📋 Office Note':'')+' — '+c.name});
+// ════════════════════════════════════════════════════════════════
+// RECALC DISPATCH SUMMARY ROW
+//
+// Windshield Time = Shift Time − Total Job Time
+// Utilization %   = (Total Job Time / Shift Time) × 100
+//
+// Summary row is last row in Dispatch tab (col A = 'SUMMARY').
+// If clock-out not yet recorded, shift time = total job time
+// (utilization = 100%, windshield = 0) until clock-out arrives.
+// ════════════════════════════════════════════════════════════════
+function recalcDispatchSummary(ss, p) {
+  const dSheet = ss.getSheetByName('Dispatch');
+  if (!dSheet) return;
+
+  const data = dSheet.getDataRange().getValues();
+
+  // Sum col N (index 13) — actual job durations
+  let totalJobTime = 0;
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][0]).toUpperCase()==='SUMMARY') continue;
+    const v = parseFloat(data[i][13]);
+    if (!isNaN(v) && v>0) totalJobTime += v;
+  }
+  totalJobTime = Math.round(totalJobTime*100)/100;
+
+  // Get today's shift time for submitting tech from Payroll
+  let shiftTime  = 0;
+  const techName = (p.techName||'').toLowerCase().trim();
+  const pSheet   = ss.getSheetByName('Payroll');
+  if (pSheet && techName) {
+    const pData = pSheet.getDataRange().getValues();
+    const dow   = new Date().getDay();
+    const si    = {1:3,2:5,3:7,4:9,5:11,6:13,0:15}[dow];
+    const ei    = {1:4,2:6,3:8,4:10,5:12,6:14,0:16}[dow];
+
+    function parseT(s) {
+      if (!s) return null;
+      // Google Sheets returns time cells as Date objects
+      if (s instanceof Date) return s.getHours()*60 + s.getMinutes();
+      const m = String(s).match(/(\d+):(\d+)\s?(AM|PM)/i); if (!m) return null;
+      let h = parseInt(m[1]), mn = parseInt(m[2]);
+      if (m[3].toUpperCase()==='PM'&&h!==12) h+=12;
+      if (m[3].toUpperCase()==='AM'&&h===12) h=0;
+      return h*60+mn;
     }
 
-    // ── Sheet update → Apps Script (clients tab + efficiency) ──
-    var sheetPayload={
-      type:'sheet_update',
-      customerName:c.name,serviceAddress:c.address,
-      email:c.email,grassType:grass,mowingHeight:height,mowingDirection:dir,
-      lastVisitDuration:dur,lastVisitTechs:techs,
-      startTime:payload.startTime,endTime:payload.endTime,date:date,
-      jobDuration:dur,
-      budgetedHours:budgetedHours,
-      techName:S.user.name,  // needed for windshield/utilization calc
-    };
-    // Send directly to Apps Script for efficiency write + client update
-    try{await fetch(CFG.appsScript,{method:'POST',body:new URLSearchParams(sheetPayload),mode:'no-cors'});}catch(e){}
-    // Also send to Zapier for any sheet Zap steps
-    await zap(CFG.whSheet, sheetPayload);
-
-    if(selJobIdx!==null){
-      S.jobs[selJobIdx].formSubmitted=true;
-      S.jobs[selJobIdx].jobStatus='complete';
-      renderDispatch();updateStrip();
-      saveState();
-      selJobIdx=null;
-    }
-    document.getElementById('form-body').classList.add('hidden');
-    document.getElementById('form-success').classList.add('show');
-  }catch(err){
-    if(err.name==='TypeError'){
-      // Network error (no-cors) — treat as success
-      if(selJobIdx!==null){
-        S.jobs[selJobIdx].formSubmitted=true;
-        S.jobs[selJobIdx].jobStatus='complete';
-        renderDispatch();updateStrip();
-        saveState();
-        selJobIdx=null;
+    for (let i = 1; i < pData.length; i++) {
+      if (String(pData[i][0]).toLowerCase().trim()===techName) {
+        const sm = parseT(pData[i][si]), em = parseT(pData[i][ei]);
+        if (sm!==null && em!==null && em>sm) shiftTime = Math.round(((em-sm)/60)*100)/100;
+        break;
       }
-      document.getElementById('form-body').classList.add('hidden');
-      document.getElementById('form-success').classList.add('show');
     }
-    else{toast('❌ Submission failed');btn.disabled=false;btn.innerHTML='✓ SUBMIT JOB';}
   }
+
+  const effectiveShift = shiftTime>0 ? shiftTime : totalJobTime;
+  const windshield     = effectiveShift>0 ? Math.round((effectiveShift-totalJobTime)*100)/100 : '';
+  const utilization    = effectiveShift>0 ? Math.round((totalJobTime/effectiveShift)*100)+'%' : '';
+  const pending        = shiftTime===0;
+
+  const label = pending
+    ? '📊 SUMMARY (clock-out pending) | Job Time: '+totalJobTime+' hrs'
+    : '📊 SUMMARY — Shift: '+effectiveShift+' hrs | Job Time: '+totalJobTime+' hrs';
+
+  // Find or append summary row
+  let summaryRow = -1;
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][0]).toUpperCase()==='SUMMARY') { summaryRow = i+1; break; }
+  }
+
+  const windshieldLabel = windshield!=='' ? windshield+' hrs' : '';
+  if (summaryRow===-1) {
+    dSheet.appendRow([
+      'SUMMARY', label, '','','','','','','','','','','','',
+      windshieldLabel,   // O col 15
+      utilization,       // P col 16
+    ]);
+    // Style the summary row
+    const newRow = dSheet.getLastRow();
+    dSheet.getRange(newRow, 1, 1, 16).setBackground('#e8f5eb').setFontWeight('bold');
+  } else {
+    dSheet.getRange(summaryRow, 2).setValue(label);
+    dSheet.getRange(summaryRow, 15).setValue(windshieldLabel);
+    dSheet.getRange(summaryRow, 16).setValue(utilization);
+  }
+
+  Logger.log('Summary — shift:'+effectiveShift+' job:'+totalJobTime+' wind:'+windshield+' util:'+utilization);
 }
 
-function resetForm(){
-  S.cust=null;S.svc=null;S.pet='';S.jStart=null;S.jEnd=null;S.photos=[];S.selectedTechs=[];selJobIdx=null;
-  clearCust();
-  ['res','com','oth'].forEach(function(p){document.getElementById('svc-'+p).classList.remove('on');document.getElementById('f-'+p).classList.add('hidden');});
-  document.getElementById('svc-none').classList.remove('hidden');
-  document.getElementById('photo-grid').innerHTML='';
-  document.querySelectorAll('.yn-btn.on').forEach(function(b){b.classList.remove('on');});
-  document.querySelectorAll('.yn.invalid').forEach(function(b){b.classList.remove('invalid');});
-  document.querySelectorAll('.gb.on').forEach(function(b){b.classList.remove('on');});
-  document.querySelectorAll('input[type=hidden]').forEach(function(el){el.value='';});
-  document.querySelectorAll('textarea').forEach(function(el){el.value='';});
-  document.querySelectorAll('select').forEach(function(el){el.selectedIndex=0;});
-  document.getElementById('pet-clr').className='pet-opt';
-  document.getElementById('pet-wrn').className='pet-opt';
-  document.getElementById('ts-disp').textContent='Not set';document.getElementById('ts-disp').classList.add('empty');
-  document.getElementById('te-disp').textContent='Not set';document.getElementById('te-disp').classList.add('empty');
-  document.getElementById('tb-start').classList.remove('on');document.getElementById('tb-end').classList.remove('on');
-  document.getElementById('ts-btn').textContent='TAP TO START';document.getElementById('ts-btn').classList.remove('on');document.getElementById('ts-btn').disabled=false;
-  document.getElementById('te-btn').textContent='TAP TO END';document.getElementById('te-btn').classList.remove('on');document.getElementById('te-btn').disabled=true;
-  document.getElementById('dur-row').classList.remove('show');
-  document.getElementById('sub-btn').innerHTML='✓ SUBMIT JOB';
-  document.getElementById('form-body').classList.remove('hidden');
-  document.getElementById('form-success').classList.remove('show');
-  window.scrollTo(0,0);
-  updateFormLock();
+
+// ════════════════════════════════════════════════════════════════
+// UPDATE CLIENTS TAB
+// ════════════════════════════════════════════════════════════════
+function updateClientsTab(ss, p) {
+  const sheet = ss.getSheetByName('Clients');
+  if (!sheet) return;
+  const data = sheet.getDataRange().getValues();
+  const name = (p.customerName||'').toLowerCase().trim();
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][0]).toLowerCase().trim()===name) {
+      if (p.grassType)          sheet.getRange(i+1, 7).setValue(p.grassType);         // G
+      if (p.mowingHeight)       sheet.getRange(i+1, 5).setValue(p.mowingHeight);      // E
+      if (p.mowingDirection)    sheet.getRange(i+1, 6).setValue(p.mowingDirection);   // F
+      if (p.efficiency)         sheet.getRange(i+1, 8).setValue(p.efficiency);        // H ← Last Efficiency Rate
+      if (p.lastVisitDuration)  sheet.getRange(i+1, 9).setValue(p.lastVisitDuration); // I
+      if (p.lastVisitTechs)     sheet.getRange(i+1,10).setValue(p.lastVisitTechs);    // J
+      Logger.log('Clients updated: '+p.customerName+' eff='+p.efficiency); return;
+    }
+  }
+  Logger.log('Client not found: '+p.customerName);
 }
 
+
 // ════════════════════════════════════════════════════════════════
-// BOARD
+// SUNDAY ARCHIVE — runs at 11pm
+//
+//  1. Creates "Week MM/DD/YYYY" tab in master sheet
+//     with full Payroll + Dispatch snapshot for the week
+//  2. Emails formatted HTML summary to will@
+//  3. Clears Payroll time columns for new week
 // ════════════════════════════════════════════════════════════════
-function renderBoard(){
-  var hEl=document.getElementById('h-board');
-  if(!S.board.length){hEl.innerHTML='<div class="empty-state">No messages from office</div>';return;}
-  hEl.innerHTML=S.board.slice(0,2).map(function(p){return '<div class="bp-msg"><div class="bp-text">'+p.text+'</div><div class="bp-meta">'+p.time+'</div></div>';}).join('');
+function archivePayrollWeek() {
+  const ss         = SpreadsheetApp.openById(SHEET_ID);
+  const payroll    = ss.getSheetByName('Payroll');
+  const dispatch   = ss.getSheetByName('Dispatch');
+  const tz         = Session.getScriptTimeZone();
+  const weekEnding = Utilities.formatDate(new Date(), tz, 'MM/dd/yyyy');
+  const tabName    = 'Week ' + weekEnding;
+
+  if (!payroll) { Logger.log('Payroll tab not found'); return; }
+
+  // Delete old tab with same name if present
+  const existing = ss.getSheetByName(tabName);
+  if (existing) ss.deleteSheet(existing);
+
+  const archiveTab = ss.insertSheet(tabName);
+
+  function sectionHeader(sheet, row, text, cols) {
+    const r = sheet.getRange(row, 1, 1, cols);
+    r.merge(); r.setValue(text);
+    r.setBackground('#1e6b2e'); r.setFontColor('#ffffff');
+    r.setFontWeight('bold'); r.setFontSize(11);
+  }
+
+  let writeRow = 1;
+
+  // ── Payroll section ──────────────────────────────────────────
+  sectionHeader(archiveTab, writeRow, '📋 PAYROLL — Week Ending ' + weekEnding, 19);
+  writeRow++;
+
+  const pHeaders = ['Tech Name','Position','Rate',
+    'Mon In','Mon Out','Tue In','Tue Out','Wed In','Wed Out',
+    'Thu In','Thu Out','Fri In','Fri Out','Sat In','Sat Out',
+    'Sun In','Sun Out','Total Hrs','Total $'];
+  archiveTab.getRange(writeRow,1,1,pHeaders.length)
+    .setValues([pHeaders]).setFontWeight('bold').setBackground('#c8e6cc');
+  writeRow++;
+
+  const pData = payroll.getDataRange().getValues();
+  const techSummary = [];
+  for (let i = 1; i < pData.length; i++) {
+    const r = pData[i]; if (!r[0]) continue;
+    archiveTab.getRange(writeRow,1,1,19).setValues([[
+      r[0],r[1],r[2],r[3],r[4],r[5],r[6],r[7],r[8],
+      r[9],r[10],r[11],r[12],r[13],r[14],r[15],r[16],r[17],r[18]
+    ]]);
+    techSummary.push({name:r[0],position:r[1],rate:r[2],totalHrs:r[17]||0,totalPay:r[18]||0});
+    writeRow++;
+  }
+  writeRow++; // spacer
+
+  // ── Dispatch section ─────────────────────────────────────────
+  sectionHeader(archiveTab, writeRow, '🗺️ DISPATCH — Week Ending ' + weekEnding, 17);
+  writeRow++;
+
+  const dHeaders = ['Date','Client','Start','End','Status','Job Type','Service',
+    'Parsed At','Budgeted Hrs','Email','Phone','Address',
+    'Efficiency %','Actual Duration (hrs)','Windshield Time (hrs)','Utilization %','Skip Reason'];
+  archiveTab.getRange(writeRow,1,1,dHeaders.length)
+    .setValues([dHeaders]).setFontWeight('bold').setBackground('#c8e6cc');
+  writeRow++;
+
+  const dispSummary = {totalJobs:0, totalJobTime:0, windshield:'', utilization:''};
+  if (dispatch) {
+    const dData = dispatch.getDataRange().getValues();
+    for (let i = 1; i < dData.length; i++) {
+      const r = dData[i]; if (!r[1]) continue;
+      const isSummary = String(r[0]).toUpperCase()==='SUMMARY';
+      archiveTab.getRange(writeRow,1,1,17).setValues([[
+        r[0],r[1],r[2],r[3],r[4],r[5],r[6],
+        r[7],r[8],r[9],r[10],r[11],
+        r[12],r[13],r[14],r[15],r[16]
+      ]]);
+      if (isSummary) {
+        dispSummary.windshield  = r[14]||'';
+        dispSummary.utilization = r[15]||'';
+        archiveTab.getRange(writeRow,1,1,17).setBackground('#e8f5eb').setFontWeight('bold');
+      } else {
+        dispSummary.totalJobs++;
+        const dur = parseFloat(r[13]);
+        if (!isNaN(dur)) dispSummary.totalJobTime += dur;
+      }
+      writeRow++;
+    }
+  }
+  dispSummary.totalJobTime = Math.round(dispSummary.totalJobTime*100)/100;
+  archiveTab.autoResizeColumns(1, 19);
+
+  // ── Email summary ─────────────────────────────────────────────
+  sendWeeklySummaryEmail(weekEnding, techSummary, dispSummary);
+
+  // ── Clear Payroll for new week (cols D–S = 4–19) ─────────────
+  const numRows = pData.length - 1;
+  if (numRows > 0) payroll.getRange(2, 4, numRows, 16).clearContent();
+  Logger.log('Payroll cleared for new week — archive complete');
 }
 
+
 // ════════════════════════════════════════════════════════════════
-// NAV
+// WEEKLY SUMMARY EMAIL
 // ════════════════════════════════════════════════════════════════
-function goTab(tab){
-  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
-  document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('active');});
-  document.getElementById('tab-'+tab).classList.add('active');
-  document.getElementById('ni-'+tab).classList.add('active');
-  document.getElementById('content').scrollTo(0,0);
+function sendWeeklySummaryEmail(weekEnding, techSummary, dispSummary) {
+  const totalPay = techSummary.reduce((s,t) => s+(parseFloat(t.totalPay)||0), 0);
+  const totalHrs = techSummary.reduce((s,t) => s+(parseFloat(t.totalHrs)||0), 0);
+
+  const techRows = techSummary.map(t => `
+    <tr>
+      <td style="padding:8px 12px;border-bottom:1px solid #e8f5eb">${t.name}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #e8f5eb;color:#5a7060">${t.position}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #e8f5eb;text-align:right">$${parseFloat(t.rate||0).toFixed(2)}/hr</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #e8f5eb;text-align:right;font-weight:700;color:#1e6b2e">${parseFloat(t.totalHrs||0).toFixed(2)} hrs</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #e8f5eb;text-align:right;font-weight:700;color:#1565c0">$${parseFloat(t.totalPay||0).toFixed(2)}</td>
+    </tr>`).join('');
+
+  const html = `<!DOCTYPE html><html><body style="margin:0;padding:0;font-family:'Helvetica Neue',Arial,sans-serif;background:#f0f7f1">
+<div style="max-width:600px;margin:24px auto;background:#fff;border-radius:14px;overflow:hidden;border:1.5px solid #c8e6cc;box-shadow:0 4px 16px rgba(30,107,46,.1)">
+  <div style="background:linear-gradient(135deg,#0d2410,#1e6b2e);padding:28px 28px 20px">
+    <div style="font-size:13px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Weekly Summary</div>
+    <div style="font-size:26px;font-weight:800;color:#fff">WS Lawn Care</div>
+    <div style="font-size:15px;color:#4caf63;margin-top:4px">Week Ending ${weekEnding}</div>
+  </div>
+  <div style="padding:20px 28px;background:#f0f7f1;border-bottom:1px solid #c8e6cc">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#5a7060;margin-bottom:12px">📋 Field Summary</div>
+    <table style="width:100%;border-collapse:collapse">
+      <tr>
+        <td style="padding:8px;text-align:center">
+          <div style="background:#fff;border:1.5px solid #c8e6cc;border-radius:10px;padding:14px 8px">
+            <div style="font-size:28px;font-weight:800;color:#1e6b2e">${dispSummary.totalJobs}</div>
+            <div style="font-size:10px;color:#5a7060;font-weight:700;text-transform:uppercase;margin-top:4px">Jobs Completed</div>
+          </div>
+        </td>
+        <td style="padding:8px;text-align:center">
+          <div style="background:#fff;border:1.5px solid #c8e6cc;border-radius:10px;padding:14px 8px">
+            <div style="font-size:28px;font-weight:800;color:#1e6b2e">${dispSummary.totalJobTime} hrs</div>
+            <div style="font-size:10px;color:#5a7060;font-weight:700;text-transform:uppercase;margin-top:4px">Total Job Time</div>
+          </div>
+        </td>
+        <td style="padding:8px;text-align:center">
+          <div style="background:#fff;border:1.5px solid #c8e6cc;border-radius:10px;padding:14px 8px">
+            <div style="font-size:28px;font-weight:800;color:#b37800">${dispSummary.windshield||'—'}</div>
+            <div style="font-size:10px;color:#5a7060;font-weight:700;text-transform:uppercase;margin-top:4px">Windshield Time</div>
+          </div>
+        </td>
+        <td style="padding:8px;text-align:center">
+          <div style="background:#fff;border:1.5px solid #c8e6cc;border-radius:10px;padding:14px 8px">
+            <div style="font-size:28px;font-weight:800;color:#1565c0">${dispSummary.utilization||'—'}</div>
+            <div style="font-size:10px;color:#5a7060;font-weight:700;text-transform:uppercase;margin-top:4px">Utilization Rate</div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div style="padding:20px 28px">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#5a7060;margin-bottom:12px">💵 Payroll</div>
+    <table style="width:100%;border-collapse:collapse;font-size:14px">
+      <thead>
+        <tr style="background:#e8f5eb">
+          <th style="padding:10px 12px;text-align:left;font-size:11px;text-transform:uppercase;color:#5a7060">Name</th>
+          <th style="padding:10px 12px;text-align:left;font-size:11px;text-transform:uppercase;color:#5a7060">Role</th>
+          <th style="padding:10px 12px;text-align:right;font-size:11px;text-transform:uppercase;color:#5a7060">Rate</th>
+          <th style="padding:10px 12px;text-align:right;font-size:11px;text-transform:uppercase;color:#5a7060">Hours</th>
+          <th style="padding:10px 12px;text-align:right;font-size:11px;text-transform:uppercase;color:#5a7060">Pay</th>
+        </tr>
+      </thead>
+      <tbody>${techRows}</tbody>
+      <tfoot>
+        <tr style="background:#0d2410">
+          <td colspan="3" style="padding:10px 12px;color:#fff;font-weight:700">TOTAL</td>
+          <td style="padding:10px 12px;text-align:right;color:#4caf63;font-weight:800">${totalHrs.toFixed(2)} hrs</td>
+          <td style="padding:10px 12px;text-align:right;color:#4caf63;font-weight:800">$${totalPay.toFixed(2)}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div style="padding:16px 28px;background:#f0f7f1;border-top:1px solid #c8e6cc;text-align:center">
+    <div style="font-size:12px;color:#5a7060">Full data archived in the Google Sheet under <strong>Week ${weekEnding}</strong> tab</div>
+  </div>
+</div></body></html>`;
+
+  GmailApp.sendEmail(
+    ARCHIVE_EMAIL,
+    '📊 WS Lawn Care — Weekly Summary ' + weekEnding,
+    'Weekly summary for week ending '+weekEnding+'. View HTML version for full details.',
+    { htmlBody: html }
+  );
+  Logger.log('Weekly summary email sent to ' + ARCHIVE_EMAIL);
 }
 
-// ════════════════════════════════════════════════════════════════
-// UTILS
-// ════════════════════════════════════════════════════════════════
-function fmt(d){return d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});}
-function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3000);}
-async function zap(url,data){try{await fetch(url,{method:'POST',body:new URLSearchParams(data),mode:'no-cors'});}catch(e){}}
 
 // ════════════════════════════════════════════════════════════════
-// BOOT
+// DAILY DISPATCH PARSER — 5am trigger
 // ════════════════════════════════════════════════════════════════
-wireButtons();
-init();
-</script>
-</body>
-</html>
+function dailyDispatchParse() {
+  try {
+    const ss    = SpreadsheetApp.openById(SHEET_ID);
+    const label = GmailApp.getUserLabelByName('NEED TO SEE/Daily Dispatch Report');
+    if (!label) { Logger.log('Label not found'); return; }
+
+    const threads = label.getThreads(0, 5);
+    let targetMsg = null;
+    for (const thread of threads) {
+      for (const msg of thread.getMessages()) {
+        if (msg.getFrom().includes('serviceautopilot.com') &&
+            (Date.now()-msg.getDate().getTime())/3600000 <= 30) {
+          targetMsg = msg; break;
+        }
+      }
+      if (targetMsg) break;
+    }
+    if (!targetMsg) { Logger.log('No recent SA email found'); return; }
+
+    const atts = targetMsg.getAttachments();
+    Logger.log('Attachments: ' + atts.length);
+    atts.forEach(a => Logger.log('  '+a.getName()+' | '+a.getContentType()));
+
+    let xlsBlob = null;
+    for (const att of atts) {
+      const n = att.getName().toLowerCase(), t = att.getContentType();
+      if (n.endsWith('.xlsx')||n.endsWith('.xls')||
+          t.includes('spreadsheet')||t.includes('excel')||t.includes('officedocument')) {
+        xlsBlob = att; break;
+      }
+    }
+
+    if (xlsBlob) { parseExcelAttachment(xlsBlob, ss); }
+    else {
+      let pdfBlob = null;
+      for (const att of atts) {
+        if (att.getContentType()==='application/pdf'||att.getName().endsWith('.pdf')) { pdfBlob=att; break; }
+      }
+      if (pdfBlob) parsePdfAttachment(pdfBlob, ss);
+      else Logger.log('No usable attachment found');
+    }
+  } catch(err) { Logger.log('dailyDispatchParse error: '+err.toString()); }
+}
+
+
+// ════════════════════════════════════════════════════════════════
+// EXCEL PARSER
+// ════════════════════════════════════════════════════════════════
+function parseExcelAttachment(blob, ss) {
+  const xlsFile = DriveApp.getRootFolder().createFile(blob.setName('ws_temp_dispatch.xlsx'));
+  const gsMeta  = Drive.Files.copy(
+    {title:'ws_temp_sheet',mimeType:'application/vnd.google-apps.spreadsheet'}, xlsFile.getId());
+  const tmp  = SpreadsheetApp.openById(gsMeta.id).getSheets()[0];
+  const rows = tmp.getDataRange().getValues();
+  xlsFile.setTrashed(true); DriveApp.getFileById(gsMeta.id).setTrashed(true);
+
+  function fmtT(v) {
+    if (!v) return '';
+    if (v instanceof Date) {
+      let h=v.getHours(), m=v.getMinutes(); if(h===0&&m===0) return '';
+      const ap=h>=12?'PM':'AM'; h=h%12||12;
+      return h+':'+(m<10?'0'+m:m)+' '+ap;
+    }
+    return String(v).trim();
+  }
+
+  const tz=Session.getScriptTimeZone(), today=Utilities.formatDate(new Date(),tz,'M/d/yy');
+  const jobs=[], seen=new Set();
+
+  for (const row of rows) {
+    const client = String(row[1]||'').trim();
+    if (!client||client.length<2) continue;
+    if (/client\s*name|job\s*date/i.test(client)) continue;
+    if (/daily\s+dispatch/i.test(String(row[0]))) continue;
+    if (!row[2]&&!row[3]) continue;
+    if (/^\$[\d,]+/.test(client)) continue;
+
+    const key=(today+'|'+client.toLowerCase()+'|'+fmtT(row[2])).replace(/\s/g,'');
+    if (seen.has(key)) continue; seen.add(key);
+
+    const addr=[String(row[11]||''),String(row[12]||''),String(row[13]||''),
+                String(row[15]||''),String(row[14]||'')].map(s=>s.trim()).filter(Boolean).join(', ');
+
+    jobs.push([
+      today, String(row[1]).trim(), fmtT(row[2]), fmtT(row[3]),
+      String(row[5]||'Dispatched').trim(), String(row[6]||'').trim(), String(row[7]||'').trim(),
+      '', row[8]?String(row[8]).trim():'',
+      String(row[9]||'').trim(), String(row[10]||'').trim(), addr,
+      '', '', // M=Efficiency, N=Actual Duration (blank until completion)
+    ]);
+  }
+
+  writeDispatchTab(ss, jobs);
+  Logger.log('Excel: '+jobs.length+' jobs written for '+today);
+}
+
+
+// ════════════════════════════════════════════════════════════════
+// PDF FALLBACK
+// ════════════════════════════════════════════════════════════════
+function parsePdfAttachment(blob, ss) {
+  const pdfFile = DriveApp.getRootFolder().createFile(blob.setName('ws_temp.pdf'));
+  const docMeta = Drive.Files.copy(
+    {title:'ws_temp_doc',mimeType:'application/vnd.google-apps.document'}, pdfFile.getId());
+  const text = DocumentApp.openById(docMeta.id).getBody().getText();
+  pdfFile.setTrashed(true); DriveApp.getFileById(docMeta.id).setTrashed(true);
+  const jobs = parseDispatchText(text);
+  writeDispatchTab(ss, jobs.map(j => [
+    j.date,j.client,j.startTime,j.endTime,j.status,j.jobType,j.service,
+    '',j.budgetedHours||'','','','','','',
+  ]));
+  Logger.log('PDF fallback: '+jobs.length+' jobs');
+}
+
+
+// ════════════════════════════════════════════════════════════════
+// WRITE DISPATCH TAB
+// ════════════════════════════════════════════════════════════════
+function writeDispatchTab(ss, rows) {
+  let sheet = ss.getSheetByName('Dispatch');
+  if (!sheet) {
+    sheet = ss.insertSheet('Dispatch');
+    sheet.appendRow(['Date','Client','Start Time','End Time','Status',
+      'Job Type','Service','Parsed At','Budgeted Hours','Email','Phone','Address',
+      'Efficiency %','Actual Duration (hrs)','Windshield Time (hrs)','Utilization %','Skip Reason']);
+  }
+  const last = sheet.getLastRow();
+  if (last > 1) sheet.deleteRows(2, last-1);
+  const at = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'h:mm a');
+  rows.forEach(r => sheet.appendRow([
+    r[0],r[1],r[2],r[3],r[4],r[5],r[6],at,
+    r[8]||'',r[9]||'',r[10]||'',r[11]||'',r[12]||'',r[13]||'','','','',
+  ]));
+}
+
+
+// ════════════════════════════════════════════════════════════════
+// PDF TEXT PARSER (fallback)
+// ════════════════════════════════════════════════════════════════
+function parseDispatchText(text) {
+  const jobs=[], seen=new Set();
+  const raw=text.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+  const mRe=/\$[\d,]+\.\d{2}/;
+  const stRe=/\b(Dispatched|Completed|Scheduled|Cancelled)\b/i;
+  const tyRe=/\b(Custom\s+Recurring|One\s+Time|Recurring|Custom)\b/i;
+  const svRe=/(Ground\s+Cover\s+Maintenance|Commercial\s+Grounds\s+Maintenance|General\s+Clean\s+Up|Bi-Weekly\s+Mowing|Weekly\s+Mowing|Mowing\s+Service|Mulch\s+Installation|Shrub\s+Trimming|Hedge\s+Trim|Power\s+Wash|Fertiliz\w*|Aerat\w*|Sod\s+Install\w*)/i;
+  const skip=/^(Daily\s+Dispatch|Job\s+Date|Client\s+Name|Appointment\s+Start|Appointment\s+End|Job\s+Amount|Job\s+Status|Job\s+Type|^Service$|^Source$|^Amount$)/i;
+  function times(s){const a=[],p=/(1[0-2]|0?[1-9]):[0-5]\d\s?[AP]M/gi;let m;while((m=p.exec(s))!==null)a.push(m[0].replace(/\s/,' ').toUpperCase());return a;}
+  function strip(s){return s.replace(/(1[0-2]|0?[1-9]):[0-5]\d\s?[AP]M/gi,'').replace(mRe,'').replace(stRe,'').replace(tyRe,'').replace(svRe,'').replace(/\d{1,2}\/\d{1,2}\/\d{2,4}/g,'').replace(/\s{2,}/g,' ').trim();}
+  function nextDate(p){for(let k=p+1;k<raw.length;k++)if(/^\d{1,2}\/\d{1,2}\/\d{2,4}/.test(raw[k]))return k;return raw.length;}
+  function add(j){if(!j.client||j.client.length<2)return;const k=(j.date+'|'+j.client.toLowerCase()+'|'+j.startTime).replace(/\s/g,'');if(seen.has(k))return;seen.add(k);jobs.push(j);}
+  let i=0;
+  while(i<raw.length){
+    const line=raw[i];
+    if(skip.test(line)||/^\$[\d,]+\.?\d*$/.test(line)||line.length<3){i++;continue;}
+    const dm=line.match(/^(\d{1,2}\/\d{1,2}\/\d{2,4})\s+(.*)/);if(!dm){i++;continue;}
+    const date=dm[1];let after=dm[2].trim(),ts=times(after),dataLine=after,dataIdx=i,pre='';
+    if(!ts.length){
+      let buf=after,pk=i+1,found=false;
+      while(pk<raw.length&&pk<=i+10){
+        const pl=raw[pk];
+        if(skip.test(pl)||/^\$[\d,]+\.?\d*$/.test(pl)){pk++;continue;}
+        if(/^\d{1,2}\/\d{1,2}\/\d{2,4}/.test(pl))break;
+        const pt=times(pl);
+        if(pt.length&&mRe.test(pl)){
+          for(let k=i+1;k<pk;k++){const kl=raw[k];if(!skip.test(kl)&&/^[A-Za-z\s]+$/.test(kl)&&kl.length<30&&!svRe.test(kl))buf+=' '+kl.trim();}
+          pre=buf.trim();dataLine=pl;dataIdx=pk;ts=pt;i=pk;found=true;break;
+        }
+        pk++;
+      }
+      if(!found){i++;continue;}
+    }
+    const st=ts[0]||'',et=ts[1]||'';
+    let cl=strip(dataLine);
+    if(pre){const p2=pre.trim();cl=p2.endsWith(',')?p2+' '+cl:p2+(cl?' '+cl:'');}
+    cl=cl.replace(/\s+,\s*/g,', ').replace(/,([^\s])/g,', ').replace(/\s{2,}/g,' ').trim();
+    let svc='';const sd=(line+' '+dataLine).match(svRe);if(sd)svc=sd[1];
+    if(!svc){const we=nextDate(dataIdx);for(let w=dataIdx+1;w<we;w++){const wl=raw[w];if(skip.test(wl))continue;if(times(wl).length||mRe.test(wl))break;const sm=wl.match(svRe);if(sm){svc=sm[1];i=w;break;}}}
+    const stm=(line+' '+dataLine).match(stRe),tym=(line+' '+dataLine).match(tyRe);
+    add({date,client:cl,startTime:st,endTime:et,status:stm?stm[1]:'Dispatched',jobType:tym?tym[1]:'',service:svc,budgetedHours:''});
+    i++;
+  }
+  return jobs;
+}
+
+
+// ════════════════════════════════════════════════════════════════
+// SETUP
+// ════════════════════════════════════════════════════════════════
+function createTriggers() {
+  ScriptApp.getProjectTriggers().forEach(t => {
+    if (['dailyDispatchParse','archivePayrollWeek'].includes(t.getHandlerFunction()))
+      ScriptApp.deleteTrigger(t);
+  });
+  ScriptApp.newTrigger('dailyDispatchParse').timeBased().everyDays(1).atHour(5).create();
+  ScriptApp.newTrigger('archivePayrollWeek').timeBased().onWeekDay(ScriptApp.WeekDay.SUNDAY).atHour(23).create();
+  Logger.log('Triggers created: dailyDispatchParse @ 5am | archivePayrollWeek @ Sun 11pm');
+}
+
+
+// ════════════════════════════════════════════════════════════════
+// DEBUG
+// ════════════════════════════════════════════════════════════════
+function debugExcel() {
+  const label=GmailApp.getUserLabelByName('NEED TO SEE/Daily Dispatch Report');
+  const threads=label.getThreads(0,5); let msg=null;
+  for(const t of threads){for(const m of t.getMessages()){if(m.getFrom().includes('serviceautopilot.com')&&(Date.now()-m.getDate().getTime())/3600000<=30){msg=m;break;}}if(msg)break;}
+  if(!msg){Logger.log('No recent email found');return;}
+  const atts=msg.getAttachments();
+  Logger.log('Attachments: '+atts.length);
+  atts.forEach(a=>Logger.log('  Name: '+a.getName()+' | Type: '+a.getContentType()));
+  let xls=null;
+  for(const a of atts){if(a.getName().toLowerCase().endsWith('.xlsx')||a.getName().toLowerCase().endsWith('.xls')){xls=a;break;}}
+  if(!xls){Logger.log('No Excel attachment found');return;}
+  const f=DriveApp.getRootFolder().createFile(xls.setName('ws_debug.xlsx'));
+  const gm=Drive.Files.copy({title:'ws_debug_sheet',mimeType:'application/vnd.google-apps.spreadsheet'},f.getId());
+  const rows=SpreadsheetApp.openById(gm.id).getSheets()[0].getDataRange().getValues();
+  f.setTrashed(true);DriveApp.getFileById(gm.id).setTrashed(true);
+  Logger.log('Total rows: '+rows.length);
+  rows.forEach((r,i)=>Logger.log('ROW '+i+': '+r.map((c,j)=>'['+j+']='+JSON.stringify(c instanceof Date?c.toString():c)).join(' | ')));
+}
