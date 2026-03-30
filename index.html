@@ -36,13 +36,6 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
   padding:5px 10px;font-size:12px;font-weight:700;color:rgba(255,255,255,.6);font-family:'Barlow Condensed',sans-serif}
 .ci-badge.in{background:rgba(76,175,99,.2);border-color:var(--g4);color:var(--g4)}
 
-/* OFFLINE BANNER */
-.offline-banner{display:none;background:#7a5000;color:#fff8e6;padding:8px 16px;text-align:center;
-  font-size:12px;font-weight:700;letter-spacing:.5px}
-.offline-banner.show{display:block}
-.cache-banner{display:none;background:var(--blue);color:#fff;padding:7px 16px;text-align:center;
-  font-size:12px;font-weight:600}
-.cache-banner.show{display:block}
 
 .content{flex:1;overflow-y:auto;padding:16px 14px 100px;max-width:680px;width:100%;margin:0 auto}
 .tab{display:none}.tab.active{display:block}
@@ -300,10 +293,6 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 <body>
 
 <div id="scr-app">
-  <!-- Offline / cache status banners -->
-  <div class="offline-banner" id="offline-banner">⚠️ NO CONNECTION — Using cached data from last sync</div>
-  <div class="cache-banner"   id="cache-banner"></div>
-
   <div class="topbar">
     <div class="tb-left">
       <div class="tb-icon">🌿</div>
@@ -702,60 +691,7 @@ var CFG = {
   cfWorker: 'https://wsphotoupload.will-671.workers.dev/',
 };
 
-// ════════════════════════════════════════════════════════════════
-// CACHE — customer list + board persisted across sessions
-// Cache TTL: 24 hours. Falls back to cache on network failure.
-// ════════════════════════════════════════════════════════════════
-var CACHE_KEY     = 'wscrew_cache_v1';
-var CACHE_TTL_MS  = 24 * 60 * 60 * 1000; // 24 hours
 
-function saveCache(data) {
-  try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify({
-      ts:        Date.now(),
-      customers: data.customers || [],
-      techs:     data.techs     || [],
-      board:     data.board     || [],
-    }));
-  } catch(e) { console.warn('Cache save failed:', e); }
-}
-
-function loadCache() {
-  try {
-    var raw = localStorage.getItem(CACHE_KEY);
-    if (!raw) return null;
-    var c = JSON.parse(raw);
-    if (!c || !c.ts) return null;
-    return c; // return even if stale — caller decides
-  } catch(e) { return null; }
-}
-
-function cacheAge(cache) {
-  if (!cache || !cache.ts) return Infinity;
-  return Date.now() - cache.ts;
-}
-
-function fmtCacheAge(ms) {
-  var m = Math.round(ms / 60000);
-  if (m < 60) return m + 'm ago';
-  var h = Math.round(m / 60);
-  return h + 'h ago';
-}
-
-function showCacheBanner(cache, fromFallback) {
-  var b = document.getElementById('cache-banner');
-  if (!cache) { b.classList.remove('show'); return; }
-  var age = fmtCacheAge(cacheAge(cache));
-  if (fromFallback) {
-    b.textContent = '⚠️ Using cached customer list (last synced ' + age + ') — working offline';
-    b.style.background = '#7a5000';
-  } else {
-    b.textContent = '✅ Customer list synced — ' + (cache.customers || []).length + ' customers loaded';
-    b.style.background = 'var(--g7)';
-  }
-  b.classList.add('show');
-  if (!fromFallback) setTimeout(function(){ b.classList.remove('show'); }, 4000);
-}
 
 // ════════════════════════════════════════════════════════════════
 // STATE
@@ -805,36 +741,20 @@ function loadState() {
 }
 
 // ════════════════════════════════════════════════════════════════
-// INIT — fetch live data, fall back to cache on failure
+// INIT
 // ════════════════════════════════════════════════════════════════
 async function init() {
   var hadSavedState = loadState();
   bootUI();
 
-  // ── Pre-load cache immediately so crew can search customers
-  //    while network fetch is in flight ─────────────────────────
-  var cache = loadCache();
-  if (cache && cache.customers && cache.customers.length) {
-    S.customers = cache.customers;
-    if (cache.techs && cache.techs.length) { S.crew = cache.techs; rebuildTechWrap(); updateTbSel(); }
-    if (cache.board && cache.board.length) { S.board = cache.board; renderBoard(); }
-  }
-
-  // ── Fetch fresh data from proxy ──────────────────────────────
-  var fetchOk = false;
   try {
     var res = await fetch(CFG.proxy, { method: 'GET' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     var d = await res.json();
-    fetchOk = true;
 
     if (d.techs     && d.techs.length)    { S.crew = d.techs; rebuildTechWrap(); updateTbSel(); }
     if (d.customers && d.customers.length) S.customers = d.customers;
     if (d.board     && d.board.length)    { S.board = d.board; renderBoard(); }
-
-    // Save fresh data to cache
-    saveCache(d);
-    showCacheBanner(loadCache(), false);
 
     if (d.dispatch && d.dispatch.length) {
       var freshJobs = d.dispatch.map(function(j) {
@@ -870,21 +790,8 @@ async function init() {
       updateStrip();
     }
 
-    document.getElementById('offline-banner').classList.remove('show');
     saveState();
-
-  } catch(e) {
-    console.warn('Proxy fetch failed:', e.message);
-    // ── Network failed — use cache ────────────────────────────
-    document.getElementById('offline-banner').classList.add('show');
-    if (cache && cache.customers && cache.customers.length) {
-      showCacheBanner(cache, true);
-      // jobs already loaded from day state — just re-render
-      if (S.jobs.length) { renderDispatch(); updateStrip(); }
-    } else {
-      toast('⚠ No connection and no cached data yet');
-    }
-  }
+  } catch(e) { console.warn('Proxy fetch failed:', e.message); }
 }
 
 function bootUI() {
