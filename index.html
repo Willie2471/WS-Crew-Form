@@ -36,6 +36,14 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
   padding:5px 10px;font-size:12px;font-weight:700;color:rgba(255,255,255,.6);font-family:'Barlow Condensed',sans-serif}
 .ci-badge.in{background:rgba(76,175,99,.2);border-color:var(--g4);color:var(--g4)}
 
+/* OFFLINE BANNER */
+.offline-banner{display:none;background:#7a5000;color:#fff8e6;padding:8px 16px;text-align:center;
+  font-size:12px;font-weight:700;letter-spacing:.5px}
+.offline-banner.show{display:block}
+.cache-banner{display:none;background:var(--blue);color:#fff;padding:7px 16px;text-align:center;
+  font-size:12px;font-weight:600}
+.cache-banner.show{display:block}
+
 .content{flex:1;overflow-y:auto;padding:16px 14px 100px;max-width:680px;width:100%;margin:0 auto}
 .tab{display:none}.tab.active{display:block}
 
@@ -249,9 +257,6 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
   font-size:11px;font-weight:700;color:var(--g7);white-space:nowrap;flex-shrink:0}
 .jc-bar{border-top:1px solid var(--g1);padding:8px 14px;display:flex;align-items:center;justify-content:space-between}
 .status-pill{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 10px;border-radius:100px}
-.sp-disp{background:var(--blue2);color:var(--blue)}
-.sp-prog{background:var(--acc2);color:#b37800}
-.sp-done{background:var(--g1);color:var(--g7)}
 .jc-act{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;
   padding:6px 14px;border-radius:8px;border:none;cursor:pointer}
 .jc-act.begin{background:var(--g7);color:#fff}
@@ -295,6 +300,10 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 <body>
 
 <div id="scr-app">
+  <!-- Offline / cache status banners -->
+  <div class="offline-banner" id="offline-banner">⚠️ NO CONNECTION — Using cached data from last sync</div>
+  <div class="cache-banner"   id="cache-banner"></div>
+
   <div class="topbar">
     <div class="tb-left">
       <div class="tb-icon">🌿</div>
@@ -679,16 +688,74 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 <script>
 // ════════════════════════════════════════════════════════════════
 // CONFIG
+// ─────────────────────────────────────────────────────────────
+// PROXY_URL points to your Cloudflare Worker — credentials live
+// there as environment secrets, never in this file.
 // ════════════════════════════════════════════════════════════════
 var CFG = {
-  appsScript: 'https://script.google.com/macros/s/AKfycbxuGa7IjVnaZdYrzECByJX3cVyShnNceMfmKOYN36-3iHa0xKKVUdLqcLXlYmn37W_s/exec',
-  token:      'wslawn-data-2026',
-  whJob:      'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/',
-  whAlert:    'https://hooks.zapier.com/hooks/catch/20549459/uxw6ope/',
-  whSheet:    'https://hooks.zapier.com/hooks/catch/20549459/uxwh463/',
-  whClock:    'https://hooks.zapier.com/hooks/catch/20549459/upavpzb/',
-  cfWorker:   'https://wsphotoupload.will-671.workers.dev/',
+  // ✅ UPDATE THIS after deploying the Worker:
+  proxy:    'https://ws-proxy.will-671.workers.dev',
+  whJob:    'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/',
+  whAlert:  'https://hooks.zapier.com/hooks/catch/20549459/uxw6ope/',
+  whSheet:  'https://hooks.zapier.com/hooks/catch/20549459/uxwh463/',
+  whClock:  'https://hooks.zapier.com/hooks/catch/20549459/upavpzb/',
+  cfWorker: 'https://wsphotoupload.will-671.workers.dev/',
 };
+
+// ════════════════════════════════════════════════════════════════
+// CACHE — customer list + board persisted across sessions
+// Cache TTL: 24 hours. Falls back to cache on network failure.
+// ════════════════════════════════════════════════════════════════
+var CACHE_KEY     = 'wscrew_cache_v1';
+var CACHE_TTL_MS  = 24 * 60 * 60 * 1000; // 24 hours
+
+function saveCache(data) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({
+      ts:        Date.now(),
+      customers: data.customers || [],
+      techs:     data.techs     || [],
+      board:     data.board     || [],
+    }));
+  } catch(e) { console.warn('Cache save failed:', e); }
+}
+
+function loadCache() {
+  try {
+    var raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    var c = JSON.parse(raw);
+    if (!c || !c.ts) return null;
+    return c; // return even if stale — caller decides
+  } catch(e) { return null; }
+}
+
+function cacheAge(cache) {
+  if (!cache || !cache.ts) return Infinity;
+  return Date.now() - cache.ts;
+}
+
+function fmtCacheAge(ms) {
+  var m = Math.round(ms / 60000);
+  if (m < 60) return m + 'm ago';
+  var h = Math.round(m / 60);
+  return h + 'h ago';
+}
+
+function showCacheBanner(cache, fromFallback) {
+  var b = document.getElementById('cache-banner');
+  if (!cache) { b.classList.remove('show'); return; }
+  var age = fmtCacheAge(cacheAge(cache));
+  if (fromFallback) {
+    b.textContent = '⚠️ Using cached customer list (last synced ' + age + ') — working offline';
+    b.style.background = '#7a5000';
+  } else {
+    b.textContent = '✅ Customer list synced — ' + (cache.customers || []).length + ' customers loaded';
+    b.style.background = 'var(--g7)';
+  }
+  b.classList.add('show');
+  if (!fromFallback) setTimeout(function(){ b.classList.remove('show'); }, 4000);
+}
 
 // ════════════════════════════════════════════════════════════════
 // STATE
@@ -707,9 +774,7 @@ var S = {
 };
 
 // ════════════════════════════════════════════════════════════════
-// PERSIST — save/restore day state via localStorage
-// Persists: user selection, clock state, jobs (with statuses/skip reasons)
-// Resets automatically at midnight (new day key)
+// DAY STATE PERSIST — clock + jobs survive page refresh
 // ════════════════════════════════════════════════════════════════
 var STORE_KEY = 'wscrew_' + new Date().toLocaleDateString('en-US').replace(/\//g,'-');
 
@@ -740,25 +805,39 @@ function loadState() {
 }
 
 // ════════════════════════════════════════════════════════════════
-// INIT
+// INIT — fetch live data, fall back to cache on failure
 // ════════════════════════════════════════════════════════════════
 async function init() {
-  // Restore persisted day state before booting UI
   var hadSavedState = loadState();
   bootUI();
 
+  // ── Pre-load cache immediately so crew can search customers
+  //    while network fetch is in flight ─────────────────────────
+  var cache = loadCache();
+  if (cache && cache.customers && cache.customers.length) {
+    S.customers = cache.customers;
+    if (cache.techs && cache.techs.length) { S.crew = cache.techs; rebuildTechWrap(); updateTbSel(); }
+    if (cache.board && cache.board.length) { S.board = cache.board; renderBoard(); }
+  }
+
+  // ── Fetch fresh data from proxy ──────────────────────────────
+  var fetchOk = false;
   try {
-    var res = await fetch(CFG.appsScript + '?token=' + CFG.token);
-    var d   = await res.json();
+    var res = await fetch(CFG.proxy, { method: 'GET' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    var d = await res.json();
+    fetchOk = true;
+
     if (d.techs     && d.techs.length)    { S.crew = d.techs; rebuildTechWrap(); updateTbSel(); }
     if (d.customers && d.customers.length) S.customers = d.customers;
     if (d.board     && d.board.length)    { S.board = d.board; renderBoard(); }
 
-    // Dispatch: enrich fresh server jobs with Clients data by name match,
-    // then merge with saved job statuses so in-progress/complete/skipped survive refresh
+    // Save fresh data to cache
+    saveCache(d);
+    showCacheBanner(loadCache(), false);
+
     if (d.dispatch && d.dispatch.length) {
       var freshJobs = d.dispatch.map(function(j) {
-        // Match dispatch client name against Clients tab col A (name only)
         var clientName = j.client.toLowerCase().split(',')[0].trim();
         var match = S.customers.find(function(c) {
           return c.name.toLowerCase().trim() === clientName ||
@@ -772,15 +851,14 @@ async function init() {
         return j;
       });
 
-      // Preserve job statuses from saved state so refresh doesn't reset progress
       if (hadSavedState && S.jobs.length) {
         freshJobs = freshJobs.map(function(fj) {
           var saved = S.jobs.find(function(sj) {
             return sj.client.toLowerCase().trim() === fj.client.toLowerCase().trim();
           });
           if (saved) {
-            fj.jobStatus  = saved.jobStatus  || fj.jobStatus;
-            fj.skipReason = saved.skipReason || '';
+            fj.jobStatus     = saved.jobStatus     || fj.jobStatus;
+            fj.skipReason    = saved.skipReason    || '';
             fj.formSubmitted = saved.formSubmitted || false;
           }
           return fj;
@@ -792,8 +870,21 @@ async function init() {
       updateStrip();
     }
 
+    document.getElementById('offline-banner').classList.remove('show');
     saveState();
-  } catch(e) { console.warn('Sheet fetch failed:', e.message); }
+
+  } catch(e) {
+    console.warn('Proxy fetch failed:', e.message);
+    // ── Network failed — use cache ────────────────────────────
+    document.getElementById('offline-banner').classList.add('show');
+    if (cache && cache.customers && cache.customers.length) {
+      showCacheBanner(cache, true);
+      // jobs already loaded from day state — just re-render
+      if (S.jobs.length) { renderDispatch(); updateStrip(); }
+    } else {
+      toast('⚠ No connection and no cached data yet');
+    }
+  }
 }
 
 function bootUI() {
@@ -805,7 +896,6 @@ function bootUI() {
   document.querySelector('.hero-greet').innerHTML = greet+',<br><span style="color:var(--g4)">'+S.user.name.split(' ')[0]+' '+emoji+'</span>';
   document.getElementById('tb-role').textContent = S.user.position;
 
-  // Restore clock UI if state was loaded
   var btn   = document.getElementById('clock-btn');
   var badge = document.getElementById('ci-badge');
   if (S.clocked) {
@@ -831,7 +921,6 @@ function bootUI() {
 function updateTbSel() {
   var sel = document.getElementById('tb-name-sel');
   sel.innerHTML = S.crew.map(function(c,i){ return '<option value="'+i+'">'+c.name+'</option>'; }).join('');
-  // Restore saved user selection
   var savedIdx = S.crew.findIndex(function(c){ return c.name === S.user.name; });
   sel.value = savedIdx >= 0 ? String(savedIdx) : '0';
   document.getElementById('tb-role').textContent = S.user.position;
@@ -950,7 +1039,8 @@ async function sendClockEvent(type) {
   var hrs = (type==='Clock Out' && S.clockIn) ? ((now-S.clockIn)/3600000).toFixed(2) : '';
   var p = {type:'clock_event',eventType:type,techName:S.user.name,position:S.user.position,
     date:now.toLocaleDateString('en-US'),time:fmt(now),hoursWorked:hrs};
-  try { await fetch(CFG.appsScript,{method:'POST',body:new URLSearchParams(p),mode:'no-cors'}); } catch(e){}
+  // POST to proxy (carries token secretly)
+  try { await fetch(CFG.proxy, {method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:new URLSearchParams(p)}); } catch(e){}
   await zap(CFG.whClock, p);
 }
 
@@ -1002,7 +1092,6 @@ function renderDispatch(){
     var skipReasonHtml=skipped&&j.skipReason?'<div class="skip-reason">⚠️ '+j.skipReason+'</div>':'';
     var skipNumCls='stop-num'+(done?' done-num':skipped?' skip-num':'');
     var cardCls='job-card'+(done?' done':skipped?' skipped':'');
-    // Action button area
     var actionBtns='';
     if(done){
       actionBtns='<button class="jc-act done" disabled>✓ Done</button>';
@@ -1085,26 +1174,17 @@ async function confirmSkip(){
   renderDispatch(); updateStrip();
   saveState();
   toast('⚠️ '+j.client+' skipped');
-  // Alert office
   var date=new Date().toLocaleDateString('en-US');
   await zap(CFG.whAlert,{
-    type:'office_alert',
-    customerName:j.client,
-    serviceAddress:j.address||'',
-    date:date,
-    petAlert:'',
-    officeNote:'⚠️ JOB SKIPPED — '+reason,
+    type:'office_alert',customerName:j.client,serviceAddress:j.address||'',date:date,
+    petAlert:'',officeNote:'⚠️ JOB SKIPPED — '+reason,
     toEmail:'info'+'@'+'wslawncareservicesllc.com',
     subject:'[WS Skip] ⚠️ Job Skipped — '+j.client
   });
-  // Log to Dispatch tab via Apps Script
-  try{await fetch(CFG.appsScript,{method:'POST',body:new URLSearchParams({
-    type:'skip_event',
-    customerName:j.client,
-    date:date,
-    skipReason:reason,
-    techName:S.user.name,
-  }),mode:'no-cors'});}catch(e){}
+  // Log to Apps Script via proxy
+  try{await fetch(CFG.proxy,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({
+    type:'skip_event',customerName:j.client,date:date,skipReason:reason,techName:S.user.name,
+  })});}catch(e){}
   skipJobIdx=null;
 }
 
@@ -1197,26 +1277,16 @@ function selCust(i){
     ['r-height','c-height'].forEach(function(id){var el=document.getElementById(id);if(el)for(var o of el.options)if(parseFloat(o.value||0).toFixed(2)===h){el.value=o.value;break;}});
   }
   if(c.grassType){
-    // Set hidden inputs
     ['r-grass','c-grass'].forEach(function(id){var el=document.getElementById(id);if(el)el.value=c.grassType;});
-    // Highlight the matching grid button for residential and commercial
     ['grass-res-grid','grass-com-grid'].forEach(function(gridId){
-      var grid=document.getElementById(gridId);
-      if(!grid)return;
-      grid.querySelectorAll('.gb').forEach(function(btn){
-        btn.classList.toggle('on', btn.dataset.val===c.grassType);
-      });
+      var grid=document.getElementById(gridId);if(!grid)return;
+      grid.querySelectorAll('.gb').forEach(function(btn){btn.classList.toggle('on', btn.dataset.val===c.grassType);});
     });
   }
   if(c.mowingDirection){
     var el=document.getElementById('r-dir');if(el)el.value=c.mowingDirection;
-    // Highlight the matching direction button
     var dirGrid=document.getElementById('dir-grid');
-    if(dirGrid){
-      dirGrid.querySelectorAll('.gb').forEach(function(btn){
-        btn.classList.toggle('on', btn.dataset.val===c.mowingDirection);
-      });
-    }
+    if(dirGrid){dirGrid.querySelectorAll('.gb').forEach(function(btn){btn.classList.toggle('on', btn.dataset.val===c.mowingDirection);});}
   }
 }
 
@@ -1237,12 +1307,9 @@ function showCustBanner(){
   if(c.lastVisitDuration) chips+='<div class="chip blue"><div><div class="chip-lbl">Last Visit</div><div class="chip-val">'+c.lastVisitDuration+' hrs</div></div></div>';
   if(selJobIdx!==null&&S.jobs[selJobIdx]&&S.jobs[selJobIdx].budgetedHours)
     chips+='<div class="chip blue"><div><div class="chip-lbl">⏳ Budget</div><div class="chip-val">'+S.jobs[selJobIdx].budgetedHours+' hrs</div></div></div>';
-  // Last efficiency rate chip — green if ≥100%, red if under
   if(c.lastEfficiencyRate){
     var effNum=parseInt(c.lastEfficiencyRate);
-    var effStyle=effNum>=100
-      ?'background:#e8f5eb;border-color:#c8e6cc'
-      :'background:#fde8e8;border-color:#f5c6c6';
+    var effStyle=effNum>=100?'background:#e8f5eb;border-color:#c8e6cc':'background:#fde8e8;border-color:#f5c6c6';
     var effColor=effNum>=100?'var(--g7)':'var(--red)';
     var effLabel=effNum>=100?'⚡ '+c.lastEfficiencyRate+' Under Budget':'⚠️ '+c.lastEfficiencyRate+' Over Budget';
     chips+='<div class="chip" style="'+effStyle+'"><div>'
@@ -1387,12 +1454,9 @@ async function submitJob(){
     }
     btn.innerHTML='<span class="spinner"></span> Sending…';
     var dur=((S.jEnd.t-S.jStart.t)/3600000).toFixed(2);
-
-    // ── Pull budgeted hours from the matched dispatch job ──────
     var budgetedHours='';
     if(selJobIdx!==null&&S.jobs[selJobIdx]&&S.jobs[selJobIdx].budgetedHours)
       budgetedHours=S.jobs[selJobIdx].budgetedHours;
-
     var grass=S.svc==='commercial'?document.getElementById('c-grass').value:(document.getElementById('r-grass')&&document.getElementById('r-grass').value||'');
     var height=S.svc==='residential'?document.getElementById('r-height').value:S.svc==='commercial'?document.getElementById('c-height').value:'';
     var dir=document.getElementById('r-dir')&&document.getElementById('r-dir').value||'';
@@ -1425,20 +1489,17 @@ async function submitJob(){
         subject:'[WS Alert] '+(hasPet?'🐾 Pet Waste':'')+(hasPet&&hasNote?' + ':'')+(hasNote?'📋 Office Note':'')+' — '+c.name});
     }
 
-    // ── Sheet update → Apps Script (clients tab + efficiency) ──
+    // ── Sheet update → proxy → Apps Script ───────────────────
     var sheetPayload={
       type:'sheet_update',
       customerName:c.name,serviceAddress:c.address,
       email:c.email,grassType:grass,mowingHeight:height,mowingDirection:dir,
       lastVisitDuration:dur,lastVisitTechs:techs,
       startTime:payload.startTime,endTime:payload.endTime,date:date,
-      jobDuration:dur,
-      budgetedHours:budgetedHours,
-      techName:S.user.name,  // needed for windshield/utilization calc
+      jobDuration:dur,budgetedHours:budgetedHours,
+      techName:S.user.name,
     };
-    // Send directly to Apps Script for efficiency write + client update
-    try{await fetch(CFG.appsScript,{method:'POST',body:new URLSearchParams(sheetPayload),mode:'no-cors'});}catch(e){}
-    // Also send to Zapier for any sheet Zap steps
+    try{await fetch(CFG.proxy,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(sheetPayload)});}catch(e){}
     await zap(CFG.whSheet, sheetPayload);
 
     if(selJobIdx!==null){
@@ -1452,7 +1513,6 @@ async function submitJob(){
     document.getElementById('form-success').classList.add('show');
   }catch(err){
     if(err.name==='TypeError'){
-      // Network error (no-cors) — treat as success
       if(selJobIdx!==null){
         S.jobs[selJobIdx].formSubmitted=true;
         S.jobs[selJobIdx].jobStatus='complete';
