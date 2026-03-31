@@ -1084,9 +1084,9 @@ async function confirmSkip(){
   var date=new Date().toLocaleDateString('en-US');
   await zap(CFG.whAlert,{
     type:'office_alert',customerName:j.client,serviceAddress:j.address||'',date:date,
-    petAlert:'',officeNote:'⚠️ JOB SKIPPED — '+reason,
+    petAlert:'',officeNote:'JOB SKIPPED - '+reason,
     toEmail:'info'+'@'+'wslawncareservicesllc.com',
-    subject:'[WS Skip] ⚠️ Job Skipped — '+j.client
+    subject:'WS Skip - Job Skipped - '+j.client
   });
   // Log to Apps Script via proxy
   try{await fetch(CFG.proxy,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({
@@ -1391,9 +1391,9 @@ async function submitJob(){
     var hasPet=S.pet==='warn',hasNote=onote.length>0;
     if(hasPet||hasNote){
       await zap(CFG.whAlert,{type:'office_alert',customerName:c.name,serviceAddress:c.address,date:date,
-        petAlert:hasPet?'⚠️ PET WASTE REPORTED':'',officeNote:onote,
+        petAlert:hasPet?'PET WASTE REPORTED':'',officeNote:onote,
         toEmail:'info'+'@'+'wslawncareservicesllc.com',
-        subject:'[WS Alert] '+(hasPet?'🐾 Pet Waste':'')+(hasPet&&hasNote?' + ':'')+(hasNote?'📋 Office Note':'')+' — '+c.name});
+        subject:'WS Alert - '+(hasPet?'Pet Waste':'')+(hasPet&&hasNote?' and ':'')+(hasNote?'Office Note':'')+' - '+c.name});
     }
 
     // ── Sheet update → proxy → Apps Script ───────────────────
