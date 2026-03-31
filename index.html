@@ -1080,17 +1080,12 @@ async function confirmSkip(){
   document.getElementById('skip-modal').classList.remove('open');
   renderDispatch(); updateStrip();
   saveState();
-  toast('⚠️ '+j.client+' skipped');
+  toast('Skipped: '+j.client);
   var date=new Date().toLocaleDateString('en-US');
-  await zap(CFG.whAlert,{
-    type:'office_alert',customerName:j.client,serviceAddress:j.address||'',date:date,
-    petAlert:'',officeNote:'JOB SKIPPED - '+reason,
-    toEmail:'info'+'@'+'wslawncareservicesllc.com',
-    subject:'WS Skip - Job Skipped - '+j.client
-  });
-  // Log to Apps Script via proxy
+  // Single proxy POST — Apps Script handles both sheet log and alert email
   try{await fetch(CFG.proxy,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({
-    type:'skip_event',customerName:j.client,date:date,skipReason:reason,techName:S.user.name,
+    type:'skip_event',customerName:j.client,serviceAddress:j.address||'',
+    date:date,skipReason:reason,techName:S.user.name,
   })});}catch(e){}
   skipJobIdx=null;
 }
@@ -1390,10 +1385,11 @@ async function submitJob(){
     await zap(CFG.whJob,payload);
     var hasPet=S.pet==='warn',hasNote=onote.length>0;
     if(hasPet||hasNote){
-      await zap(CFG.whAlert,{type:'office_alert',customerName:c.name,serviceAddress:c.address,date:date,
+      try{await fetch(CFG.proxy,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({
+        type:'office_alert',customerName:c.name,serviceAddress:c.address,date:date,
         petAlert:hasPet?'PET WASTE REPORTED':'',officeNote:onote,
-        toEmail:'info'+'@'+'wslawncareservicesllc.com',
-        subject:'WS Alert - '+(hasPet?'Pet Waste':'')+(hasPet&&hasNote?' and ':'')+(hasNote?'Office Note':'')+' - '+c.name});
+        techName:S.user.name,
+      })});}catch(e){}
     }
 
     // ── Sheet update → proxy → Apps Script ───────────────────
