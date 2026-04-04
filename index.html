@@ -453,6 +453,7 @@ var S = {
   ],
   customers: [],
   user: {name:'Willie Arreola', position:'Crew Lead'},
+  pId: null,
   cust: null, svc: null, petLevel: 0, photos: [], selectedTechs: [],
 
 };
@@ -461,6 +462,10 @@ var S = {
 // INIT
 // ════════════════════════════════════════════════════════════════
 async function init() {
+  // Read pId from URL if crew tapped the auto-generated link
+  var urlParams = new URLSearchParams(window.location.search);
+  S.pId = urlParams.get('pId') || null;
+
   rebuildTechWrap();
 
   try {
@@ -472,6 +477,11 @@ async function init() {
       S.customers = d.customers;
       var srch = document.getElementById('f-srch');
       if(srch) srch.placeholder = 'Search '+S.customers.length+' customers…';
+    }
+
+    // If pId in URL, look up pending job and auto-populate
+    if (S.pId) {
+      loadPendingJob(S.pId);
     }
   } catch(e) { console.warn('Proxy fetch failed:', e.message); }
 }
@@ -501,6 +511,68 @@ function rebuildTechWrap() {
 // ════════════════════════════════════════════════════════════════
 // WIRE BUTTONS
 // ════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+// LOAD PENDING JOB — auto-populate from pId in URL
+// ════════════════════════════════════════════════════════════════
+async function loadPendingJob(pId) {
+  try {
+    var res = await fetch(CFG.proxy + '?type=pending_job&pId=' + encodeURIComponent(pId), { method: 'GET' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    var d = await res.json();
+    if (!d.job) { console.warn('Pending job not found for pId:', pId); return; }
+
+    var j = d.job;
+
+    // Build customer object from pending job data
+    S.cust = {
+      name:               j.name        || '',
+      address:            j.address     || '',
+      email:              j.email       || '',
+      phone:              j.phone       || '',
+      mowingHeight:       j.mowingHeight    || '',
+      mowingDirection:    j.mowingDirection || '',
+      grassType:          j.grassType       || '',
+      lastEfficiencyRate: j.lastEfficiencyRate || '',
+      lastVisitDuration:  j.lastVisitDuration  || '',
+      lastVisitTechs:     j.lastVisitTechs     || '',
+    };
+
+    // Show customer banner — no search needed
+    showCustBanner();
+
+    // Auto-select service type from email subject parsing
+    if (j.serviceType) {
+      selSvc(j.serviceType);
+    }
+
+    // Pre-fill mowing preferences if available
+    if (j.mowingHeight) {
+      var h = parseFloat(j.mowingHeight).toFixed(2);
+      ['r-height','c-height'].forEach(function(id){
+        var el = document.getElementById(id);
+        if(el) for(var o of el.options) if(parseFloat(o.value||0).toFixed(2)===h){ el.value=o.value; break; }
+      });
+    }
+    if (j.grassType) {
+      ['r-grass','c-grass'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=j.grassType; });
+      ['grass-res-grid','grass-com-grid'].forEach(function(gridId){
+        var grid=document.getElementById(gridId); if(!grid) return;
+        grid.querySelectorAll('.gb').forEach(function(btn){ btn.classList.toggle('on', btn.dataset.val===j.grassType); });
+      });
+    }
+    if (j.mowingDirection) {
+      var dg = document.getElementById('dir-grid');
+      if(dg) dg.querySelectorAll('.gb').forEach(function(btn){ btn.classList.toggle('on', btn.dataset.val===j.mowingDirection); });
+      var dr = document.getElementById('r-dir'); if(dr) dr.value = j.mowingDirection;
+    }
+
+    toast('✅ Job loaded: ' + j.name);
+  } catch(err) {
+    console.warn('loadPendingJob failed:', err.message);
+    toast('⚠ Could not load job data — search manually');
+  }
+}
+
 function wireButtons() {
   document.getElementById('tb-name-sel').addEventListener('change', function() {
     var idx = parseInt(this.value);
@@ -818,7 +890,7 @@ async function submitJob(){
 
     // ── 4. Sheet update ───────────────────────────────────────
     var sheetPayload = {
-      type:'sheet_update', customerName:c.name, serviceAddress:c.address||'',
+      type:'sheet_update', pId:S.pId||'', customerName:c.name, serviceAddress:c.address||'',
       email:c.email||'', grassType:grass, mowingHeight:height, mowingDirection:dir,
       lastVisitTechs:techs, date:date, techName:S.user.name,
     };
