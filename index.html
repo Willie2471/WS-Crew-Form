@@ -32,12 +32,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .tb-sel option{background:var(--g9);color:#fff}
 .tb-role{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
 
-/* SA PARAMS BANNER */
-.sa-banner{background:rgba(76,175,99,.15);border:1px solid rgba(76,175,99,.3);border-radius:8px;
-  padding:8px 12px;margin:12px 14px 0;display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.7)}
-.sa-banner.none{background:rgba(255,165,0,.1);border-color:rgba(255,165,0,.3);color:rgba(255,200,0,.8)}
-.sa-dot{width:8px;height:8px;border-radius:50%;background:var(--g4);flex-shrink:0}
-.sa-dot.warn{background:var(--acc)}
+
 
 .content{flex:1;overflow-y:auto;padding:16px 14px 100px;max-width:680px;width:100%;margin:0 auto}
 
@@ -135,13 +130,13 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .pet-opt.clear{border-color:var(--g7);background:var(--g1)}
 .pet-opt.warn{border-color:var(--red);background:var(--red2)}
 
-/* SEVERITY SELECTOR — pet waste level */
-.sev-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
-.sev-btn{border:2px solid var(--border);border-radius:10px;padding:10px 4px;text-align:center;cursor:pointer;background:#f9fcf9}
-.sev-btn .svi{font-size:18px;display:block;margin-bottom:3px}
-.sev-btn .svl{font-size:10px;font-weight:700;color:var(--muted);line-height:1.2}
-.sev-btn.on{border-color:var(--red);background:var(--red2)}.sev-btn.on .svl{color:var(--red)}
-.sev-btn.on-ok{border-color:var(--g7);background:var(--g1)}.sev-btn.on-ok .svl{color:var(--g7)}
+/* PET TOGGLE */
+.pet-toggle{display:flex;gap:10px}
+.pet-opt{flex:1;border:2px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;background:#f9fcf9}
+.pet-opt .poi{font-size:24px;display:block;margin-bottom:5px}
+.pet-opt .pol{font-size:11px;font-weight:700;color:var(--muted);line-height:1.3}
+.pet-opt.clear{border-color:var(--g7);background:var(--g1)}
+.pet-opt.warn{border-color:var(--red);background:var(--red2)}
 
 /* SUBMIT */
 .sub-btn{width:100%;padding:16px;background:var(--g7);color:#fff;border:none;border-radius:12px;
@@ -165,11 +160,6 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
   transition:transform .3s;z-index:9999;white-space:nowrap;pointer-events:none}
 .toast.show{transform:translateX(-50%) translateY(0)}
 
-/* SA SUBMIT STATUS */
-.sa-status{display:flex;align-items:center;gap:8px;font-size:12px;padding:10px 14px;border-radius:10px;margin-top:10px}
-.sa-status.ok{background:var(--g1);border:1px solid var(--g2);color:var(--g7)}
-.sa-status.fail{background:var(--red2);border:1px solid #f5c6c6;color:var(--red)}
-.sa-status.pending{background:var(--blue2);border:1px solid var(--blue3);color:var(--blue)}
 </style>
 </head>
 <body>
@@ -189,11 +179,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
     </div>
   </div>
 
-  <!-- SA link detected banner -->
-  <div id="sa-link-banner" class="sa-banner hidden">
-    <div class="sa-dot" id="sa-dot"></div>
-    <span id="sa-link-msg">Checking for SA job link…</span>
-  </div>
+
 
   <div class="content" id="content">
 
@@ -282,13 +268,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
               <div class="yn-btn n" data-val="N/A">N/A</div>
             </div><input type="hidden" id="r-weed"/>
           </div>
-          <div class="field"><label>Sprayed for Bugs?</label>
-            <div class="yn" id="yn-r-bugs">
-              <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-              <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
-              <div class="yn-btn n" data-val="N/A">N/A</div>
-            </div><input type="hidden" id="r-bugs"/>
-          </div>
+
           <div class="field"><label>Trimmed Hedges / Limbs?</label>
             <div class="yn" id="yn-r-hedges">
               <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
@@ -340,13 +320,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
               <div class="yn-btn n" data-val="N/A">N/A</div>
             </div><input type="hidden" id="c-weed"/>
           </div>
-          <div class="field"><label>Sprayed for Bugs?</label>
-            <div class="yn" id="yn-c-bugs">
-              <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-              <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
-              <div class="yn-btn n" data-val="N/A">N/A</div>
-            </div><input type="hidden" id="c-bugs"/>
-          </div>
+
           <div class="field"><label>Trimmed Hedges / Limbs?</label>
             <div class="yn" id="yn-c-hedges">
               <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
@@ -376,13 +350,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
               <div class="yn-btn n" data-val="N/A">N/A</div>
             </div><input type="hidden" id="o-weed"/>
           </div>
-          <div class="field"><label>Sprayed for Bugs?</label>
-            <div class="yn" id="yn-o-bugs">
-              <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-              <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
-              <div class="yn-btn n" data-val="N/A">N/A</div>
-            </div><input type="hidden" id="o-bugs"/>
-          </div>
+
           <div class="field"><label>Trimmed Hedges / Limbs?</label>
             <div class="yn" id="yn-o-hedges">
               <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
@@ -404,16 +372,12 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
       <!-- Pet Waste -->
       <div class="alert-card">
         <div class="card-title"><span style="font-size:20px">🐾</span> Pet Waste on Property?</div>
-        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Select level — <strong>All Clear</strong> if no issue.</p>
-        <div class="sev-grid" id="pet-sev-grid">
-          <div class="sev-btn on-ok" data-val="0" data-sa="0"><span class="svi">✅</span><span class="svl">All Clear</span></div>
-          <div class="sev-btn" data-val="1" data-sa="1"><span class="svi">⚠️</span><span class="svl">1st Warning</span></div>
-          <div class="sev-btn" data-val="2" data-sa="2"><span class="svi">🚨</span><span class="svl">2nd Warning</span></div>
-          <div class="sev-btn" data-val="3" data-sa="3"><span class="svi">🛑</span><span class="svl">Final Notice</span></div>
-          <div class="sev-btn" data-val="4" data-sa="4"><span class="svi">❌</span><span class="svl">Terminate</span></div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Tap <strong>Alert Office</strong> if pet waste caused issues.</p>
+        <div class="pet-toggle">
+          <div class="pet-opt" id="pet-clr"><span class="poi">✅</span><span class="pol">All Clear</span></div>
+          <div class="pet-opt" id="pet-wrn"><span class="poi">⚠️</span><span class="pol">Alert Office</span></div>
         </div>
-        <input type="hidden" id="f-pet" value="0"/>
-        <input type="hidden" id="f-pet-sa" value="0"/>
+        <input type="hidden" id="f-pet"/>
       </div>
 
       <!-- Office Note -->
@@ -456,9 +420,8 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
     <div class="success hidden" id="form-success">
       <div class="si">✅</div>
       <h2>Job Submitted!</h2>
-      <p>SA form submitted &amp; customer email triggered.</p>
-      <div id="sa-submit-status"></div>
-      <br/>
+      <p>Completion email sent to your customer.</p>
+
       <button class="nj-btn" id="new-job-btn">+ Start Next Job</button>
     </div>
 
@@ -477,57 +440,6 @@ var CFG = {
   whAlert:  'https://hooks.zapier.com/hooks/catch/20549459/uxw6ope/',
   whSheet:  'https://hooks.zapier.com/hooks/catch/20549459/uxwh463/',
   cfWorker: 'https://wsphotoupload.will-671.workers.dev/',
-
-  // SA form endpoint + template ID (from the form HTML)
-  saEndpoint:   'https://my.serviceautopilot.com/MarketingBFF/Form/SubmitForm',
-  saTemplateId: '8eaf9d09-cbb9-42fe-ab83-2bf6fded999f',
-  saCompanyId:  'd2fbdc9b-4692-4abd-a1e9-43840456fdcb',
-
-  // SA field IDs (from form HTML data-field attributes)
-  saFields: {
-    // Field 2 = First Name, 3 = Last Name, 5 = Address — skipped (pId handles identity)
-    petWaste:   7,   // dropdown: 0=All Clear, 1=1st Warning, 2=2nd Warning, 3=Final Notice, 4=Terminate
-    mowHeight:  11,  // dropdown by UUID
-    mowDir:     12,  // dropdown by UUID
-    grassType:  13,  // dropdown by UUID
-    custNote:   22,  // longText — "Overall, need to communicate with client"
-  },
-
-  // SA dropdown UUIDs — mowing height
-  saHeightMap: {
-    '2.00': '6397776e-b119-4576-8b90-2170d54c698f',
-    '2.25': '4d20f7b4-f1e3-46db-827c-ee7928b5d8be',
-    '2.50': 'cbed8c03-eccc-4ab2-a17b-47da684386bd',
-    '2.75': 'e7cbb734-df76-41e7-a5d7-d16b44a89d61',
-    '3.00': '51a954b0-eaf6-4dd3-bc62-9a37f06253aa',
-    '3.25': '01d2bd1f-7cd2-4c51-ae34-7dee33fc965e',
-    '3.50': '9af14fe7-ad3a-40bf-8c34-6692423a3ea1',
-    '3.75': '73d82f31-e67a-448c-ba2e-6a8eb639798b',
-    '4.00': '2a3403a4-06d4-4548-89ac-b61304197714',
-    '4.25': '8985997a-6427-49b6-925d-a82812bf45ff',
-    '4.50': '649672a0-0fe3-476f-a775-3d3f16c7fc22',
-    '4.75': '60ab17bb-f4e6-4d1a-84b6-bd48250dc111',
-    '5.00': '9aa83d88-1c56-4fd0-bd92-ee5612af939f',
-  },
-
-  // SA dropdown UUIDs — mowing direction
-  saDirMap: {
-    '.':       '3ab81afc-d2cc-4dd3-a9c0-355e660882ee',
-    '10 to 4': '578a0e70-a61d-40b3-b789-e0c1d1bf7492',
-    '12 to 6': '3122a644-bda9-4c20-8e4b-fd035377e9d5',
-    '2 to 8':  '092b3d52-56dc-47c0-b455-d607deed245d',
-    '3 to 9':  '214385af-00d4-4ec7-b7ae-ea0e8b994a15',
-  },
-
-  // SA dropdown UUIDs — grass type
-  saGrassMap: {
-    'Bahia':              'ce9c4875-c4ec-4bcd-92bd-48d4559c2870',
-    'Bermuda':            'afdc6f4f-b63f-4c9f-b88e-dd1e09d49621',
-    'St. Augustine':      '69e646b9-9ac3-4c02-b68c-c4d5ec7183c9',
-    'Unable To Identify': '6f503b9b-8eda-41b6-b9cb-932f6045c9f7',
-    'Zoysia':             '2db0a72c-61ea-4d8a-8f65-508a3c6a93bb',
-    'Centipede':          '6f503b9b-8eda-41b6-b9cb-932f6045c9f7', // fallback to Unable
-  },
 };
 
 // ════════════════════════════════════════════════════════════════
@@ -543,42 +455,12 @@ var S = {
   user: {name:'Willie Arreola', position:'Crew Lead'},
   cust: null, svc: null, petLevel: 0, photos: [], selectedTechs: [],
 
-  // SA URL params — read from the link SA emails to crew
-  saParams: { pId: null, pType: null, source: null },
 };
-
-// ════════════════════════════════════════════════════════════════
-// READ SA URL PARAMS
-// Crew taps the SA email link → we redirect to our app with
-// those same params. On load we capture them here.
-// ════════════════════════════════════════════════════════════════
-function readSAParams() {
-  var params = new URLSearchParams(window.location.search);
-  S.saParams.pId    = params.get('pId')    || null;
-  S.saParams.pType  = params.get('pType')  || null;
-  S.saParams.source = params.get('source') || null;
-
-  var banner = document.getElementById('sa-link-banner');
-  var dot    = document.getElementById('sa-dot');
-  var msg    = document.getElementById('sa-link-msg');
-
-  banner.classList.remove('hidden');
-  if (S.saParams.pId) {
-    banner.classList.remove('none');
-    dot.classList.remove('warn');
-    msg.textContent = '✅ SA job linked — form will auto-submit to SA on completion';
-  } else {
-    banner.classList.add('none');
-    dot.classList.add('warn');
-    msg.textContent = '⚠️ No SA job link detected — open this app from the SA email link';
-  }
-}
 
 // ════════════════════════════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════════════════════════════
 async function init() {
-  readSAParams();
   rebuildTechWrap();
 
   try {
@@ -648,15 +530,14 @@ function wireButtons() {
     el.addEventListener('click', function(){ gridSel(el, 'dir-grid', 'r-dir'); });
   });
 
-  ['r-weed','r-bugs','r-hedges','r-perim','c-blow','c-weed','c-bugs','c-hedges','c-perim','o-weed','o-bugs','o-hedges','o-perim'].forEach(function(id){
+  ['r-weed','r-hedges','r-perim','c-blow','c-weed','c-hedges','c-perim','o-weed','o-hedges','o-perim'].forEach(function(id){
     var g = document.getElementById('yn-'+id);
     if(g) g.querySelectorAll('.yn-btn').forEach(function(btn){ btn.addEventListener('click', function(){ yntog(btn, id); }); });
   });
 
   // Pet waste severity grid
-  document.getElementById('pet-sev-grid').querySelectorAll('.sev-btn').forEach(function(btn){
-    btn.addEventListener('click', function(){ setPetLevel(btn); });
-  });
+  document.getElementById('pet-clr').addEventListener('click', function(){ setPet('clear'); });
+  document.getElementById('pet-wrn').addEventListener('click', function(){ setPet('warn'); });
 
   document.getElementById('f-photos').addEventListener('change', function(){ Array.from(this.files).forEach(addPhoto); this.value=''; });
   document.getElementById('sub-btn').addEventListener('click', submitJob);
@@ -789,14 +670,11 @@ function yntog(btn, id){
   document.getElementById(id).value = btn.dataset.val;
 }
 
-function setPetLevel(btn){
-  S.petLevel = parseInt(btn.dataset.val);
-  document.getElementById('f-pet').value    = S.petLevel;
-  document.getElementById('f-pet-sa').value = btn.dataset.sa;
-  document.getElementById('pet-sev-grid').querySelectorAll('.sev-btn').forEach(function(b){
-    b.classList.remove('on','on-ok');
-  });
-  btn.classList.add(S.petLevel===0?'on-ok':'on');
+function setPet(v){
+  S.pet=v;
+  document.getElementById('f-pet').value=v;
+  document.getElementById('pet-clr').className='pet-opt'+(v==='clear'?' clear':'');
+  document.getElementById('pet-wrn').className='pet-opt'+(v==='warn'?' warn':'');
 }
 
 function togTech(i, name){
@@ -839,83 +717,6 @@ async function compressPhoto(file){
 }
 
 // ════════════════════════════════════════════════════════════════
-// SUBMIT TO SA
-// Posts the form data to SA's endpoint exactly as if the crew
-// had filled out the native SA form. SA then fires the customer
-// email automation automatically.
-// ════════════════════════════════════════════════════════════════
-async function submitToSA(fields) {
-  if (!S.saParams.pId) {
-    console.warn('No SA pId — skipping SA form submission');
-    return { ok: false, reason: 'no_pid' };
-  }
-
-  // Build the SA field array in the format SA expects
-  var saFieldData = [];
-
-  // Field 7: Pet Waste dropdown (integer string)
-  saFieldData.push({ fieldId: CFG.saFields.petWaste, value: String(fields.petSAValue) });
-
-  // Field 11: Mowing Height (UUID)
-  if (fields.height) {
-    var hUUID = CFG.saHeightMap[parseFloat(fields.height).toFixed(2)];
-    if (hUUID) saFieldData.push({ fieldId: CFG.saFields.mowHeight, value: hUUID });
-  }
-
-  // Field 12: Mowing Direction (UUID)
-  if (fields.direction) {
-    var dUUID = CFG.saDirMap[fields.direction];
-    if (dUUID) saFieldData.push({ fieldId: CFG.saFields.mowDir, value: dUUID });
-  }
-
-  // Field 13: Grass Type (UUID)
-  if (fields.grassType) {
-    var gUUID = CFG.saGrassMap[fields.grassType];
-    if (gUUID) saFieldData.push({ fieldId: CFG.saFields.grassType, value: gUUID });
-  }
-
-  // Field 22: Customer summary note (longText)
-  if (fields.custNote) {
-    saFieldData.push({ fieldId: CFG.saFields.custNote, value: fields.custNote });
-  }
-
-  var submitData = { pages: [{ page: 1, fields: saFieldData }] };
-
-  var payload = {
-    request: {
-      formTemplateId:  CFG.saTemplateId,
-      submittedById:   S.saParams.pId,
-      submittedByType: parseInt(S.saParams.pType || '5'),
-      parentId:        S.saParams.pId,
-      parentType:      parseInt(S.saParams.pType || '5'),
-      source:          parseInt(S.saParams.source || '3'),
-      data:            submitData,
-    }
-  };
-
-  // Must go through Cloudflare Worker — SA blocks direct browser requests (CORS)
-  try {
-    var r = await fetch(CFG.proxy, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type:      'sa_form_submit',
-        saPayload: payload,
-        companyId: CFG.saCompanyId,
-      }),
-    });
-    if (r.ok) {
-      var result = await r.json();
-      if (result.saOk) return { ok: true };
-      return { ok: false, reason: result.saError || 'sa_rejected' };
-    }
-    return { ok: false, reason: 'proxy_http_' + r.status };
-  } catch(e) {
-    return { ok: false, reason: e.message };
-  }
-}
-
-// ════════════════════════════════════════════════════════════════
 // SUBMIT JOB
 // ════════════════════════════════════════════════════════════════
 async function submitJob(){
@@ -926,7 +727,7 @@ async function submitJob(){
   var checks = p==='c'
     ? ['c-blow','c-weed','c-bugs','c-hedges','c-perim']
     : p==='r'
-    ? ['r-weed','r-bugs','r-hedges','r-perim']
+    ? ['r-weed','r-hedges','r-perim']
     : ['o-weed','o-bugs','o-hedges','o-perim'];
   var fail = false;
   checks.forEach(function(id){
@@ -975,18 +776,10 @@ async function submitJob(){
     var techs    = document.getElementById('f-techs').value || S.user.name;
     var notes    = (document.getElementById(p+'-notes') && document.getElementById(p+'-notes').value)
                  || (document.getElementById('c-notes') && document.getElementById('c-notes').value) || '';
-    var saNote   = document.getElementById('f-sa-note').value.trim() || notes;
     var onote    = document.getElementById('f-onote').value.trim();
-    var petSAVal = document.getElementById('f-pet-sa').value || '0';
 
     // ── 1. Submit to SA (triggers customer email automation) ──
-    var saResult = await submitToSA({
-      height:      height,
-      direction:   dir,
-      grassType:   grass,
-      petSAValue:  petSAVal,
-      custNote:    saNote,
-    });
+
 
     // ── 2. Fire Zapier job completion webhook ─────────────────
     var payload = {
@@ -995,14 +788,11 @@ async function submitJob(){
       serviceAddress:c.address, serviceType:S.svc, techNames:techs,
       grassType:grass, cutHeight:height, mowingDirection:dir,
       weedControl: (document.getElementById(p+'-weed') && document.getElementById(p+'-weed').value)||'',
-      bugSpray:    (document.getElementById(p+'-bugs') && document.getElementById(p+'-bugs').value)||'',
       hedgeTrim:   (document.getElementById(p+'-hedges') && document.getElementById(p+'-hedges').value)||'',
       perimeter:   (document.getElementById(p+'-perim') && document.getElementById(p+'-perim').value)||'',
       blowLot:     S.svc==='commercial'?((document.getElementById('c-blow')&&document.getElementById('c-blow').value)||''):'',
-      notes:       notes, saNote:saNote,
-      petLevel:    String(S.petLevel),
-      saSubmitted: saResult.ok?'yes':'no',
-      saLinked:    S.saParams.pId?'yes':'no',
+      notes:notes,
+      petStatus: S.pet,
       photoCount:  urls.length,
       photo1Url:urls[0]||'', photo2Url:urls[1]||'', photo3Url:urls[2]||'', photo4Url:urls[3]||'',
       photosHtml:  urls.length
@@ -1013,14 +803,14 @@ async function submitJob(){
     await zap(CFG.whJob, payload);
 
     // ── 3. Office alert if needed ─────────────────────────────
-    var hasPet  = S.petLevel > 0;
+    var hasPet = S.pet==='warn';
     var hasNote = onote.length > 0;
     if(hasPet || hasNote){
       try{
         await fetch(CFG.proxy, {method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'},
           body:new URLSearchParams({
             type:'office_alert', customerName:c.name, serviceAddress:c.address||'', date:date,
-            petAlert:hasPet?'PET WASTE LEVEL '+S.petLevel:'', officeNote:onote, techName:S.user.name,
+            petAlert:hasPet?'PET WASTE REPORTED':'', officeNote:onote, techName:S.user.name,
           })
         });
       } catch(e){}
@@ -1041,14 +831,6 @@ async function submitJob(){
     succ.classList.remove('hidden');
     succ.classList.add('show');
 
-    var statusEl = document.getElementById('sa-submit-status');
-    if (!S.saParams.pId) {
-      statusEl.innerHTML = '<div class="sa-status fail">⚠️ No SA job link was detected — customer email was <strong>not</strong> auto-triggered via SA. Open this app from the SA email link next time.</div>';
-    } else if (saResult.ok) {
-      statusEl.innerHTML = '<div class="sa-status ok">✅ SA form submitted — customer email triggered automatically.</div>';
-    } else {
-      statusEl.innerHTML = '<div class="sa-status fail">⚠️ SA submission failed ('+saResult.reason+') — you may need to manually send the customer email in SA.</div>';
-    }
 
   } catch(err) {
     if(err.name==='TypeError'){
@@ -1067,7 +849,7 @@ async function submitJob(){
 // RESET
 // ════════════════════════════════════════════════════════════════
 function resetForm(){
-  S.cust=null; S.svc=null; S.petLevel=0; S.photos=[]; S.selectedTechs=[];
+  S.cust=null; S.svc=null; S.pet=''; S.photos=[]; S.selectedTechs=[];
   clearCust();
   ['res','com','oth'].forEach(function(p){
     document.getElementById('svc-'+p).classList.remove('on');
@@ -1082,17 +864,14 @@ function resetForm(){
   document.querySelectorAll('textarea').forEach(function(el){ el.value=''; });
   document.querySelectorAll('select').forEach(function(el){ el.selectedIndex=0; });
   // Reset pet grid
-  document.getElementById('pet-sev-grid').querySelectorAll('.sev-btn').forEach(function(b,i){
-    b.classList.remove('on','on-ok'); if(i===0) b.classList.add('on-ok');
-  });
-  document.getElementById('f-pet').value='0';
-  document.getElementById('f-pet-sa').value='0';
+  document.getElementById('pet-clr').className='pet-opt';
+  document.getElementById('pet-wrn').className='pet-opt';
+  document.getElementById('f-pet').value='';
   document.getElementById('sub-btn').innerHTML='✓ SUBMIT JOB';
   document.getElementById('sub-btn').disabled=false;
   document.getElementById('form-body').classList.remove('hidden');
   var succ=document.getElementById('form-success');
   succ.classList.remove('show'); succ.classList.add('hidden');
-  document.getElementById('sa-submit-status').innerHTML='';
   document.getElementById('tech-wrap').querySelectorAll('.tech-pill').forEach(function(p){ p.classList.remove('on'); });
   window.scrollTo(0,0);
 }
