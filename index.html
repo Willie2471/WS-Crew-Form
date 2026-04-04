@@ -586,7 +586,11 @@ async function init() {
     if (!res.ok) throw new Error('HTTP ' + res.status);
     var d = await res.json();
     if (d.techs     && d.techs.length)    { S.crew = d.techs; rebuildTechWrap(); updateTbSel(); }
-    if (d.customers && d.customers.length) S.customers = d.customers;
+    if (d.customers && d.customers.length) {
+      S.customers = d.customers;
+      var srch = document.getElementById('f-srch');
+      if(srch) srch.placeholder = 'Search '+S.customers.length+' customers…';
+    }
   } catch(e) { console.warn('Proxy fetch failed:', e.message); }
 }
 
@@ -666,8 +670,25 @@ function onCustSearch(){
   var q = this.value.toLowerCase().trim();
   var res = document.getElementById('f-results');
   if(q.length < 2){ res.classList.remove('open'); return; }
+
+  // If customers haven't loaded yet, show loading and retry
+  if(!S.customers.length){
+    res.innerHTML = '<div class="sri"><div class="sri-name" style="color:var(--muted)">⏳ Loading customers…</div></div>';
+    res.classList.add('open');
+    // Retry once after a short delay
+    setTimeout(function(){
+      var q2 = document.getElementById('f-srch').value.toLowerCase().trim();
+      if(q2.length >= 2) runSearch(q2);
+    }, 1500);
+    return;
+  }
+  runSearch(q);
+}
+
+function runSearch(q){
+  var res = document.getElementById('f-results');
   var m = S.customers.filter(function(c){
-    return c.name.toLowerCase().includes(q) || (c.address||'').toLowerCase().includes(q);
+    return (c.name||'').toLowerCase().includes(q) || (c.address||'').toLowerCase().includes(q);
   }).slice(0,8);
   res.innerHTML = '';
   if(m.length){
@@ -678,7 +699,7 @@ function onCustSearch(){
       res.appendChild(div);
     });
   } else {
-    res.innerHTML = '<div class="sri"><div class="sri-name" style="color:var(--muted)">No customers found</div></div>';
+    res.innerHTML = '<div class="sri"><div class="sri-name" style="color:var(--muted)">No customers found for "'+q+'" ('+S.customers.length+' loaded)</div></div>';
   }
   res.classList.add('open');
 }
@@ -872,18 +893,23 @@ async function submitToSA(fields) {
     }
   };
 
+  // Must go through Cloudflare Worker — SA blocks direct browser requests (CORS)
   try {
-    var r = await fetch(CFG.saEndpoint, {
+    var r = await fetch(CFG.proxy, {
       method: 'POST',
-      headers: {
-        'Content-Type':   'application/json; charset=utf-8',
-        'X-Requested-With': 'XMLHttpRequest',
-        'x-CompanyID':    CFG.saCompanyId,
-      },
-      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type:      'sa_form_submit',
+        saPayload: payload,
+        companyId: CFG.saCompanyId,
+      }),
     });
-    if (r.ok) return { ok: true };
-    return { ok: false, reason: 'http_' + r.status };
+    if (r.ok) {
+      var result = await r.json();
+      if (result.saOk) return { ok: true };
+      return { ok: false, reason: result.saError || 'sa_rejected' };
+    }
+    return { ok: false, reason: 'proxy_http_' + r.status };
   } catch(e) {
     return { ok: false, reason: e.message };
   }
