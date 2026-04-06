@@ -21,7 +21,6 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color:var(--text);overflow-x:hidden}
-
 #scr-app{display:flex;flex-direction:column;min-height:100vh;background:var(--g0)}
 .topbar{background:var(--g9);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;
   position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.3)}
@@ -31,12 +30,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
   font-size:17px;font-weight:700;outline:none;cursor:pointer;max-width:160px}
 .tb-sel option{background:var(--g9);color:#fff}
 .tb-role{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
-
-
-
 .content{flex:1;overflow-y:auto;padding:16px 14px 100px;max-width:680px;width:100%;margin:0 auto}
-
-/* CARDS */
 .card{background:var(--white);border-radius:var(--card-r);padding:18px;margin-bottom:14px;
   border:1.5px solid var(--border);box-shadow:0 2px 10px rgba(30,107,46,.06)}
 .card-title{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:var(--g7);
@@ -53,8 +47,6 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
   background:#f9fcf9;outline:none;-webkit-appearance:none}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--g7)}
 .field textarea{min-height:80px;resize:vertical}
-
-/* YN BUTTONS */
 .yn{display:flex;gap:8px}
 .yn-btn{flex:1;padding:11px 6px;border:2px solid var(--border);border-radius:10px;text-align:center;
   cursor:pointer;font-size:12px;font-weight:700;color:var(--muted);background:#f9fcf9;user-select:none}
@@ -62,22 +54,16 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .yn-btn.n.on{border-color:var(--red);background:var(--red2);color:var(--red)}
 .yn-btn.nx.on{border-color:var(--acc);background:var(--acc2);color:#b37800}
 .yn.invalid .yn-btn{border-color:var(--red)!important;background:var(--red2)!important}
-
-/* GRID SELECTORS */
 .gg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .gb{border:2px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;background:#f9fcf9}
 .gb .gi{font-size:20px;display:block;margin-bottom:4px}
 .gb .gl{font-size:11px;font-weight:700;color:var(--muted);line-height:1.3}
 .gb.on{border-color:var(--g7);background:var(--g1)}.gb.on .gl{color:var(--g7)}
-
-/* SERVICE GRID */
 .svc-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:4px}
 .svc-btn{border:2px solid var(--border);border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer;background:#f9fcf9}
 .svc-btn .si{font-size:26px;display:block;margin-bottom:5px}
 .svc-btn .sl{font-size:11px;font-weight:700;color:var(--muted);line-height:1.3}
 .svc-btn.on{border-color:var(--g7);background:var(--g1)}.svc-btn.on .sl{color:var(--g7)}
-
-/* TECH PILLS */
 .tech-wrap{display:flex;flex-wrap:wrap;gap:8px;padding:4px 0}
 .tech-pill{display:flex;align-items:center;gap:6px;padding:8px 14px;border:2px solid var(--border);
   border-radius:100px;background:#f9fcf9;cursor:pointer;user-select:none}
@@ -87,8 +73,6 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .tech-pill.on{border-color:var(--g7);background:var(--g1)}
 .tech-pill.on .tech-av{background:var(--g7);color:#fff}
 .tech-pill.on .tech-name{color:var(--g7)}
-
-/* PHOTO */
 .photo-area{border:2.5px dashed var(--g2);border-radius:12px;padding:22px 16px;text-align:center;
   cursor:pointer;background:#f9fcf9;position:relative}
 .photo-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
@@ -97,8 +81,6 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .p-thumb img{width:100%;height:100%;object-fit:cover}
 .p-rm{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.55);color:#fff;border:none;
   border-radius:50%;width:20px;height:20px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-
-/* CUSTOMER SEARCH */
 .srch-wrap{position:relative}
 .srch-wrap input{padding-left:40px}
 .srch-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:16px;pointer-events:none}
@@ -119,8 +101,6 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .chip-val{font-size:13px;font-weight:700;color:var(--g7)}
 .chip.blue{background:var(--blue2);border-color:var(--blue3)}
 .chip.blue .chip-lbl,.chip.blue .chip-val{color:var(--blue)}
-
-/* ALERT CARD */
 .alert-card{background:#fef5ec;border:1.5px solid #f5cba7;border-radius:var(--card-r);padding:18px;margin-bottom:14px}
 .alert-card .card-title{color:var(--acc)}
 .pet-toggle{display:flex;gap:10px}
@@ -129,16 +109,6 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .pet-opt .pol{font-size:11px;font-weight:700;color:var(--muted);line-height:1.3}
 .pet-opt.clear{border-color:var(--g7);background:var(--g1)}
 .pet-opt.warn{border-color:var(--red);background:var(--red2)}
-
-/* PET TOGGLE */
-.pet-toggle{display:flex;gap:10px}
-.pet-opt{flex:1;border:2px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;background:#f9fcf9}
-.pet-opt .poi{font-size:24px;display:block;margin-bottom:5px}
-.pet-opt .pol{font-size:11px;font-weight:700;color:var(--muted);line-height:1.3}
-.pet-opt.clear{border-color:var(--g7);background:var(--g1)}
-.pet-opt.warn{border-color:var(--red);background:var(--red2)}
-
-/* SUBMIT */
 .sub-btn{width:100%;padding:16px;background:var(--g7);color:#fff;border:none;border-radius:12px;
   font-family:'Barlow Condensed',sans-serif;font-size:20px;letter-spacing:1px;cursor:pointer;
   box-shadow:0 4px 16px rgba(30,107,46,.3);margin-top:6px}
@@ -150,8 +120,6 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 .success p{font-size:14px;color:var(--muted);margin-bottom:20px}
 .nj-btn{padding:12px 28px;background:var(--g7);color:#fff;border:none;border-radius:10px;
   font-family:'Barlow Condensed',sans-serif;font-size:16px;cursor:pointer}
-
-/* SPINNER / TOAST */
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.35);
   border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -159,7 +127,6 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
   background:var(--g9);color:#fff;padding:10px 22px;border-radius:100px;font-size:14px;font-weight:500;
   transition:transform .3s;z-index:9999;white-space:nowrap;pointer-events:none}
 .toast.show{transform:translateX(-50%) translateY(0)}
-
 </style>
 </head>
 <body>
@@ -167,7 +134,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
 <div id="scr-app">
   <div class="topbar">
     <div class="tb-left">
-      <div class="tb-icon">🌿</div>
+      <div class="tb-icon">&#127807;</div>
       <div>
         <select id="tb-name-sel" class="tb-sel">
           <option value="0">Willie Arreola</option>
@@ -179,10 +146,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
     </div>
   </div>
 
-
-
   <div class="content" id="content">
-
     <div id="form-body">
 
       <!-- Customer -->
@@ -192,8 +156,8 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
           <div class="field">
             <label>Search by name or address</label>
             <div class="srch-wrap">
-              <span class="srch-icon">🔍</span>
-              <input type="text" id="f-srch" placeholder="Type to search…" autocomplete="off"/>
+              <span class="srch-icon">&#128269;</span>
+              <input type="text" id="f-srch" placeholder="Type to search&hellip;" autocomplete="off"/>
               <div class="srch-results" id="f-results"></div>
             </div>
           </div>
@@ -202,7 +166,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
           <div class="csel-banner">
             <div class="csel-name" id="f-cname"></div>
             <div class="csel-det" id="f-cdet"></div>
-            <button class="csel-chg" id="csel-chg-btn">✕ Change customer</button>
+            <button class="csel-chg" id="csel-chg-btn">&#10005; Change customer</button>
           </div>
           <div class="info-chips" id="f-chips"></div>
         </div>
@@ -219,21 +183,21 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
       <div class="card">
         <div class="card-title"><div class="ctn">3</div> Service Type</div>
         <div class="svc-grid">
-          <div class="svc-btn" id="svc-res"><span class="si">🏠</span><span class="sl">Residential Mowing</span></div>
-          <div class="svc-btn" id="svc-com"><span class="si">🏢</span><span class="sl">Commercial Mowing</span></div>
-          <div class="svc-btn" id="svc-oth"><span class="si">🔧</span><span class="sl">All Other Services</span></div>
+          <div class="svc-btn" id="svc-res"><span class="si">&#127968;</span><span class="sl">Residential Mowing</span></div>
+          <div class="svc-btn" id="svc-com"><span class="si">&#127970;</span><span class="sl">Commercial Mowing</span></div>
+          <div class="svc-btn" id="svc-oth"><span class="si">&#128295;</span><span class="sl">All Other Services</span></div>
         </div>
       </div>
 
       <!-- Job Details -->
       <div class="card">
         <div class="card-title"><div class="ctn">4</div> Job Details</div>
-        <div id="svc-none" style="color:var(--muted);font-size:13px;text-align:center;padding:16px 0">← Select a service type above</div>
+        <div id="svc-none" style="color:var(--muted);font-size:13px;text-align:center;padding:16px 0">&larr; Select a service type above</div>
 
         <!-- RESIDENTIAL -->
         <div id="f-res" class="hidden">
           <div class="field"><label>Cut Height (inches)</label>
-            <select id="r-height"><option value="">Select…</option>
+            <select id="r-height"><option value="">Select&hellip;</option>
               <option>2.00</option><option>2.25</option><option>2.50</option><option>2.75</option>
               <option>3.00</option><option>3.25</option><option>3.50</option><option>3.75</option>
               <option>4.00</option><option>4.25</option><option>4.50</option><option>4.75</option><option>5.00</option>
@@ -241,55 +205,54 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
           </div>
           <div class="field"><label>Grass Type</label>
             <div class="gg" id="grass-res-grid">
-              <div class="gb" data-val="Bahia"><span class="gi">🌾</span><span class="gl">Bahia</span></div>
-              <div class="gb" data-val="Bermuda"><span class="gi">☀️</span><span class="gl">Bermuda</span></div>
-              <div class="gb" data-val="St. Augustine"><span class="gi">🌿</span><span class="gl">St. Augustine</span></div>
-              <div class="gb" data-val="Zoysia"><span class="gi">🍃</span><span class="gl">Zoysia</span></div>
-              <div class="gb" data-val="Centipede"><span class="gi">🐛</span><span class="gl">Centipede</span></div>
-              <div class="gb" data-val="Unable To Identify"><span class="gi">❓</span><span class="gl">Unable To ID</span></div>
+              <div class="gb" data-val="Bahia"><span class="gi">&#127806;</span><span class="gl">Bahia</span></div>
+              <div class="gb" data-val="Bermuda"><span class="gi">&#9728;&#65039;</span><span class="gl">Bermuda</span></div>
+              <div class="gb" data-val="St. Augustine"><span class="gi">&#127807;</span><span class="gl">St. Augustine</span></div>
+              <div class="gb" data-val="Zoysia"><span class="gi">&#127811;</span><span class="gl">Zoysia</span></div>
+              <div class="gb" data-val="Centipede"><span class="gi">&#128027;</span><span class="gl">Centipede</span></div>
+              <div class="gb" data-val="Unable To Identify"><span class="gi">&#10067;</span><span class="gl">Unable To ID</span></div>
             </div><input type="hidden" id="r-grass"/>
           </div>
           <div class="field"><label>Mowing Direction</label>
             <div class="gg" id="dir-grid">
-              <div class="gb" data-val="12 to 6"><span class="gi">🕛</span><span class="gl">12 to 6</span></div>
-              <div class="gb" data-val="3 to 9"><span class="gi">🕒</span><span class="gl">3 to 9</span></div>
-              <div class="gb" data-val="2 to 8"><span class="gi">🕑</span><span class="gl">2 to 8</span></div>
-              <div class="gb" data-val="10 to 4"><span class="gi">🕙</span><span class="gl">10 to 4</span></div>
-              <div class="gb" data-val="1 to 7"><span class="gi">🕐</span><span class="gl">1 to 7</span></div>
-              <div class="gb" data-val="."><span class="gi">🔄</span><span class="gl">Varies</span></div>
+              <div class="gb" data-val="12 to 6"><span class="gi">&#128347;</span><span class="gl">12 to 6</span></div>
+              <div class="gb" data-val="3 to 9"><span class="gi">&#128338;</span><span class="gl">3 to 9</span></div>
+              <div class="gb" data-val="2 to 8"><span class="gi">&#128337;</span><span class="gl">2 to 8</span></div>
+              <div class="gb" data-val="10 to 4"><span class="gi">&#128345;</span><span class="gl">10 to 4</span></div>
+              <div class="gb" data-val="1 to 7"><span class="gi">&#128336;</span><span class="gl">1 to 7</span></div>
+              <div class="gb" data-val="."><span class="gi">&#128260;</span><span class="gl">Varies</span></div>
             </div><input type="hidden" id="r-dir"/>
           </div>
           <div class="divider"></div>
           <div class="sec-lbl">Service Checklist</div>
           <div class="field"><label>Applied Weed Control?</label>
             <div class="yn" id="yn-r-weed">
-              <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-              <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
+              <div class="yn-btn y" data-val="Yes">&#9989; Yes</div>
+              <div class="yn-btn nx" data-val="Next Visit">&#128284; Next Visit</div>
               <div class="yn-btn n" data-val="N/A">N/A</div>
             </div><input type="hidden" id="r-weed"/>
           </div>
-
           <div class="field"><label>Trimmed Hedges / Limbs?</label>
             <div class="yn" id="yn-r-hedges">
-              <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-              <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
+              <div class="yn-btn y" data-val="Yes">&#9989; Yes</div>
+              <div class="yn-btn nx" data-val="Next Visit">&#128284; Next Visit</div>
               <div class="yn-btn n" data-val="N/A">N/A</div>
             </div><input type="hidden" id="r-hedges"/>
           </div>
           <div class="field"><label>Walked Perimeter?</label>
             <div class="yn" id="yn-r-perim">
-              <div class="yn-btn y" data-val="✅ Clear">✅ Clear</div>
-              <div class="yn-btn n" data-val="⚠️ Issue Found">⚠️ Issue</div>
+              <div class="yn-btn y" data-val="Clear">&#9989; Clear</div>
+              <div class="yn-btn n" data-val="Issue Found">&#9888;&#65039; Issue</div>
             </div><input type="hidden" id="r-perim"/>
           </div>
           <div class="divider"></div>
-          <div class="field"><label>Notes / Recommend</label><textarea id="r-notes" placeholder="Notes for office or customer…"></textarea></div>
+          <div class="field"><label>Notes / Recommend</label><textarea id="r-notes" placeholder="Notes for office or customer&hellip;"></textarea></div>
         </div>
 
         <!-- COMMERCIAL -->
         <div id="f-com" class="hidden">
           <div class="field"><label>Cut Height (inches)</label>
-            <select id="c-height"><option value="">Select…</option>
+            <select id="c-height"><option value="">Select&hellip;</option>
               <option>2.00</option><option>2.25</option><option>2.50</option><option>2.75</option>
               <option>3.00</option><option>3.25</option><option>3.50</option><option>3.75</option>
               <option>4.00</option><option>4.25</option><option>4.50</option><option>4.75</option><option>5.00</option>
@@ -297,136 +260,128 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--g0);color
           </div>
           <div class="field"><label>Grass Type</label>
             <div class="gg" id="grass-com-grid">
-              <div class="gb" data-val="Bahia"><span class="gi">🌾</span><span class="gl">Bahia</span></div>
-              <div class="gb" data-val="Bermuda"><span class="gi">☀️</span><span class="gl">Bermuda</span></div>
-              <div class="gb" data-val="St. Augustine"><span class="gi">🌿</span><span class="gl">St. Augustine</span></div>
-              <div class="gb" data-val="Zoysia"><span class="gi">🍃</span><span class="gl">Zoysia</span></div>
-              <div class="gb" data-val="Centipede"><span class="gi">🐛</span><span class="gl">Centipede</span></div>
-              <div class="gb" data-val="Unable To Identify"><span class="gi">❓</span><span class="gl">Unable To ID</span></div>
+              <div class="gb" data-val="Bahia"><span class="gi">&#127806;</span><span class="gl">Bahia</span></div>
+              <div class="gb" data-val="Bermuda"><span class="gi">&#9728;&#65039;</span><span class="gl">Bermuda</span></div>
+              <div class="gb" data-val="St. Augustine"><span class="gi">&#127807;</span><span class="gl">St. Augustine</span></div>
+              <div class="gb" data-val="Zoysia"><span class="gi">&#127811;</span><span class="gl">Zoysia</span></div>
+              <div class="gb" data-val="Centipede"><span class="gi">&#128027;</span><span class="gl">Centipede</span></div>
+              <div class="gb" data-val="Unable To Identify"><span class="gi">&#10067;</span><span class="gl">Unable To ID</span></div>
             </div><input type="hidden" id="c-grass"/>
           </div>
           <div class="divider"></div>
           <div class="sec-lbl">Service Checklist</div>
           <div class="field"><label>Blew Parking Lot &amp; Common Areas?</label>
             <div class="yn" id="yn-c-blow">
-              <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-              <div class="yn-btn n" data-val="❌ No">❌ No</div>
+              <div class="yn-btn y" data-val="Yes">&#9989; Yes</div>
+              <div class="yn-btn n" data-val="No">&#10060; No</div>
             </div><input type="hidden" id="c-blow"/>
           </div>
           <div class="field"><label>Applied Weed Control?</label>
             <div class="yn" id="yn-c-weed">
-              <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-              <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
+              <div class="yn-btn y" data-val="Yes">&#9989; Yes</div>
+              <div class="yn-btn nx" data-val="Next Visit">&#128284; Next Visit</div>
               <div class="yn-btn n" data-val="N/A">N/A</div>
             </div><input type="hidden" id="c-weed"/>
           </div>
-
           <div class="field"><label>Trimmed Hedges / Limbs?</label>
             <div class="yn" id="yn-c-hedges">
-              <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-              <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
+              <div class="yn-btn y" data-val="Yes">&#9989; Yes</div>
+              <div class="yn-btn nx" data-val="Next Visit">&#128284; Next Visit</div>
               <div class="yn-btn n" data-val="N/A">N/A</div>
             </div><input type="hidden" id="c-hedges"/>
           </div>
           <div class="field"><label>Walked Perimeter?</label>
             <div class="yn" id="yn-c-perim">
-              <div class="yn-btn y" data-val="✅ Clear">✅ Clear</div>
-              <div class="yn-btn n" data-val="⚠️ Issue Found">⚠️ Issue</div>
+              <div class="yn-btn y" data-val="Clear">&#9989; Clear</div>
+              <div class="yn-btn n" data-val="Issue Found">&#9888;&#65039; Issue</div>
             </div><input type="hidden" id="c-perim"/>
           </div>
           <div class="divider"></div>
-          <div class="field"><label>Notes</label><textarea id="c-notes" placeholder="Notes for office or customer…"></textarea></div>
+          <div class="field"><label>Notes</label><textarea id="c-notes" placeholder="Notes for office or customer&hellip;"></textarea></div>
         </div>
 
         <!-- OTHER -->
         <div id="f-oth" class="hidden">
-          <div class="field"><label>Service Performed</label><input type="text" id="o-svc" placeholder="e.g. Hedge Trim, Power Wash…"/></div>
+          <div class="field"><label>Service Performed</label><input type="text" id="o-svc" placeholder="e.g. Hedge Trim, Power Wash&hellip;"/></div>
           <div class="divider"></div>
           <div class="sec-lbl">Service Checklist</div>
           <div class="field"><label>Applied Weed Control?</label>
             <div class="yn" id="yn-o-weed">
-              <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-              <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
+              <div class="yn-btn y" data-val="Yes">&#9989; Yes</div>
+              <div class="yn-btn nx" data-val="Next Visit">&#128284; Next Visit</div>
               <div class="yn-btn n" data-val="N/A">N/A</div>
             </div><input type="hidden" id="o-weed"/>
           </div>
-
           <div class="field"><label>Trimmed Hedges / Limbs?</label>
             <div class="yn" id="yn-o-hedges">
-              <div class="yn-btn y" data-val="✅ Yes">✅ Yes</div>
-              <div class="yn-btn nx" data-val="🔜 Next Visit">🔜 Next Visit</div>
+              <div class="yn-btn y" data-val="Yes">&#9989; Yes</div>
+              <div class="yn-btn nx" data-val="Next Visit">&#128284; Next Visit</div>
               <div class="yn-btn n" data-val="N/A">N/A</div>
             </div><input type="hidden" id="o-hedges"/>
           </div>
           <div class="field"><label>Walked Perimeter?</label>
             <div class="yn" id="yn-o-perim">
-              <div class="yn-btn y" data-val="✅ Clear">✅ Clear</div>
-              <div class="yn-btn n" data-val="⚠️ Issue Found">⚠️ Issue</div>
+              <div class="yn-btn y" data-val="Clear">&#9989; Clear</div>
+              <div class="yn-btn n" data-val="Issue Found">&#9888;&#65039; Issue</div>
             </div><input type="hidden" id="o-perim"/>
           </div>
           <div class="divider"></div>
-          <div class="field"><label>Notes / Recommend</label><textarea id="o-notes" placeholder="Notes…"></textarea></div>
+          <div class="field"><label>Notes / Recommend</label><textarea id="o-notes" placeholder="Notes&hellip;"></textarea></div>
         </div>
       </div>
 
       <!-- Pet Waste -->
       <div class="alert-card">
-        <div class="card-title"><span style="font-size:20px">🐾</span> Pet Waste on Property?</div>
+        <div class="card-title"><span style="font-size:20px">&#128062;</span> Pet Waste on Property?</div>
         <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Tap <strong>Alert Office</strong> if pet waste caused issues.</p>
         <div class="pet-toggle">
-          <div class="pet-opt" id="pet-clr"><span class="poi">✅</span><span class="pol">All Clear</span></div>
-          <div class="pet-opt" id="pet-wrn"><span class="poi">⚠️</span><span class="pol">Alert Office</span></div>
+          <div class="pet-opt" id="pet-clr"><span class="poi">&#9989;</span><span class="pol">All Clear</span></div>
+          <div class="pet-opt" id="pet-wrn"><span class="poi">&#9888;&#65039;</span><span class="pol">Alert Office</span></div>
         </div>
         <input type="hidden" id="f-pet"/>
       </div>
 
       <!-- Office Note -->
       <div class="alert-card">
-        <div class="card-title"><span style="font-size:20px">📋</span> Internal Note to Office</div>
+        <div class="card-title"><span style="font-size:20px">&#128203;</span> Internal Note to Office</div>
         <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Gate code, property issue. <strong>Not sent to customer.</strong></p>
         <div class="field">
           <label>Office Note (Optional)</label>
-          <textarea id="f-onote" rows="3" placeholder="e.g. Gate code changed, dog left in yard…"></textarea>
+          <textarea id="f-onote" rows="3" placeholder="e.g. Gate code changed, dog left in yard&hellip;"></textarea>
         </div>
-        <p style="font-size:11px;color:var(--muted);font-style:italic">📧 Alert sent to office if filled in.</p>
+        <p style="font-size:11px;color:var(--muted);font-style:italic">&#128231; Alert sent to office if filled in.</p>
       </div>
-
-
 
       <!-- Photos -->
       <div class="card">
         <div class="card-title"><div class="ctn">5</div> Job Photos</div>
         <div class="photo-area">
           <input type="file" id="f-photos" multiple accept="image/*" capture="environment"/>
-          <div style="font-size:30px;margin-bottom:6px">📷</div>
+          <div style="font-size:30px;margin-bottom:6px">&#128247;</div>
           <div style="font-size:14px;font-weight:600;color:var(--g7)">Tap to add photos</div>
           <div style="font-size:12px;color:var(--muted);margin-top:3px">Before &amp; after</div>
         </div>
         <div class="photo-grid" id="photo-grid"></div>
       </div>
 
-      <button class="sub-btn" id="sub-btn">✓ SUBMIT JOB</button>
+      <button class="sub-btn" id="sub-btn">&#10003; SUBMIT JOB</button>
       <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:8px;padding-bottom:20px">Sends completion to customer &amp; SA automatically.</p>
 
-    </div><!-- /form-body -->
+    </div>
 
     <div class="success hidden" id="form-success">
-      <div class="si">✅</div>
+      <div class="si">&#9989;</div>
       <h2>Job Submitted!</h2>
       <p>Completion email sent to your customer.</p>
-
       <button class="nj-btn" id="new-job-btn">+ Start Next Job</button>
     </div>
 
-  </div><!-- /content -->
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ════════════════════════════════════════════════════════════════
-// CONFIG
-// ════════════════════════════════════════════════════════════════
 var CFG = {
   proxy:    'https://ws-proxy.will-671.workers.dev',
   whJob:    'https://hooks.zapier.com/hooks/catch/20549459/ux4fnqk/',
@@ -435,9 +390,6 @@ var CFG = {
   cfWorker: 'https://wsphotoupload.will-671.workers.dev/',
 };
 
-// ════════════════════════════════════════════════════════════════
-// STATE
-// ════════════════════════════════════════════════════════════════
 var S = {
   crew: [
     {name:'Willie Arreola',  position:'Crew Lead'},
@@ -447,35 +399,24 @@ var S = {
   customers: [],
   user: {name:'Willie Arreola', position:'Crew Lead'},
   pId: null,
-  cust: null, svc: null, petLevel: 0, photos: [], selectedTechs: [],
-
+  cust: null, svc: null, pet: '', photos: [], selectedTechs: [],
 };
 
-// ════════════════════════════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════════════════════════════
 async function init() {
-  // Read pId from URL if crew tapped the auto-generated link
   var urlParams = new URLSearchParams(window.location.search);
   S.pId = urlParams.get('pId') || null;
-
   rebuildTechWrap();
-
   try {
     var res = await fetch(CFG.proxy, { method: 'GET' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     var d = await res.json();
-    if (d.techs     && d.techs.length)    { S.crew = d.techs; rebuildTechWrap(); updateTbSel(); }
+    if (d.techs && d.techs.length)    { S.crew = d.techs; rebuildTechWrap(); updateTbSel(); }
     if (d.customers && d.customers.length) {
       S.customers = d.customers;
       var srch = document.getElementById('f-srch');
-      if(srch) srch.placeholder = 'Search '+S.customers.length+' customers…';
+      if (srch) srch.placeholder = 'Search ' + S.customers.length + ' customers...';
     }
-
-    // If pId in URL, look up pending job and auto-populate
-    if (S.pId) {
-      loadPendingJob(S.pId);
-    }
+    if (S.pId) { loadPendingJob(S.pId); }
   } catch(e) { console.warn('Proxy fetch failed:', e.message); }
 }
 
@@ -493,76 +434,51 @@ function rebuildTechWrap() {
   S.crew.forEach(function(c,i) {
     var av  = c.name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
     var div = document.createElement('div');
-    div.className = 'tech-pill';
-    div.id = 'tp-'+i;
+    div.className = 'tech-pill'; div.id = 'tp-'+i;
     div.innerHTML = '<div class="tech-av">'+av+'</div><span class="tech-name">'+c.name+'</span>';
     div.addEventListener('click', function(){ togTech(i, c.name); });
     wrap.appendChild(div);
   });
 }
 
-// ════════════════════════════════════════════════════════════════
-// WIRE BUTTONS
-// ════════════════════════════════════════════════════════════════
-// ════════════════════════════════════════════════════════════════
-// LOAD PENDING JOB — auto-populate from pId in URL
-// ════════════════════════════════════════════════════════════════
 async function loadPendingJob(pId) {
   try {
     var res = await fetch(CFG.proxy + '?type=pending_job&pId=' + encodeURIComponent(pId), { method: 'GET' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     var d = await res.json();
-    if (!d.job) { console.warn('Pending job not found for pId:', pId); return; }
-
+    if (!d.job) { console.warn('No pending job for pId:', pId); return; }
     var j = d.job;
-
-    // Build customer object from pending job data
     S.cust = {
-      name:               j.name        || '',
-      address:            j.address     || '',
-      email:              j.email       || '',
-      phone:              j.phone       || '',
-      mowingHeight:       j.mowingHeight    || '',
-      mowingDirection:    j.mowingDirection || '',
-      grassType:          j.grassType       || '',
-      lastEfficiencyRate: j.lastEfficiencyRate || '',
-      lastVisitDuration:  j.lastVisitDuration  || '',
-      lastVisitTechs:     j.lastVisitTechs     || '',
+      name: j.name||'', address: j.address||'', email: j.email||'', phone: j.phone||'',
+      mowingHeight: j.mowingHeight||'', mowingDirection: j.mowingDirection||'',
+      grassType: j.grassType||'', lastEfficiencyRate: j.lastEfficiencyRate||'',
+      lastVisitDuration: j.lastVisitDuration||'', lastVisitTechs: j.lastVisitTechs||'',
     };
-
-    // Show customer banner — no search needed
     showCustBanner();
-
-    // Auto-select service type from email subject parsing
-    if (j.serviceType) {
-      selSvc(j.serviceType);
-    }
-
-    // Pre-fill mowing preferences if available
+    if (j.serviceType) { selSvc(j.serviceType); }
     if (j.mowingHeight) {
       var h = parseFloat(j.mowingHeight).toFixed(2);
       ['r-height','c-height'].forEach(function(id){
         var el = document.getElementById(id);
-        if(el) for(var o of el.options) if(parseFloat(o.value||0).toFixed(2)===h){ el.value=o.value; break; }
+        if (el) for (var o of el.options) if (parseFloat(o.value||0).toFixed(2)===h) { el.value=o.value; break; }
       });
     }
     if (j.grassType) {
       ['r-grass','c-grass'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=j.grassType; });
-      ['grass-res-grid','grass-com-grid'].forEach(function(gridId){
-        var grid=document.getElementById(gridId); if(!grid) return;
-        grid.querySelectorAll('.gb').forEach(function(btn){ btn.classList.toggle('on', btn.dataset.val===j.grassType); });
+      ['grass-res-grid','grass-com-grid'].forEach(function(gid){
+        var g=document.getElementById(gid); if(!g) return;
+        g.querySelectorAll('.gb').forEach(function(b){ b.classList.toggle('on', b.dataset.val===j.grassType); });
       });
     }
     if (j.mowingDirection) {
       var dg = document.getElementById('dir-grid');
-      if(dg) dg.querySelectorAll('.gb').forEach(function(btn){ btn.classList.toggle('on', btn.dataset.val===j.mowingDirection); });
-      var dr = document.getElementById('r-dir'); if(dr) dr.value = j.mowingDirection;
+      if (dg) dg.querySelectorAll('.gb').forEach(function(b){ b.classList.toggle('on', b.dataset.val===j.mowingDirection); });
+      var dr = document.getElementById('r-dir'); if (dr) dr.value = j.mowingDirection;
     }
-
-    toast('✅ Job loaded: ' + j.name);
+    toast('Job loaded: ' + j.name);
   } catch(err) {
     console.warn('loadPendingJob failed:', err.message);
-    toast('⚠ Could not load job data — search manually');
+    toast('Could not load job data - search manually');
   }
 }
 
@@ -574,17 +490,14 @@ function wireButtons() {
       document.getElementById('tb-role').textContent = S.crew[idx].position;
     }
   });
-
   document.getElementById('f-srch').addEventListener('input', onCustSearch);
   document.addEventListener('click', function(e){
-    if(!e.target.closest('.srch-wrap')) document.getElementById('f-results').classList.remove('open');
+    if (!e.target.closest('.srch-wrap')) document.getElementById('f-results').classList.remove('open');
   });
   document.getElementById('csel-chg-btn').addEventListener('click', clearCust);
-
   document.getElementById('svc-res').addEventListener('click', function(){ selSvc('residential'); });
   document.getElementById('svc-com').addEventListener('click', function(){ selSvc('commercial'); });
   document.getElementById('svc-oth').addEventListener('click', function(){ selSvc('other'); });
-
   document.getElementById('grass-res-grid').querySelectorAll('.gb').forEach(function(el){
     el.addEventListener('click', function(){ gridSel(el, 'grass-res-grid', 'r-grass'); });
   });
@@ -594,37 +507,27 @@ function wireButtons() {
   document.getElementById('dir-grid').querySelectorAll('.gb').forEach(function(el){
     el.addEventListener('click', function(){ gridSel(el, 'dir-grid', 'r-dir'); });
   });
-
   ['r-weed','r-hedges','r-perim','c-blow','c-weed','c-hedges','c-perim','o-weed','o-hedges','o-perim'].forEach(function(id){
     var g = document.getElementById('yn-'+id);
-    if(g) g.querySelectorAll('.yn-btn').forEach(function(btn){ btn.addEventListener('click', function(){ yntog(btn, id); }); });
+    if (g) g.querySelectorAll('.yn-btn').forEach(function(btn){ btn.addEventListener('click', function(){ yntog(btn, id); }); });
   });
-
-  // Pet waste severity grid
   document.getElementById('pet-clr').addEventListener('click', function(){ setPet('clear'); });
   document.getElementById('pet-wrn').addEventListener('click', function(){ setPet('warn'); });
-
   document.getElementById('f-photos').addEventListener('change', function(){ Array.from(this.files).forEach(addPhoto); this.value=''; });
   document.getElementById('sub-btn').addEventListener('click', submitJob);
   document.getElementById('new-job-btn').addEventListener('click', function(){ resetForm(); });
 }
 
-// ════════════════════════════════════════════════════════════════
-// CUSTOMER SEARCH
-// ════════════════════════════════════════════════════════════════
 function onCustSearch(){
   var q = this.value.toLowerCase().trim();
   var res = document.getElementById('f-results');
-  if(q.length < 2){ res.classList.remove('open'); return; }
-
-  // If customers haven't loaded yet, show loading and retry
-  if(!S.customers.length){
-    res.innerHTML = '<div class="sri"><div class="sri-name" style="color:var(--muted)">⏳ Loading customers…</div></div>';
+  if (q.length < 2) { res.classList.remove('open'); return; }
+  if (!S.customers.length) {
+    res.innerHTML = '<div class="sri"><div class="sri-name" style="color:var(--muted)">Loading customers...</div></div>';
     res.classList.add('open');
-    // Retry once after a short delay
     setTimeout(function(){
       var q2 = document.getElementById('f-srch').value.toLowerCase().trim();
-      if(q2.length >= 2) runSearch(q2);
+      if (q2.length >= 2) runSearch(q2);
     }, 1500);
     return;
   }
@@ -637,7 +540,7 @@ function runSearch(q){
     return (c.name||'').toLowerCase().includes(q) || (c.address||'').toLowerCase().includes(q);
   }).slice(0,8);
   res.innerHTML = '';
-  if(m.length){
+  if (m.length) {
     m.forEach(function(c){
       var div = document.createElement('div'); div.className = 'sri';
       div.innerHTML = '<div class="sri-name">'+c.name+'</div><div class="sri-addr">'+(c.address||'')+'</div>';
@@ -655,25 +558,24 @@ function selCust(i){
   document.getElementById('f-results').classList.remove('open');
   document.getElementById('f-srch').value = '';
   showCustBanner();
-  // Auto-fill known values
-  if(c.mowingHeight){
+  if (c.mowingHeight) {
     var h = parseFloat(c.mowingHeight).toFixed(2);
     ['r-height','c-height'].forEach(function(id){
       var el = document.getElementById(id);
-      if(el) for(var o of el.options) if(parseFloat(o.value||0).toFixed(2)===h){ el.value=o.value; break; }
+      if (el) for (var o of el.options) if (parseFloat(o.value||0).toFixed(2)===h) { el.value=o.value; break; }
     });
   }
-  if(c.grassType){
+  if (c.grassType) {
     ['r-grass','c-grass'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=c.grassType; });
-    ['grass-res-grid','grass-com-grid'].forEach(function(gridId){
-      var grid = document.getElementById(gridId); if(!grid) return;
-      grid.querySelectorAll('.gb').forEach(function(btn){ btn.classList.toggle('on', btn.dataset.val===c.grassType); });
+    ['grass-res-grid','grass-com-grid'].forEach(function(gid){
+      var g=document.getElementById(gid); if(!g) return;
+      g.querySelectorAll('.gb').forEach(function(b){ b.classList.toggle('on', b.dataset.val===c.grassType); });
     });
   }
-  if(c.mowingDirection){
-    var el = document.getElementById('r-dir'); if(el) el.value = c.mowingDirection;
+  if (c.mowingDirection) {
+    var el = document.getElementById('r-dir'); if (el) el.value = c.mowingDirection;
     var dg = document.getElementById('dir-grid');
-    if(dg) dg.querySelectorAll('.gb').forEach(function(btn){ btn.classList.toggle('on', btn.dataset.val===c.mowingDirection); });
+    if (dg) dg.querySelectorAll('.gb').forEach(function(b){ b.classList.toggle('on', b.dataset.val===c.mowingDirection); });
   }
 }
 
@@ -684,18 +586,18 @@ function showCustBanner(){
   document.getElementById('f-cname').textContent = c.name;
   var ml = 'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(c.address||'');
   document.getElementById('f-cdet').innerHTML =
-    (c.address?'<a href="'+ml+'" target="_blank" style="color:var(--blue);font-weight:600;text-decoration:none">📍 '+c.address+' ↗</a><br>':'')
-    +(c.email?'✉ '+c.email+'<br>':'')
-    +(c.phone?'📞 '+c.phone:'');
+    (c.address ? '<a href="'+ml+'" target="_blank" style="color:var(--blue);font-weight:600;text-decoration:none">&#128205; '+c.address+' &#8599;</a><br>' : '')
+    +(c.email ? '&#9993; '+c.email+'<br>' : '')
+    +(c.phone ? '&#128222; '+c.phone : '');
   var chips = '';
-  if(c.mowingHeight)    chips+='<div class="chip"><div><div class="chip-lbl">Last Height</div><div class="chip-val">'+c.mowingHeight+'"</div></div></div>';
-  if(c.grassType)       chips+='<div class="chip"><div><div class="chip-lbl">Grass</div><div class="chip-val">'+c.grassType+'</div></div></div>';
-  if(c.mowingDirection) chips+='<div class="chip"><div><div class="chip-lbl">Direction</div><div class="chip-val">'+c.mowingDirection+'</div></div></div>';
-  if(c.lastEfficiencyRate){
+  if (c.mowingHeight)    chips+='<div class="chip"><div><div class="chip-lbl">Last Height</div><div class="chip-val">'+c.mowingHeight+'"</div></div></div>';
+  if (c.grassType)       chips+='<div class="chip"><div><div class="chip-lbl">Grass</div><div class="chip-val">'+c.grassType+'</div></div></div>';
+  if (c.mowingDirection) chips+='<div class="chip"><div><div class="chip-lbl">Direction</div><div class="chip-val">'+c.mowingDirection+'</div></div></div>';
+  if (c.lastEfficiencyRate) {
     var en=parseInt(c.lastEfficiencyRate);
     var es=en>=100?'background:#e8f5eb;border-color:#c8e6cc':'background:#fde8e8;border-color:#f5c6c6';
     var ec=en>=100?'var(--g7)':'var(--red)';
-    var el2=en>=100?'⚡ '+c.lastEfficiencyRate+' Under Budget':'⚠️ '+c.lastEfficiencyRate+' Over Budget';
+    var el2=en>=100?'&#9889; '+c.lastEfficiencyRate+' Under Budget':'&#9888;&#65039; '+c.lastEfficiencyRate+' Over Budget';
     chips+='<div class="chip" style="'+es+'"><div><div class="chip-lbl" style="color:'+ec+'">Last Efficiency</div><div class="chip-val" style="color:'+ec+'">'+el2+'</div></div></div>';
   }
   document.getElementById('f-chips').innerHTML = chips;
@@ -709,9 +611,6 @@ function clearCust(){
   document.getElementById('f-chips').innerHTML = '';
 }
 
-// ════════════════════════════════════════════════════════════════
-// SERVICE / FORM HELPERS
-// ════════════════════════════════════════════════════════════════
 function selSvc(type){
   S.svc = type;
   var map = {residential:'res',commercial:'com',other:'oth'};
@@ -736,27 +635,27 @@ function yntog(btn, id){
 }
 
 function setPet(v){
-  S.pet=v;
-  document.getElementById('f-pet').value=v;
-  document.getElementById('pet-clr').className='pet-opt'+(v==='clear'?' clear':'');
-  document.getElementById('pet-wrn').className='pet-opt'+(v==='warn'?' warn':'');
+  S.pet = v;
+  document.getElementById('f-pet').value = v;
+  document.getElementById('pet-clr').className = 'pet-opt'+(v==='clear'?' clear':'');
+  document.getElementById('pet-wrn').className = 'pet-opt'+(v==='warn'?' warn':'');
 }
 
 function togTech(i, name){
   var btn = document.getElementById('tp-'+i);
   var ai  = S.selectedTechs.indexOf(name);
-  if(ai>-1){ S.selectedTechs.splice(ai,1); btn.classList.remove('on'); }
-  else      { S.selectedTechs.push(name);  btn.classList.add('on'); }
+  if (ai > -1) { S.selectedTechs.splice(ai,1); btn.classList.remove('on'); }
+  else          { S.selectedTechs.push(name);  btn.classList.add('on'); }
   document.getElementById('f-techs').value = S.selectedTechs.join(', ');
 }
 
 function addPhoto(file){
-  if(!file.type.startsWith('image/')) return;
+  if (!file.type.startsWith('image/')) return;
   var idx = S.photos.length; S.photos.push(file);
   var r = new FileReader();
   r.onload = function(e){
     var t = document.createElement('div'); t.className = 'p-thumb';
-    t.innerHTML = '<img src="'+e.target.result+'"/><button class="p-rm">×</button>';
+    t.innerHTML = '<img src="'+e.target.result+'"/><button class="p-rm">x</button>';
     t.querySelector('.p-rm').addEventListener('click', function(){ S.photos[idx]=null; t.remove(); });
     document.getElementById('photo-grid').appendChild(t);
   };
@@ -770,7 +669,7 @@ async function compressPhoto(file){
       var img = new Image();
       img.onload = function(){
         var M=1200, w=img.width, h=img.height;
-        if(w>M||h>M){ if(w>h){h=Math.round(h*M/w);w=M;}else{w=Math.round(w*M/h);h=M;} }
+        if (w>M||h>M) { if(w>h){h=Math.round(h*M/w);w=M;}else{w=Math.round(w*M/h);h=M;} }
         var c=document.createElement('canvas'); c.width=w; c.height=h;
         c.getContext('2d').drawImage(img,0,0,w,h);
         res({name:file.name.replace(/\.[^.]+$/,'')+'.jpg', data:c.toDataURL('image/jpeg',.7).replace(/^data:image\/jpeg;base64,/,'')});
@@ -781,36 +680,57 @@ async function compressPhoto(file){
   });
 }
 
-// ════════════════════════════════════════════════════════════════
-// SUBMIT JOB
-// ════════════════════════════════════════════════════════════════
+// ── ADDRESS PARSER ────────────────────────────────────────────
+// Splits SA address field "3055 Columbia Blvd, Titusville, FL 32780"
+// into the 5 individual SA post-service form fields
+function parseAddress(raw) {
+  var out = { addr1:'', addr2:'', city:'', state:'', zip:'' };
+  if (!raw) return out;
+  var parts = raw.split(',').map(function(s){ return s.trim(); });
+  if (parts.length >= 3) {
+    out.addr1 = parts[0];
+    out.city  = parts[1];
+    var stZip = parts[2].trim().split(/\s+/);
+    out.state = stZip[0] || '';
+    out.zip   = stZip[1] || '';
+  } else if (parts.length === 2) {
+    out.addr1 = parts[0];
+    var m = parts[1].match(/^(.*?)\s+([A-Z]{2})\s+(\d{5}(?:-\d{4})?)$/);
+    if (m) { out.city = m[1]; out.state = m[2]; out.zip = m[3]; }
+    else   { out.city = parts[1]; }
+  } else {
+    out.addr1 = raw;
+  }
+  return out;
+}
+
 async function submitJob(){
-  if(!S.cust)  { toast('⚠ Please select a customer'); return; }
-  if(!S.svc)   { toast('⚠ Please select a service type'); return; }
+  if (!S.cust) { toast('Please select a customer'); return; }
+  if (!S.svc)  { toast('Please select a service type'); return; }
 
   var p = S.svc==='residential'?'r':S.svc==='commercial'?'c':'o';
   var checks = p==='c'
-    ? ['c-blow','c-weed','c-bugs','c-hedges','c-perim']
+    ? ['c-blow','c-weed','c-hedges','c-perim']
     : p==='r'
     ? ['r-weed','r-hedges','r-perim']
-    : ['o-weed','o-bugs','o-hedges','o-perim'];
+    : ['o-weed','o-hedges','o-perim'];
   var fail = false;
   checks.forEach(function(id){
     var v = document.getElementById(id) && document.getElementById(id).value;
     var g = document.getElementById('yn-'+id);
-    if(!v){ fail=true; if(g) g.classList.add('invalid'); }
-    else  { if(g) g.classList.remove('invalid'); }
+    if (!v) { fail=true; if(g) g.classList.add('invalid'); }
+    else    { if(g) g.classList.remove('invalid'); }
   });
-  if(fail){
-    toast('⚠ Complete all checklist items');
+  if (fail) {
+    toast('Complete all checklist items');
     var inv = document.querySelector('.yn.invalid');
-    if(inv) inv.scrollIntoView({behavior:'smooth',block:'center'});
+    if (inv) inv.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
 
   var btn = document.getElementById('sub-btn');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Submitting…';
+  btn.innerHTML = '<span class="spinner"></span> Submitting...';
 
   try {
     var c    = S.cust;
@@ -819,61 +739,90 @@ async function submitJob(){
     var pd = await Promise.all(photos.map(compressPhoto));
     var urls = [];
 
-    for(var i=0;i<pd.length;i++){
-      btn.innerHTML = '<span class="spinner"></span> Photo '+(i+1)+'/'+pd.length+'…';
-      try{
+    for (var i=0; i<pd.length; i++) {
+      btn.innerHTML = '<span class="spinner"></span> Photo '+(i+1)+'/'+pd.length+'...';
+      try {
         var r2 = await fetch(CFG.cfWorker, {
           method:'POST', headers:{'Content-Type':'application/json'},
           body: JSON.stringify({photo:pd[i].data, filename:c.name+' - '+date+' - '+(i+1)+'.jpg'})
         });
         var j2 = await r2.json();
-        if(j2.url) urls.push(j2.url);
+        if (j2.url) urls.push(j2.url);
       } catch(e){}
     }
 
-    btn.innerHTML = '<span class="spinner"></span> Sending to SA…';
+    btn.innerHTML = '<span class="spinner"></span> Sending to SA...';
 
-    var grass    = S.svc==='commercial' ? document.getElementById('c-grass').value
-                 : (document.getElementById('r-grass').value || '');
-    var height   = S.svc==='residential' ? document.getElementById('r-height').value
-                 : S.svc==='commercial'  ? document.getElementById('c-height').value : '';
-    var dir      = document.getElementById('r-dir').value || '';
-    var techs    = document.getElementById('f-techs').value || S.user.name;
-    var notes    = (document.getElementById(p+'-notes') && document.getElementById(p+'-notes').value)
-                 || (document.getElementById('c-notes') && document.getElementById('c-notes').value) || '';
-    var onote    = document.getElementById('f-onote').value.trim();
+    var grass  = S.svc==='commercial' ? document.getElementById('c-grass').value
+               : (document.getElementById('r-grass').value || '');
+    var height = S.svc==='residential' ? document.getElementById('r-height').value
+               : S.svc==='commercial'  ? document.getElementById('c-height').value : '';
+    var dir    = document.getElementById('r-dir').value || '';
+    var techs  = document.getElementById('f-techs').value || S.user.name;
+    var notes  = (document.getElementById(p+'-notes') && document.getElementById(p+'-notes').value)
+               || (document.getElementById('c-notes') && document.getElementById('c-notes').value) || '';
+    var onote  = document.getElementById('f-onote').value.trim();
 
-    // ── 1. Submit to SA (triggers customer email automation) ──
+    // Parse address into SA-compatible fields
+    var addr = parseAddress(c.address || '');
 
+    // Pet waste label matching SA post-service form convention
+    var petWasteLabel = S.pet==='warn' ? '1st Notice'
+                      : S.pet==='clear' ? 'Clear' : '';
 
-    // ── 2. Fire Zapier job completion webhook ─────────────────
+    // ── Zapier job completion webhook payload ─────────────────
     var payload = {
-      type:'job_complete', date:date, submittedAt:new Date().toISOString(),
-      customerName:c.name, customerEmail:c.email, customerPhone:c.phone,
-      serviceAddress:c.address, serviceType:S.svc, techNames:techs,
-      grassType:grass, cutHeight:height, mowingDirection:dir,
-      weedControl: (document.getElementById(p+'-weed') && document.getElementById(p+'-weed').value)||'',
-      hedgeTrim:   (document.getElementById(p+'-hedges') && document.getElementById(p+'-hedges').value)||'',
-      perimeter:   (document.getElementById(p+'-perim') && document.getElementById(p+'-perim').value)||'',
-      blowLot:     S.svc==='commercial'?((document.getElementById('c-blow')&&document.getElementById('c-blow').value)||''):'',
-      notes:notes,
-      petStatus: S.pet,
-      photoCount:  urls.length,
-      photo1Url:urls[0]||'', photo2Url:urls[1]||'', photo3Url:urls[2]||'', photo4Url:urls[3]||'',
-      photosHtml:  urls.length
-        ? urls.map(function(u,i){ return '<a href="'+u+'" style="display:inline-block;margin:4px 8px 4px 0;background:#1e6b2e;color:#fff;padding:10px 20px;border-radius:4px;text-decoration:none;font-size:13px;font-weight:bold;">📷 View Photo '+(i+1)+'</a>'; }).join('')
+      type:           'job_complete',
+      date:           date,
+      submittedAt:    new Date().toISOString(),
+
+      // SA post-service fill-form fields (new)
+      clientname:       c.name,
+      clientemail:      c.email  || '',
+      clienthphone:     c.phone  || '',
+      clientcphone:     c.phone  || '',
+      physicaladdress1: addr.addr1,
+      physicaladdress2: addr.addr2,
+      physicalcity:     addr.city,
+      physicalstate:    addr.state,
+      physicalzip:      addr.zip,
+      GrassType:        grass,
+      GrassHeight:      height,
+      MowingDirection:  dir,
+      PetWasteWarning:  petWasteLabel,
+
+      // Legacy fields kept for existing Zapier filter steps
+      customerName:     c.name,
+      customerEmail:    c.email  || '',
+      customerPhone:    c.phone  || '',
+      serviceAddress:   c.address || '',
+      serviceType:      S.svc,
+      techNames:        techs,
+      grassType:        grass,
+      cutHeight:        height,
+      mowingDirection:  dir,
+      weedControl:      (document.getElementById(p+'-weed')   && document.getElementById(p+'-weed').value)   || '',
+      hedgeTrim:        (document.getElementById(p+'-hedges') && document.getElementById(p+'-hedges').value) || '',
+      perimeter:        (document.getElementById(p+'-perim')  && document.getElementById(p+'-perim').value)  || '',
+      blowLot:          S.svc==='commercial' ? ((document.getElementById('c-blow') && document.getElementById('c-blow').value) || '') : '',
+      notes:            notes,
+      petStatus:        S.pet,
+      photoCount:       urls.length,
+      photo1Url:        urls[0]||'', photo2Url:urls[1]||'', photo3Url:urls[2]||'', photo4Url:urls[3]||'',
+      photosHtml:       urls.length
+        ? urls.map(function(u,idx){ return '<a href="'+u+'" style="display:inline-block;margin:4px 8px 4px 0;background:#1e6b2e;color:#fff;padding:10px 20px;border-radius:4px;text-decoration:none;font-size:13px;font-weight:bold;">View Photo '+(idx+1)+'</a>'; }).join('')
         : '<p style="color:#888;font-size:13px">No photos submitted.</p>',
-      servicePerformed: S.svc==='other'?((document.getElementById('o-svc')&&document.getElementById('o-svc').value)||''):'',
+      servicePerformed: S.svc==='other' ? ((document.getElementById('o-svc') && document.getElementById('o-svc').value) || '') : '',
     };
     await zap(CFG.whJob, payload);
 
-    // ── 3. Office alert if needed ─────────────────────────────
-    var hasPet = S.pet==='warn';
+    // Office alert if needed
+    var hasPet  = S.pet==='warn';
     var hasNote = onote.length > 0;
-    if(hasPet || hasNote){
-      try{
+    if (hasPet || hasNote) {
+      try {
         await fetch(CFG.proxy, {method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'},
-          body:new URLSearchParams({
+          body: new URLSearchParams({
             type:'office_alert', customerName:c.name, serviceAddress:c.address||'', date:date,
             petAlert:hasPet?'PET WASTE REPORTED':'', officeNote:onote, techName:S.user.name,
           })
@@ -881,38 +830,32 @@ async function submitJob(){
       } catch(e){}
     }
 
-    // ── 4. Sheet update ───────────────────────────────────────
+    // Sheet update
     var sheetPayload = {
       type:'sheet_update', pId:S.pId||'', customerName:c.name, serviceAddress:c.address||'',
       email:c.email||'', grassType:grass, mowingHeight:height, mowingDirection:dir,
       lastVisitTechs:techs, date:date, techName:S.user.name,
     };
-    try{ await fetch(CFG.proxy,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(sheetPayload)}); }catch(e){}
+    try { await fetch(CFG.proxy,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(sheetPayload)}); } catch(e){}
     await zap(CFG.whSheet, sheetPayload);
 
-    // ── Show success ──────────────────────────────────────────
     document.getElementById('form-body').classList.add('hidden');
     var succ = document.getElementById('form-success');
-    succ.classList.remove('hidden');
-    succ.classList.add('show');
-
+    succ.classList.remove('hidden'); succ.classList.add('show');
 
   } catch(err) {
-    if(err.name==='TypeError'){
+    if (err.name==='TypeError') {
       document.getElementById('form-body').classList.add('hidden');
       document.getElementById('form-success').classList.remove('hidden');
       document.getElementById('form-success').classList.add('show');
     } else {
-      toast('❌ Submission failed — check connection');
+      toast('Submission failed - check connection');
       btn.disabled = false;
-      btn.innerHTML = '✓ SUBMIT JOB';
+      btn.innerHTML = 'SUBMIT JOB';
     }
   }
 }
 
-// ════════════════════════════════════════════════════════════════
-// RESET
-// ════════════════════════════════════════════════════════════════
 function resetForm(){
   S.cust=null; S.svc=null; S.pet=''; S.photos=[]; S.selectedTechs=[];
   clearCust();
@@ -928,11 +871,10 @@ function resetForm(){
   document.querySelectorAll('input[type=hidden]').forEach(function(el){ el.value=''; });
   document.querySelectorAll('textarea').forEach(function(el){ el.value=''; });
   document.querySelectorAll('select').forEach(function(el){ el.selectedIndex=0; });
-  // Reset pet grid
   document.getElementById('pet-clr').className='pet-opt';
   document.getElementById('pet-wrn').className='pet-opt';
   document.getElementById('f-pet').value='';
-  document.getElementById('sub-btn').innerHTML='✓ SUBMIT JOB';
+  document.getElementById('sub-btn').innerHTML='SUBMIT JOB';
   document.getElementById('sub-btn').disabled=false;
   document.getElementById('form-body').classList.remove('hidden');
   var succ=document.getElementById('form-success');
@@ -941,22 +883,16 @@ function resetForm(){
   window.scrollTo(0,0);
 }
 
-// ════════════════════════════════════════════════════════════════
-// UTILS
-// ════════════════════════════════════════════════════════════════
 function toast(msg){
   var t=document.getElementById('toast');
-  t.textContent=msg;
-  t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); },3000);
-}
-async function zap(url,data){
-  try{ await fetch(url,{method:'POST',body:new URLSearchParams(data),mode:'no-cors'}); }catch(e){}
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 3000);
 }
 
-// ════════════════════════════════════════════════════════════════
-// BOOT
-// ════════════════════════════════════════════════════════════════
+async function zap(url, data){
+  try { await fetch(url,{method:'POST',body:new URLSearchParams(data),mode:'no-cors'}); } catch(e){}
+}
+
 wireButtons();
 init();
 </script>
