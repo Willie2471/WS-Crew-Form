@@ -589,9 +589,13 @@ function showCustBanner(){
     +(c.email ? '&#9993; '+c.email+'<br>' : '')
     +(c.phone ? '&#128222; '+c.phone : '');
   var chips = '';
-  if (c.mowingHeight)    chips+='<div class="chip"><div><div class="chip-lbl">Last Height</div><div class="chip-val">'+c.mowingHeight+'"</div></div></div>';
-  if (c.grassType)       chips+='<div class="chip"><div><div class="chip-lbl">Grass</div><div class="chip-val">'+c.grassType+'</div></div></div>';
-  if (c.mowingDirection) chips+='<div class="chip"><div><div class="chip-lbl">Direction</div><div class="chip-val">'+c.mowingDirection+'</div></div></div>';
+  // Only show height chip if value is actually a number
+  if (c.mowingHeight && !isNaN(parseFloat(c.mowingHeight)))
+    chips+='<div class="chip"><div><div class="chip-lbl">Cut Height</div><div class="chip-val">'+parseFloat(c.mowingHeight).toFixed(2)+'"</div></div></div>';
+  if (c.grassType && isNaN(parseFloat(c.grassType)))
+    chips+='<div class="chip"><div><div class="chip-lbl">Grass</div><div class="chip-val">'+c.grassType+'</div></div></div>';
+  if (c.mowingDirection && isNaN(parseFloat(c.mowingDirection)))
+    chips+='<div class="chip"><div><div class="chip-lbl">Direction</div><div class="chip-val">'+c.mowingDirection+'</div></div></div>';
 
   document.getElementById('f-chips').innerHTML = chips;
 }
