@@ -451,7 +451,6 @@ async function loadPendingJob(pId) {
     S.cust = {
       name: j.name||'', address: j.address||'', email: j.email||'', phone: j.phone||'',
       mowingHeight: j.mowingHeight||'', mowingDirection: j.mowingDirection||'',
-      grassType: j.grassType||'', lastEfficiencyRate: j.lastEfficiencyRate||'',
       lastVisitDuration: j.lastVisitDuration||'', lastVisitTechs: j.lastVisitTechs||'',
     };
     showCustBanner();
@@ -593,13 +592,7 @@ function showCustBanner(){
   if (c.mowingHeight)    chips+='<div class="chip"><div><div class="chip-lbl">Last Height</div><div class="chip-val">'+c.mowingHeight+'"</div></div></div>';
   if (c.grassType)       chips+='<div class="chip"><div><div class="chip-lbl">Grass</div><div class="chip-val">'+c.grassType+'</div></div></div>';
   if (c.mowingDirection) chips+='<div class="chip"><div><div class="chip-lbl">Direction</div><div class="chip-val">'+c.mowingDirection+'</div></div></div>';
-  if (c.lastEfficiencyRate) {
-    var en=parseInt(c.lastEfficiencyRate);
-    var es=en>=100?'background:#e8f5eb;border-color:#c8e6cc':'background:#fde8e8;border-color:#f5c6c6';
-    var ec=en>=100?'var(--g7)':'var(--red)';
-    var el2=en>=100?'&#9889; '+c.lastEfficiencyRate+' Under Budget':'&#9888;&#65039; '+c.lastEfficiencyRate+' Over Budget';
-    chips+='<div class="chip" style="'+es+'"><div><div class="chip-lbl" style="color:'+ec+'">Last Efficiency</div><div class="chip-val" style="color:'+ec+'">'+el2+'</div></div></div>';
-  }
+
   document.getElementById('f-chips').innerHTML = chips;
 }
 
@@ -651,7 +644,16 @@ function togTech(i, name){
 
 function addPhoto(file){
   if (!file.type.startsWith('image/')) return;
-  var idx = S.photos.length; S.photos.push(file);
+  // Timestamp captured at moment of upload, not at submission
+  var now  = new Date();
+  var hh   = now.getHours(); var mm = now.getMinutes();
+  var ampm = hh >= 12 ? 'PM' : 'AM'; hh = hh % 12 || 12;
+  var ts   = (now.getMonth()+1).toString().padStart(2,'0') + '-'
+           + now.getDate().toString().padStart(2,'0') + '-'
+           + now.getFullYear()
+           + ' - ' + hh + ':' + (mm<10?'0'+mm:mm) + ' ' + ampm;
+  var idx = S.photos.length;
+  S.photos.push({file: file, ts: ts});
   var r = new FileReader();
   r.onload = function(e){
     var t = document.createElement('div'); t.className = 'p-thumb';
@@ -662,7 +664,9 @@ function addPhoto(file){
   r.readAsDataURL(file);
 }
 
-async function compressPhoto(file){
+async function compressPhoto(photoObj){
+  var file = photoObj.file;
+  var ts   = photoObj.ts; // "04-11-2026 - 9:22 AM"
   return new Promise(function(res,rej){
     var r = new FileReader();
     r.onload = function(e){
@@ -672,7 +676,7 @@ async function compressPhoto(file){
         if (w>M||h>M) { if(w>h){h=Math.round(h*M/w);w=M;}else{w=Math.round(w*M/h);h=M;} }
         var c=document.createElement('canvas'); c.width=w; c.height=h;
         c.getContext('2d').drawImage(img,0,0,w,h);
-        res({name:file.name.replace(/\.[^.]+$/,'')+'.jpg', data:c.toDataURL('image/jpeg',.7).replace(/^data:image\/jpeg;base64,/,'')});
+        res({ts: ts, data:c.toDataURL('image/jpeg',.7).replace(/^data:image\/jpeg;base64,/,'')});
       };
       img.onerror=rej; img.src=e.target.result;
     };
@@ -742,9 +746,11 @@ async function submitJob(){
     for (var i=0; i<pd.length; i++) {
       btn.innerHTML = '<span class="spinner"></span> Photo '+(i+1)+'/'+pd.length+'...';
       try {
+        // e.g. "Bobby Flemings - 04-11-2026 - 9:22 AM - After - 1.jpg"
+        var fname = c.name+' - '+pd[i].ts+' - After - '+(i+1)+'.jpg';
         var r2 = await fetch(CFG.cfWorker, {
           method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({photo:pd[i].data, filename:c.name+' - '+date+' - '+(i+1)+'.jpg'})
+          body: JSON.stringify({photo:pd[i].data, filename:fname})
         });
         var j2 = await r2.json();
         if (j2.url) urls.push(j2.url);
