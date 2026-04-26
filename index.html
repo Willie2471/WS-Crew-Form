@@ -451,7 +451,12 @@ async function loadPendingJob(pId) {
     S.cust = {
       name: j.name||'', address: j.address||'', email: j.email||'', phone: j.phone||'',
       mowingHeight: j.mowingHeight||'', mowingDirection: j.mowingDirection||'',
+      grassType: j.grassType||'',
       lastVisitDuration: j.lastVisitDuration||'', lastVisitTechs: j.lastVisitTechs||'',
+      weedControl:  j.weedControl  || '',
+      hedgeTrim:    j.hedgeTrim    || '',
+      perimeter:    j.perimeter    || '',
+      overallNotes: j.overallNotes || '',
     };
     showCustBanner();
     if (j.serviceType) { selSvc(j.serviceType); }
@@ -474,10 +479,61 @@ async function loadPendingJob(pId) {
       if (dg) dg.querySelectorAll('.gb').forEach(function(b){ b.classList.toggle('on', b.dataset.val===j.mowingDirection); });
       var dr = document.getElementById('r-dir'); if (dr) dr.value = j.mowingDirection;
     }
+
+    // Pre-populate checklist answers from SA form results
+    if (j.weedControl)  preselYN('r-weed',  j.weedControl);
+    if (j.weedControl)  preselYN('c-weed',  j.weedControl);
+    if (j.weedControl)  preselYN('o-weed',  j.weedControl);
+    if (j.hedgeTrim)    preselYN('r-hedges', j.hedgeTrim);
+    if (j.hedgeTrim)    preselYN('c-hedges', j.hedgeTrim);
+    if (j.hedgeTrim)    preselYN('o-hedges', j.hedgeTrim);
+    if (j.perimeter)    preselYN('r-perim',  j.perimeter);
+    if (j.perimeter)    preselYN('c-perim',  j.perimeter);
+    if (j.perimeter)    preselYN('o-perim',  j.perimeter);
+
+    // Pre-populate notes
+    if (j.overallNotes) {
+      ['r-notes','c-notes','o-notes'].forEach(function(id){
+        var el = document.getElementById(id); if (el) el.value = j.overallNotes;
+      });
+    }
+
     toast('Job loaded: ' + j.name);
   } catch(err) {
     console.warn('loadPendingJob failed:', err.message);
     toast('Could not load job data - search manually');
+  }
+}
+
+// Pre-select a yn-button group by matching data-val
+// Handles both emoji-prefixed ("✅ Yes") and plain ("Yes") values from SA
+function preselYN(id, val) {
+  if (!val) return;
+  var g = document.getElementById('yn-'+id);
+  if (!g) return;
+  var v = val.trim();
+  // Try exact match first, then partial match (SA may send plain text)
+  var matched = false;
+  g.querySelectorAll('.yn-btn').forEach(function(btn) {
+    var bv = (btn.dataset.val || '').trim();
+    if (bv === v || bv.replace(/[^a-zA-Z\s]/g,'').trim().toLowerCase() === v.replace(/[^a-zA-Z\s]/g,'').trim().toLowerCase()) {
+      yntog(btn, id);
+      matched = true;
+    }
+  });
+  if (!matched) {
+    // Fallback: match on key words
+    var vl = v.toLowerCase();
+    g.querySelectorAll('.yn-btn').forEach(function(btn) {
+      var bl = (btn.dataset.val||'').toLowerCase();
+      if ((vl.includes('yes') && bl.includes('yes')) ||
+          (vl.includes('next') && bl.includes('next')) ||
+          (vl.includes('n/a') && bl === 'n/a') ||
+          (vl.includes('clear') && bl.includes('clear')) ||
+          (vl.includes('issue') && bl.includes('issue'))) {
+        yntog(btn, id);
+      }
+    });
   }
 }
 
