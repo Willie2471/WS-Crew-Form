@@ -511,30 +511,23 @@ function preselYN(id, val) {
   if (!val) return;
   var g = document.getElementById('yn-'+id);
   if (!g) return;
-  var v = val.trim();
-  // Try exact match first, then partial match (SA may send plain text)
-  var matched = false;
+  // SA sends plain checkmark (u2713) not emoji (u2705) -- strip all variants
+  function norm(s) {
+    return (s||'').replace(/[\u2713\u2714\u2705]/g,'').replace(/\ud83d\udd1c/g,'').trim().toLowerCase();
+  }
+  var v = norm(val);
+  if (!v) return;
   g.querySelectorAll('.yn-btn').forEach(function(btn) {
-    var bv = (btn.dataset.val || '').trim();
-    if (bv === v || bv.replace(/[^a-zA-Z\s]/g,'').trim().toLowerCase() === v.replace(/[^a-zA-Z\s]/g,'').trim().toLowerCase()) {
+    var bl = norm(btn.dataset.val||'');
+    if (bl === v ||
+        (v.indexOf('yes')   >= 0 && bl.indexOf('yes')   >= 0) ||
+        (v.indexOf('next')  >= 0 && bl.indexOf('next')  >= 0) ||
+        (v === 'n/a'            && bl === 'n/a')               ||
+        (v.indexOf('clear') >= 0 && bl.indexOf('clear') >= 0) ||
+        (v.indexOf('issue') >= 0 && bl.indexOf('issue') >= 0)) {
       yntog(btn, id);
-      matched = true;
     }
   });
-  if (!matched) {
-    // Fallback: match on key words
-    var vl = v.toLowerCase();
-    g.querySelectorAll('.yn-btn').forEach(function(btn) {
-      var bl = (btn.dataset.val||'').toLowerCase();
-      if ((vl.includes('yes') && bl.includes('yes')) ||
-          (vl.includes('next') && bl.includes('next')) ||
-          (vl.includes('n/a') && bl === 'n/a') ||
-          (vl.includes('clear') && bl.includes('clear')) ||
-          (vl.includes('issue') && bl.includes('issue'))) {
-        yntog(btn, id);
-      }
-    });
-  }
 }
 
 function wireButtons() {
