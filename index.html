@@ -511,12 +511,13 @@ function preselYN(id, val) {
   if (!val) return;
   var g = document.getElementById('yn-'+id);
   if (!g) return;
-  // SA sends plain checkmark (u2713) not emoji (u2705) -- strip all variants
   function norm(s) {
-    return (s||'').replace(/[\u2713\u2714\u2705]/g,'').replace(/\ud83d\udd1c/g,'').trim().toLowerCase();
+    return (s||'').replace(/[✓✔✅]/g,'').trim().toLowerCase();
   }
   var v = norm(val);
   if (!v) return;
+  // Perimeter group only has Clear/Issue; SA sends 'yes' to mean clear
+  if (id.indexOf('perim') >= 0 && v === 'yes') v = 'clear';
   g.querySelectorAll('.yn-btn').forEach(function(btn) {
     var bl = norm(btn.dataset.val||'');
     if (bl === v ||
@@ -761,6 +762,22 @@ function parseAddress(raw) {
   return out;
 }
 
+// Normalize checklist values to emoji display for customer email
+function fmtCheck(v) {
+  if (!v) return '';
+  var n = (v||'').replace(/[✓✔✅]/g,'').trim().toLowerCase();
+  if (n === 'yes')              return '✅ Yes';
+  if (n.indexOf('next') >= 0)  return '🔜 Next Visit';
+  if (n === 'n/a')             return 'N/A';
+  return v;
+}
+function fmtPerim(v) {
+  if (!v) return '';
+  var n = (v||'').replace(/[✓✔✅]/g,'').trim().toLowerCase();
+  if (n === 'yes' || n.indexOf('clear') >= 0) return '✅ Clear';
+  if (n.indexOf('issue') >= 0)                return '⚠️ Issue Found';
+  return v;
+}
 async function submitJob(){
   if (!S.cust) { toast('Please select a customer'); return; }
   if (!S.svc)  { toast('Please select a service type'); return; }
@@ -860,9 +877,9 @@ async function submitJob(){
       grassType:        grass,
       cutHeight:        height,
       mowingDirection:  dir,
-      weedControl:      (document.getElementById(p+'-weed')   && document.getElementById(p+'-weed').value)   || '',
-      hedgeTrim:        (document.getElementById(p+'-hedges') && document.getElementById(p+'-hedges').value) || '',
-      perimeter:        (document.getElementById(p+'-perim')  && document.getElementById(p+'-perim').value)  || '',
+      weedControl:      fmtCheck(document.getElementById(p+'-weed')   && document.getElementById(p+'-weed').value),
+      hedgeTrim:        fmtCheck(document.getElementById(p+'-hedges') && document.getElementById(p+'-hedges').value),
+      perimeter:        fmtPerim(document.getElementById(p+'-perim')  && document.getElementById(p+'-perim').value),
       blowLot:          S.svc==='commercial' ? ((document.getElementById('c-blow') && document.getElementById('c-blow').value) || '') : '',
       notes:            notes,
       petStatus:        S.pet,
