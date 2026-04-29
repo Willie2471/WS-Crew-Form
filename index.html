@@ -468,11 +468,15 @@ async function loadPendingJob(pId) {
       });
     }
     if (j.grassType) {
-      ['r-grass','c-grass'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=j.grassType; });
-      ['grass-res-grid','grass-com-grid'].forEach(function(gid){
-        var g=document.getElementById(gid); if(!g) return;
-        g.querySelectorAll('.gb').forEach(function(b){ b.classList.toggle('on', b.dataset.val===j.grassType); });
-      });
+      // Use setTimeout so grid is visible after selSvc() removes hidden class
+      var _gt = j.grassType;
+      setTimeout(function() {
+        ['r-grass','c-grass'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=_gt; });
+        ['grass-res-grid','grass-com-grid'].forEach(function(gid){
+          var g=document.getElementById(gid); if(!g) return;
+          g.querySelectorAll('.gb').forEach(function(b){ b.classList.toggle('on', b.dataset.val===_gt); });
+        });
+      }, 50);
     }
     if (j.mowingDirection) {
       var dg = document.getElementById('dir-grid');
